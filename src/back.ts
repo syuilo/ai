@@ -81,7 +81,7 @@ process.on('message', async msg => {
 		await request.post(`${config.host}/api/notes/create`, {
 			json: {
 				i: config.i,
-				renoteId: note.id,
+				renoteId: note ? note.id : null,
 				text: text
 			}
 		});
