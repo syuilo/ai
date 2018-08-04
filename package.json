@@ -1,0 +1,17 @@
+{
+  "name": "ai",
+  "main": "./built/front.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/node": "10.0.5",
+    "@types/ws": "5.1.2",
+    "misskey-reversi": "0.0.5",
+    "request": "2.87.0",
+    "request-promise-native": "1.0.5",
+    "ts-node": "6.0.3",
+    "typescript": "2.8.3",
+    "ws": "6.0.0"
+  }
+}
