@@ -132,6 +132,11 @@ function gameStart(game) {
 
 		// フォーム
 		const form = [{
+			id: 'publish',
+			type: 'switch',
+			label: '藍が対局情報を投稿するのを許可',
+			value: true
+		}, {
 			id: 'strength',
 			type: 'radio',
 			label: '強さ',

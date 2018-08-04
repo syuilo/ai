@@ -37,20 +37,22 @@ process.on('message', async msg => {
 		onGameStarted(msg.body);
 
 		//#region TLに投稿する
-		const game = msg.body;
-		const url = `${config.host}/reversi/${game.id}`;
-		const user = game.user1Id == config.id ? game.user2 : game.user1;
-		const isSettai = form[0].value === 0;
-		const text = isSettai
-			? `?[${getUserName(user)}](${config.host}/@${user.username})さんの接待を始めました！`
-			: `対局を?[${getUserName(user)}](${config.host}/@${user.username})さんと始めました！ (強さ${form[0].value})`;
+		if (form.find(i => i.id == 'publish').value) {
+			const game = msg.body;
+			const url = `${config.host}/reversi/${game.id}`;
+			const user = game.user1Id == config.id ? game.user2 : game.user1;
+			const isSettai = form[0].value === 0;
+			const text = isSettai
+				? `?[${getUserName(user)}](${config.host}/@${user.username})さんの接待を始めました！`
+				: `対局を?[${getUserName(user)}](${config.host}/@${user.username})さんと始めました！ (強さ${form[0].value})`;
 
-		const res = await request.post(`${config.host}/api/notes/create`, {
-			json: {
-				i: config.i,
-				text: `${text}\n→[観戦する](${url})`
-			}
-		});
+			const res = await request.post(`${config.host}/api/notes/create`, {
+				json: {
+					i: config.i,
+					text: `${text}\n→[観戦する](${url})`
+				}
+			});
+		}
 
 		note = res.createdNote;
 		//#endregion
@@ -64,28 +66,31 @@ process.on('message', async msg => {
 		});
 
 		//#region TLに投稿する
-		const user = game.user1Id == config.id ? game.user2 : game.user1;
-		const isSettai = form[0].value === 0;
-		const text = isSettai
-			? msg.body.winnerId === null
-				? `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で引き分けました...`
-				: msg.body.winnerId == config.id
-					? `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で勝ってしまいました...`
-					: `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で負けてあげました♪`
-			: msg.body.winnerId === null
-				? `?[${getUserName(user)}](${config.host}/@${user.username})さんと引き分けました～`
-				: msg.body.winnerId == config.id
-					? `?[${getUserName(user)}](${config.host}/@${user.username})さんに勝ちました♪`
-					: `?[${getUserName(user)}](${config.host}/@${user.username})さんに負けました...`;
+		if (form.find(i => i.id == 'publish').value) {
+			const user = game.user1Id == config.id ? game.user2 : game.user1;
+			const isSettai = form[0].value === 0;
+			const text = isSettai
+				? msg.body.winnerId === null
+					? `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で引き分けました...`
+					: msg.body.winnerId == config.id
+						? `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で勝ってしまいました...`
+						: `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で負けてあげました♪`
+				: msg.body.winnerId === null
+					? `?[${getUserName(user)}](${config.host}/@${user.username})さんと引き分けました～`
+					: msg.body.winnerId == config.id
+						? `?[${getUserName(user)}](${config.host}/@${user.username})さんに勝ちました♪`
+						: `?[${getUserName(user)}](${config.host}/@${user.username})さんに負けました...`;
 
-		await request.post(`${config.host}/api/notes/create`, {
-			json: {
-				i: config.i,
-				renoteId: note ? note.id : null,
-				text: text
-			}
-		});
+			await request.post(`${config.host}/api/notes/create`, {
+				json: {
+					i: config.i,
+					renoteId: note ? note.id : null,
+					text: text
+				}
+			});
+		}
 		//#endregion
+
 		process.exit();
 	}
 
