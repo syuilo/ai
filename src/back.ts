@@ -41,10 +41,11 @@ process.on('message', async msg => {
 			const game = msg.body;
 			const url = `${config.host}/reversi/${game.id}`;
 			const user = game.user1Id == config.id ? game.user2 : game.user1;
-			const isSettai = form[0].value === 0;
+			const strength = form.find(i => i.id == 'strength').value;
+			const isSettai = strength === 0;
 			const text = isSettai
 				? `?[${getUserName(user)}](${config.host}/@${user.username})さんの接待を始めました！`
-				: `対局を?[${getUserName(user)}](${config.host}/@${user.username})さんと始めました！ (強さ${form[0].value})`;
+				: `対局を?[${getUserName(user)}](${config.host}/@${user.username})さんと始めました！ (強さ${strength})`;
 
 			const res = await request.post(`${config.host}/api/notes/create`, {
 				json: {
@@ -52,9 +53,9 @@ process.on('message', async msg => {
 					text: `${text}\n→[観戦する](${url})`
 				}
 			});
-		}
 
-		note = res.createdNote;
+			note = res.createdNote;
+		}
 		//#endregion
 	}
 
@@ -68,8 +69,9 @@ process.on('message', async msg => {
 		//#region TLに投稿する
 		if (form.find(i => i.id == 'publish').value) {
 			const user = game.user1Id == config.id ? game.user2 : game.user1;
-			const isSettai = form[0].value === 0;
-			const text = isSettai
+			const strength = form.find(i => i.id == 'strength').value;
+			const isSettai = strength === 0;
+			const text = msg.body.game.surrendered ? `?[${getUserName(user)}](${config.host}/@${user.username})さんが投了しちゃいました` : isSettai
 				? msg.body.winnerId === null
 					? `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で引き分けました...`
 					: msg.body.winnerId == config.id
@@ -163,10 +165,11 @@ function think() {
 	console.log('Thinking...');
 	console.time('think');
 
-	const isSettai = form[0].value === 0;
+	const strength = form.find(i => i.id == 'strength').value;
+	const isSettai = strength === 0;
 
 	// 接待モードのときは、全力(5手先読みくらい)で負けるようにする
-	const maxDepth = isSettai ? 5 : form[0].value;
+	const maxDepth = isSettai ? 5 : strength;
 
 	/**
 	 * Botにとってある局面がどれだけ有利か取得する
