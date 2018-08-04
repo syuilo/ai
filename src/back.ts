@@ -295,69 +295,6 @@ function think() {
 		}
 	};
 
-	/**
-	 * αβ法での探索(キャッシュ無し)(デバッグ用)
-	 */
-	const dive2 = (pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
-		// 試し打ち
-		o.put(o.turn, pos);
-
-		const isBotTurn = o.turn === botColor;
-
-		// 勝った
-		if (o.turn === null) {
-			const winner = o.winner;
-
-			// 勝つことによる基本スコア
-			const base = 10000;
-
-			let score;
-
-			if (game.settings.isLlotheo) {
-				// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
-				score = o.winner ? base - (o.blackCount * 100) : base - (o.whiteCount * 100);
-			} else {
-				// 勝ちは勝ちでも、より相手の石を少なくした方が美しい勝ちだと判定する
-				score = o.winner ? base + (o.blackCount * 100) : base + (o.whiteCount * 100);
-			}
-
-			// 巻き戻し
-			o.undo();
-
-			// 接待なら自分が負けた方が高スコア
-			return isSettai
-				? winner !== botColor ? score : -score
-				: winner === botColor ? score : -score;
-		}
-
-		if (depth === maxDepth) {
-			// 静的に評価
-			const score = staticEval();
-
-			// 巻き戻し
-			o.undo();
-
-			return score;
-		} else {
-			const cans = o.canPutSomewhere(o.turn);
-
-			// 次のターンのプレイヤーにとって最も良い手を取得
-			for (const p of cans) {
-				if (isBotTurn) {
-					alpha = Math.max(alpha, dive2(p, alpha, beta, depth + 1));
-				} else {
-					beta = Math.min(beta, dive2(p, alpha, beta, depth + 1));
-				}
-				if (alpha >= beta) break;
-			}
-
-			// 巻き戻し
-			o.undo();
-
-			return isBotTurn ? alpha : beta;
-		}
-	};
-
 	const cans = o.canPutSomewhere(botColor);
 	const scores = cans.map(p => dive(p));
 	const pos = cans[scores.indexOf(Math.max(...scores))];
