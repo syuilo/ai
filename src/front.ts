@@ -38,16 +38,18 @@ homeStream.addEventListener('message', message => {
 		if (note.userId == config.id) return;
 
 		// リアクションする
-		request.post(`${apiUrl}/notes/reactions/create`, {
-			json: {
-				i: config.i,
-				noteId: note.id,
-				reaction: 'love'
-			}
-		});
+		setTimeout(() => {
+			request.post(`${apiUrl}/notes/reactions/create`, {
+				json: {
+					i: config.i,
+					noteId: note.id,
+					reaction: 'love'
+				}
+			});
+		}, 2000);
 
-		if (note.text) {
-			if (note.text.indexOf('リバーシ') > -1) {
+		if (note.text && note.text.indexOf('リバーシ') > -1) {
+			setTimeout(() => {
 				request.post(`${apiUrl}/notes/create`, {
 					json: {
 						i: config.i,
@@ -57,7 +59,7 @@ homeStream.addEventListener('message', message => {
 				});
 
 				invite(note.userId);
-			}
+			}, 3000);
 		}
 	}
 
