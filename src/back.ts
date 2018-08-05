@@ -367,7 +367,7 @@ class Session {
 				json: {
 					i: config.i,
 					text: text,
-					renoteId: renote ? renote.id : null
+					renoteId: renote ? renote.id : undefined
 				}
 			});
 
