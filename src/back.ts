@@ -142,7 +142,7 @@ class Session {
 	/**
 	 * 対局が終わったとき
 	 */
-	private onEnded = (msg: any) =>  {
+	private onEnded = async (msg: any) =>  {
 		// ストリームから切断
 		process.send({
 			type: 'close'
@@ -178,7 +178,7 @@ class Session {
 			}
 		}
 
-		this.post(text, this.startedNote ? this.startedNote.id : null);
+		await this.post(text, this.startedNote);
 
 		process.exit();
 	}
@@ -363,15 +363,25 @@ class Session {
 	 */
 	private post = async (text: string, renote?: any) => {
 		if (this.allowPost) {
-			const res = await request.post(`${config.host}/api/notes/create`, {
-				json: {
-					i: config.i,
-					text: text,
-					renoteId: renote ? renote.id : undefined
-				}
-			});
+			const body = {
+				i: config.i,
+				text: text
+			} as any;
 
-			return res.createdNote;
+			if (renote) {
+				body.renoteId = renote.id;
+			}
+
+			try {
+				const res = await request.post(`${config.host}/api/notes/create`, {
+					json: body
+				});
+
+				return res.createdNote;
+			} catch (e) {
+				console.error(e);
+				return null;
+			}
 		} else {
 			return null;
 		}
