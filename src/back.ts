@@ -20,6 +20,13 @@ function getUserName(user) {
 	return user.name || user.username;
 }
 
+const titles = [
+	'さん', 'サン', 'ｻﾝ', '㌠',
+	'ちゃん', 'チャン', 'ﾁｬﾝ',
+	'君', 'くん', 'クン', 'ｸﾝ',
+	'先生', 'せんせい', 'センセイ', 'ｾﾝｾｲ'
+];
+
 process.on('message', async msg => {
 	// 親プロセスからデータをもらう
 	if (msg.type == '_init_') {
@@ -71,18 +78,7 @@ process.on('message', async msg => {
 			const user = game.user1Id == config.id ? game.user2 : game.user1;
 			const strength = form.find(i => i.id == 'strength').value;
 			const isSettai = strength === 0;
-			const text = msg.body.game.surrendered ? `?[${getUserName(user)}](${config.host}/@${user.username})さんが投了しちゃいました` : isSettai
-				? msg.body.winnerId === null
-					? `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で引き分けました...`
-					: msg.body.winnerId == config.id
-						? `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で勝ってしまいました...`
-						: `?[${getUserName(user)}](${config.host}/@${user.username})さんに接待で負けてあげました♪`
-				: msg.body.winnerId === null
-					? `?[${getUserName(user)}](${config.host}/@${user.username})さんと引き分けました～`
-					: msg.body.winnerId == config.id
-						? `?[${getUserName(user)}](${config.host}/@${user.username})さんに勝ちました♪`
-						: `?[${getUserName(user)}](${config.host}/@${user.username})さんに負けました...`;
-
+			const text = `?[${getUserName(user)}](${config.host}/@${user.username})${titles.some(x => user.username.endsWith(x)) ? '' : 'さん'}${msg.body.game.surrendered ? 'が投了しちゃいました' : msg.body.winnerId ? msg.body.winnerId == config.id ? (isSettai ? 'に接待で勝ってしまいました...' : 'に勝ちました♪') : (isSettai ? 'に接待で負けてあげました♪' : 'に負けました...') : (isSettai ? 'に接待で引き分けました...' : 'と引き分けました～')}`;
 			await request.post(`${config.host}/api/notes/create`, {
 				json: {
 					i: config.i,
