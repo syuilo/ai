@@ -26,6 +26,8 @@ homeStream.addEventListener('open', () => {
 
 homeStream.addEventListener('close', () => {
 	console.log('home stream closed');
+
+	process.exit(1);
 });
 
 homeStream.addEventListener('message', message => {
@@ -127,6 +129,14 @@ function gameStart(game) {
 	// ゲームストリームに接続
 	const gw = new WebSocket(`${wsUrl}/games/reversi-game?i=${config.i}&game=${game.id}`);
 
+	function send(msg) {
+		try {
+			gw.send(JSON.stringify(msg));
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
 	gw.addEventListener('open', () => {
 		console.log('reversi game stream opened');
 
@@ -171,10 +181,10 @@ function gameStart(game) {
 
 		ai.on('message', msg => {
 			if (msg.type == 'put') {
-				gw.send(JSON.stringify({
+				send({
 					type: 'set',
 					pos: msg.pos
-				}));
+				});
 			} else if (msg.type == 'close') {
 				gw.close();
 			}
@@ -189,17 +199,17 @@ function gameStart(game) {
 
 		// フォーム初期化
 		setTimeout(() => {
-			gw.send(JSON.stringify({
+			send({
 				type: 'init-form',
 				body: form
-			}));
+			});
 		}, 1000);
 
 		// どんな設定内容の対局でも受け入れる
 		setTimeout(() => {
-			gw.send(JSON.stringify({
+			send({
 				type: 'accept'
-			}));
+			});
 		}, 2000);
 	});
 
