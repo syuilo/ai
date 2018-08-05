@@ -9,12 +9,9 @@
 import * as request from 'request-promise-native';
 import Reversi, { Color } from 'misskey-reversi';
 
-let game;
-let form;
-
 const config = require('../config.json');
 
-let note;
+const db = {};
 
 function getUserName(user) {
 	return user.name || user.username;
@@ -27,159 +24,189 @@ const titles = [
 	'先生', 'せんせい', 'センセイ', 'ｾﾝｾｲ'
 ];
 
-process.on('message', async msg => {
-	// 親プロセスからデータをもらう
-	if (msg.type == '_init_') {
-		game = msg.game;
-		form = msg.form;
+class Session {
+	private game: any;
+	private form: any;
+	private o: Reversi;
+	private botColor: Color;
+
+	/**
+	 * 各マスの強さ
+	 */
+	private cellWeights;
+
+
+	/**
+	 * 対局が開始したことを知らせた投稿
+	 */
+	private startedNote: any = null;
+
+	private get user(): any {
+		return this.game.user1Id == config.id ? this.game.user2 : this.game.user1;
 	}
 
-	// フォームが更新されたとき
-	if (msg.type == 'update-form') {
-		form.find(i => i.id == msg.body.id).value = msg.body.value;
+	private get userName(): string {
+		return `?[${getUserName(this.user)}](${config.host}/@${this.user.username})${titles.some(x => this.user.username.endsWith(x)) ? '' : 'さん'}`;
 	}
 
-	// ゲームが始まったとき
-	if (msg.type == 'started') {
-		onGameStarted(msg.body);
+	private get strength(): number {
+		return this.form.find(i => i.id == 'strength').value;
+	}
 
-		//#region TLに投稿する
-		if (form.find(i => i.id == 'publish').value) {
-			const game = msg.body;
-			const url = `${config.host}/reversi/${game.id}`;
-			const user = game.user1Id == config.id ? game.user2 : game.user1;
-			const strength = form.find(i => i.id == 'strength').value;
-			const isSettai = strength === 0;
-			const text = isSettai
-				? `?[${getUserName(user)}](${config.host}/@${user.username})${titles.some(x => user.username.endsWith(x)) ? '' : 'さん'}の接待を始めました！`
-				: `対局を?[${getUserName(user)}](${config.host}/@${user.username})${titles.some(x => user.username.endsWith(x)) ? '' : 'さん'}と始めました！ (強さ${strength})`;
+	private get isSettai(): boolean {
+		return this.strength === 0;
+	}
 
-			const res = await request.post(`${config.host}/api/notes/create`, {
-				json: {
-					i: config.i,
-					text: `${text}\n→[観戦する](${url})`
-				}
-			});
+	private get allowPost(): boolean {
+		return this.form.find(i => i.id == 'publish').value;
+	}
 
-			note = res.createdNote;
+	private get url(): string {
+		return `${config.host}/reversi/${this.game.id}`;
+	}
+
+	constructor() {
+		process.on('message', this.onMessage);
+	}
+
+	private onMessage = async (msg: any) => {
+		switch (msg.type) {
+			case '_init_': this.onInit(msg); break;
+			case 'update-form': this.onUpdateForn(msg); break;
+			case 'started': this.onStarted(msg); break;
+			case 'ended': this.onEnded(msg); break;
+			case 'set': this.onSet(msg); break;
 		}
-		//#endregion
 	}
 
-	// ゲームが終了したとき
-	if (msg.type == 'ended') {
+	// 親プロセスからデータをもらう
+	private onInit = (msg: any) => {
+		this.game = msg.game;
+		this.form = msg.form;
+	}
+
+	/**
+	 * フォームが更新されたとき
+	 */
+	private onUpdateForn = (msg: any) => {
+		this.form.find(i => i.id == msg.body.id).value = msg.body.value;
+	}
+
+	/**
+	 * 対局が始まったとき
+	 */
+	private onStarted = (msg: any) =>  {
+		this.game = msg.body;
+
+		// TLに投稿する
+		this.postGameStarted().then(note => {
+			this.startedNote = note;
+		});
+
+		// リバーシエンジン初期化
+		this.o = new Reversi(this.game.settings.map, {
+			isLlotheo: this.game.settings.isLlotheo,
+			canPutEverywhere: this.game.settings.canPutEverywhere,
+			loopedBoard: this.game.settings.loopedBoard
+		});
+
+		// 各マスの価値を計算しておく
+		this.cellWeights = this.o.map.map((pix, i) => {
+			if (pix == 'null') return 0;
+			const [x, y] = this.o.transformPosToXy(i);
+			let count = 0;
+			const get = (x, y) => {
+				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 'null';
+				return this.o.mapDataGet(this.o.transformXyToPos(x, y));
+			};
+
+			if (get(x    , y - 1) == 'null') count++;
+			if (get(x + 1, y - 1) == 'null') count++;
+			if (get(x + 1, y    ) == 'null') count++;
+			if (get(x + 1, y + 1) == 'null') count++;
+			if (get(x    , y + 1) == 'null') count++;
+			if (get(x - 1, y + 1) == 'null') count++;
+			if (get(x - 1, y    ) == 'null') count++;
+			if (get(x - 1, y - 1) == 'null') count++;
+			//return Math.pow(count, 3);
+			return count >= 4 ? 1 : 0;
+		});
+
+		this.botColor = this.game.user1Id == config.id && this.game.black == 1 || this.game.user2Id == config.id && this.game.black == 2;
+
+		if (this.botColor) {
+			this.think();
+		}
+	}
+
+	/**
+	 * 対局が終わったとき
+	 */
+	private onEnded = (msg: any) =>  {
 		// ストリームから切断
 		process.send({
 			type: 'close'
 		});
 
-		//#region TLに投稿する
-		if (form.find(i => i.id == 'publish').value) {
-			const user = game.user1Id == config.id ? game.user2 : game.user1;
-			const strength = form.find(i => i.id == 'strength').value;
-			const isSettai = strength === 0;
-			const text = `?[${getUserName(user)}](${config.host}/@${user.username})${titles.some(x => user.username.endsWith(x)) ? '' : 'さん'}${msg.body.game.surrendered ? 'が投了しちゃいました' : msg.body.winnerId ? msg.body.winnerId == config.id ? (isSettai ? 'に接待で勝ってしまいました...' : 'に勝ちました♪') : (isSettai ? 'に接待で負けてあげました♪' : 'に負けました...') : (isSettai ? 'に接待で引き分けました...' : 'と引き分けました～')}`;
-			await request.post(`${config.host}/api/notes/create`, {
-				json: {
-					i: config.i,
-					renoteId: note ? note.id : null,
-					text: text
+		let text: string;
+
+		if (msg.body.game.surrendered) {
+			if (this.isSettai) {
+				text = `(${this.userName}を接待していたら投了されちゃいました... ごめんなさい)`;
+			} else {
+				text = `${this.userName}が投了しちゃいました`;
+			}
+		} else if (msg.body.winnerId) {
+			if (msg.body.winnerId == config.id) {
+				if (this.isSettai) {
+					text = `${this.userName}に接待で勝ってしまいました...`;
+				} else {
+					text = `${this.userName}に勝ちました♪`;
 				}
-			});
+			} else {
+				if (this.isSettai) {
+					text = `(${this.userName}に接待で負けてあげました...♪)`;
+				} else {
+					text = `${this.userName}に負けました...`;
+				}
+			}
+		} else {
+			if (this.isSettai) {
+				text = `(${this.userName}に接待で引き分けました...)`;
+			} else {
+				text = `${this.userName}と引き分けました～`;
+			}
 		}
-		//#endregion
+
+		this.post(text, this.startedNote ? this.startedNote.id : null);
 
 		process.exit();
 	}
 
-	// 打たれたとき
-	if (msg.type == 'set') {
-		onSet(msg.body);
+	/**
+	 * 打たれたとき
+	 */
+	private onSet = (msg: any) =>  {
+		this.o.put(msg.body.color, msg.body.pos);
+
+		if (msg.body.next === this.botColor) {
+			this.think();
+		}
 	}
-});
-
-let o: Reversi;
-let botColor: Color;
-
-// 各マスの強さ
-let cellWeights;
-
-/**
- * ゲーム開始時
- * @param g ゲーム情報
- */
-function onGameStarted(g) {
-	game = g;
-
-	// リバーシエンジン初期化
-	o = new Reversi(game.settings.map, {
-		isLlotheo: game.settings.isLlotheo,
-		canPutEverywhere: game.settings.canPutEverywhere,
-		loopedBoard: game.settings.loopedBoard
-	});
-
-	// 各マスの価値を計算しておく
-	cellWeights = o.map.map((pix, i) => {
-		if (pix == 'null') return 0;
-		const [x, y] = o.transformPosToXy(i);
-		let count = 0;
-		const get = (x, y) => {
-			if (x < 0 || y < 0 || x >= o.mapWidth || y >= o.mapHeight) return 'null';
-			return o.mapDataGet(o.transformXyToPos(x, y));
-		};
-
-		if (get(x    , y - 1) == 'null') count++;
-		if (get(x + 1, y - 1) == 'null') count++;
-		if (get(x + 1, y    ) == 'null') count++;
-		if (get(x + 1, y + 1) == 'null') count++;
-		if (get(x    , y + 1) == 'null') count++;
-		if (get(x - 1, y + 1) == 'null') count++;
-		if (get(x - 1, y    ) == 'null') count++;
-		if (get(x - 1, y - 1) == 'null') count++;
-		//return Math.pow(count, 3);
-		return count >= 4 ? 1 : 0;
-	});
-
-	botColor = game.user1Id == config.id && game.black == 1 || game.user2Id == config.id && game.black == 2;
-
-	if (botColor) {
-		think();
-	}
-}
-
-function onSet(x) {
-	o.put(x.color, x.pos);
-
-	if (x.next === botColor) {
-		think();
-	}
-}
-
-const db = {};
-
-function think() {
-	console.log('Thinking...');
-	console.time('think');
-
-	const strength = form.find(i => i.id == 'strength').value;
-	const isSettai = strength === 0;
-
-	// 接待モードのときは、全力(5手先読みくらい)で負けるようにする
-	const maxDepth = isSettai ? 5 : strength;
 
 	/**
 	 * Botにとってある局面がどれだけ有利か取得する
 	 */
-	function staticEval() {
-		let score = o.canPutSomewhere(botColor).length;
+	private staticEval = () => {
+		let score = this.o.canPutSomewhere(this.botColor).length;
 
-		cellWeights.forEach((weight, i) => {
+		this.cellWeights.forEach((weight, i) => {
 			// 係数
 			const coefficient = 30;
 			weight = weight * coefficient;
 
-			const stone = o.board[i];
-			if (stone === botColor) {
+			const stone = this.o.board[i];
+			if (stone === this.botColor) {
 				// TODO: 価値のあるマスに設置されている自分の石に縦か横に接するマスは価値があると判断する
 				score += weight;
 			} else if (stone !== null) {
@@ -188,126 +215,167 @@ function think() {
 		});
 
 		// ロセオならスコアを反転
-		if (game.settings.isLlotheo) score = -score;
+		if (this.game.settings.isLlotheo) score = -score;
 
 		// 接待ならスコアを反転
-		if (isSettai) score = -score;
+		if (this.isSettai) score = -score;
 
 		return score;
 	}
 
-	/**
-	 * αβ法での探索
-	 */
-	const dive = (pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
-		// 試し打ち
-		o.put(o.turn, pos);
+	private think = () => {
+		console.log('Thinking...');
+		console.time('think');
 
-		const key = o.board.toString();
-		let cache = db[key];
-		if (cache) {
-			if (alpha >= cache.upper) {
-				o.undo();
-				return cache.upper;
-			}
-			if (beta <= cache.lower) {
-				o.undo();
-				return cache.lower;
-			}
-			alpha = Math.max(alpha, cache.lower);
-			beta = Math.min(beta, cache.upper);
-		} else {
-			cache = {
-				upper: Infinity,
-				lower: -Infinity
-			};
-		}
+		// 接待モードのときは、全力(5手先読みくらい)で負けるようにする
+		const maxDepth = this.isSettai ? 5 : this.strength;
 
-		const isBotTurn = o.turn === botColor;
+		/**
+		 * αβ法での探索
+		 */
+		const dive = (pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
+			// 試し打ち
+			this.o.put(this.o.turn, pos);
 
-		// 勝った
-		if (o.turn === null) {
-			const winner = o.winner;
-
-			// 勝つことによる基本スコア
-			const base = 10000;
-
-			let score;
-
-			if (game.settings.isLlotheo) {
-				// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
-				score = o.winner ? base - (o.blackCount * 100) : base - (o.whiteCount * 100);
-			} else {
-				// 勝ちは勝ちでも、より相手の石を少なくした方が美しい勝ちだと判定する
-				score = o.winner ? base + (o.blackCount * 100) : base + (o.whiteCount * 100);
-			}
-
-			// 巻き戻し
-			o.undo();
-
-			// 接待なら自分が負けた方が高スコア
-			return isSettai
-				? winner !== botColor ? score : -score
-				: winner === botColor ? score : -score;
-		}
-
-		if (depth === maxDepth) {
-			// 静的に評価
-			const score = staticEval();
-
-			// 巻き戻し
-			o.undo();
-
-			return score;
-		} else {
-			const cans = o.canPutSomewhere(o.turn);
-
-			let value = isBotTurn ? -Infinity : Infinity;
-			let a = alpha;
-			let b = beta;
-
-			// 次のターンのプレイヤーにとって最も良い手を取得
-			for (const p of cans) {
-				if (isBotTurn) {
-					const score = dive(p, a, beta, depth + 1);
-					value = Math.max(value, score);
-					a = Math.max(a, value);
-					if (value >= beta) break;
-				} else {
-					const score = dive(p, alpha, b, depth + 1);
-					value = Math.min(value, score);
-					b = Math.min(b, value);
-					if (value <= alpha) break;
+			const key = this.o.board.toString();
+			let cache = db[key];
+			if (cache) {
+				if (alpha >= cache.upper) {
+					this.o.undo();
+					return cache.upper;
 				}
-			}
-
-			// 巻き戻し
-			o.undo();
-
-			if (value <= alpha) {
-				cache.upper = value;
-			} else if (value >= beta) {
-				cache.lower = value;
+				if (beta <= cache.lower) {
+					this.o.undo();
+					return cache.lower;
+				}
+				alpha = Math.max(alpha, cache.lower);
+				beta = Math.min(beta, cache.upper);
 			} else {
-				cache.upper = value;
-				cache.lower = value;
+				cache = {
+					upper: Infinity,
+					lower: -Infinity
+				};
 			}
 
-			db[key] = cache;
+			const isBotTurn = this.o.turn === this.botColor;
 
-			return value;
+			// 勝った
+			if (this.o.turn === null) {
+				const winner = this.o.winner;
+
+				// 勝つことによる基本スコア
+				const base = 10000;
+
+				let score;
+
+				if (this.game.settings.isLlotheo) {
+					// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
+					score = this.o.winner ? base - (this.o.blackCount * 100) : base - (this.o.whiteCount * 100);
+				} else {
+					// 勝ちは勝ちでも、より相手の石を少なくした方が美しい勝ちだと判定する
+					score = this.o.winner ? base + (this.o.blackCount * 100) : base + (this.o.whiteCount * 100);
+				}
+
+				// 巻き戻し
+				this.o.undo();
+
+				// 接待なら自分が負けた方が高スコア
+				return this.isSettai
+					? winner !== this.botColor ? score : -score
+					: winner === this.botColor ? score : -score;
+			}
+
+			if (depth === maxDepth) {
+				// 静的に評価
+				const score = this.staticEval();
+
+				// 巻き戻し
+				this.o.undo();
+
+				return score;
+			} else {
+				const cans = this.o.canPutSomewhere(this.o.turn);
+
+				let value = isBotTurn ? -Infinity : Infinity;
+				let a = alpha;
+				let b = beta;
+
+				// 次のターンのプレイヤーにとって最も良い手を取得
+				for (const p of cans) {
+					if (isBotTurn) {
+						const score = dive(p, a, beta, depth + 1);
+						value = Math.max(value, score);
+						a = Math.max(a, value);
+						if (value >= beta) break;
+					} else {
+						const score = dive(p, alpha, b, depth + 1);
+						value = Math.min(value, score);
+						b = Math.min(b, value);
+						if (value <= alpha) break;
+					}
+				}
+
+				// 巻き戻し
+				this.o.undo();
+
+				if (value <= alpha) {
+					cache.upper = value;
+				} else if (value >= beta) {
+					cache.lower = value;
+				} else {
+					cache.upper = value;
+					cache.lower = value;
+				}
+
+				db[key] = cache;
+
+				return value;
+			}
+		};
+
+		const cans = this.o.canPutSomewhere(this.botColor);
+		const scores = cans.map(p => dive(p));
+		const pos = cans[scores.indexOf(Math.max(...scores))];
+
+		console.log('Thinked:', pos);
+		console.timeEnd('think');
+
+		process.send({
+			type: 'put',
+			pos
+		});
+	}
+
+	/**
+	 * 対局が始まったことをMisskeyに投稿します
+	 */
+	private postGameStarted = async () => {
+		const text = this.isSettai
+			? `${this.userName}の接待を始めました！`
+			: `対局を${this.userName}と始めました！ (強さ${this.strength})`;
+
+		return await this.post(`${text}\n→[観戦する](${this.url})`);
+	}
+
+	/**
+	 * Misskeyに投稿します
+	 * @param text 投稿内容
+	 */
+	private post = async (text: string, renote?: any) => {
+		if (this.allowPost) {
+			const res = await request.post(`${config.host}/api/notes/create`, {
+				json: {
+					i: config.i,
+					text: text,
+					renoteId: renote ? renote.id : null
+				}
+			});
+
+			return res.createdNote;
+		} else {
+			return null;
 		}
-	};
-
-	const cans = o.canPutSomewhere(botColor);
-	const scores = cans.map(p => dive(p));
-	const pos = cans[scores.indexOf(Math.max(...scores))];
-
-	console.log('Thinked:', pos);
-	console.timeEnd('think');
-
-	process.send({
-		type: 'put',
-		pos
-	});
+	}
 }
+
+new Session();

@@ -3,6 +3,7 @@
 		"noEmitOnError": true,
 		"noImplicitAny": false,
 		"noImplicitReturns": true,
+		"noImplicitThis": true,
 		"noFallthroughCasesInSwitch": true,
 		"experimentalDecorators": true,
 		"sourceMap": false,
