@@ -51,8 +51,8 @@ process.on('message', async msg => {
 			const strength = form.find(i => i.id == 'strength').value;
 			const isSettai = strength === 0;
 			const text = isSettai
-				? `?[${getUserName(user)}](${config.host}/@${user.username})さんの接待を始めました！`
-				: `対局を?[${getUserName(user)}](${config.host}/@${user.username})さんと始めました！ (強さ${strength})`;
+				? `?[${getUserName(user)}](${config.host}/@${user.username})${titles.some(x => user.username.endsWith(x)) ? '' : 'さん'}の接待を始めました！`
+				: `対局を?[${getUserName(user)}](${config.host}/@${user.username})${titles.some(x => user.username.endsWith(x)) ? '' : 'さん'}と始めました！ (強さ${strength})`;
 
 			const res = await request.post(`${config.host}/api/notes/create`, {
 				json: {
