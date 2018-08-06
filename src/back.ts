@@ -113,70 +113,85 @@ class Session {
 
 		//#region 各マスの価値を計算しておく
 
-		//#region 隅
-		this.cellWeights = this.o.map.map((pix, i) => {
-			if (pix == 'null') return 0;
-			const [x, y] = this.o.transformPosToXy(i);
-			let count = 0;
-			const get = (x, y) => {
-				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 'null';
-				return this.o.mapDataGet(this.o.transformXyToPos(x, y));
-			};
+		// 標準的な 8*8 のマップなら予め定義した価値マップを使用
+		if (this.o.mapWidth == 8 && this.o.mapHeight == 8 && !this.o.map.some(p => p == 'null')) {
+			this.cellWeights = [
+				1   , -0.4, 0   , -0.1, -0.1, 0   , -0.4, 1   ,
+				-0.4, -0.5, -0.2, -0.2, -0.2, -0.2, -0.5, -0.4,
+				0   , -0.2, 0   , -0.1, -0.1, 0   , -0.2, 0   ,
+				-0.1, -0.2, -0.1, -0.1, -0.1, -0.1, -0.2, -0.1,
+				-0.1, -0.2, -0.1, -0.1, -0.1, -0.1, -0.2, -0.1,
+				0   , -0.2, 0   , -0.1, -0.1, 0   , -0.2, 0   ,
+				-0.4, -0.5, -0.2, -0.2, -0.2, -0.2, -0.5, -0.4,
+				1   , -0.4, 0   , -0.1, -0.1, 0   , -0.4, 1
+			];
+		} else {
+			//#region 隅
+			this.cellWeights = this.o.map.map((pix, i) => {
+				if (pix == 'null') return 0;
+				const [x, y] = this.o.transformPosToXy(i);
+				let count = 0;
+				const get = (x, y) => {
+					if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 'null';
+					return this.o.mapDataGet(this.o.transformXyToPos(x, y));
+				};
 
-			const isNotSumi = (
-				// -
-				//  +
-				//   -
-				(get(x - 1, y - 1) == 'empty' && get(x + 1, y + 1) == 'empty') ||
+				const isNotSumi = (
+					// -
+					//  +
+					//   -
+					(get(x - 1, y - 1) == 'empty' && get(x + 1, y + 1) == 'empty') ||
 
-				//  -
-				//  +
-				//  -
-				(get(x, y - 1) == 'empty' && get(x, y + 1) == 'empty') ||
+					//  -
+					//  +
+					//  -
+					(get(x, y - 1) == 'empty' && get(x, y + 1) == 'empty') ||
 
-				//   -
-				//  +
-				// -
-				(get(x + 1, y - 1) == 'empty' && get(x - 1, y + 1) == 'empty') ||
+					//   -
+					//  +
+					// -
+					(get(x + 1, y - 1) == 'empty' && get(x - 1, y + 1) == 'empty') ||
 
-				//
-				// -+-
-				//
-				(get(x - 1, y) == 'empty' && get(x + 1, y) == 'empty')
-			)
+					//
+					// -+-
+					//
+					(get(x - 1, y) == 'empty' && get(x + 1, y) == 'empty')
+				)
 
-			const isSumi = !isNotSumi;
+				const isSumi = !isNotSumi;
 
-			return isSumi ? 1 : 0;
-		});
-		//#endregion
+				return isSumi ? 1 : 0;
+			});
+			//#endregion
 
-		//#region 隅の隣は危険
-		this.cellWeights.forEach((cell, i) => {
-			const [x, y] = this.o.transformPosToXy(i);
+			//#region 隅の隣は危険
+			this.cellWeights.forEach((cell, i) => {
+				const [x, y] = this.o.transformPosToXy(i);
 
-			if (cell === 1) return;
-			if (this.o.mapDataGet(this.o.transformXyToPos(x, y)) == 'null') return;
+				if (cell === 1) return;
+				if (this.o.mapDataGet(this.o.transformXyToPos(x, y)) == 'null') return;
 
-			const get = (x, y) => {
-				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 0;
-				return this.cellWeights[this.o.transformXyToPos(x, y)];
-			};
+				const get = (x, y) => {
+					if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 0;
+					return this.cellWeights[this.o.transformXyToPos(x, y)];
+				};
 
-			const isSumiNear = (
-				(get(x - 1, y - 1) === 1) || // 左上
-				(get(x    , y - 1) === 1) || // 上
-				(get(x + 1, y - 1) === 1) || // 右上
-				(get(x + 1, y    ) === 1) || // 右
-				(get(x + 1, y + 1) === 1) || // 右下
-				(get(x    , y + 1) === 1) || // 下
-				(get(x - 1, y + 1) === 1) || // 左下
-				(get(x - 1, y    ) === 1)    // 左
-			)
+				const isSumiNear = (
+					(get(x - 1, y - 1) === 1) || // 左上
+					(get(x    , y - 1) === 1) || // 上
+					(get(x + 1, y - 1) === 1) || // 右上
+					(get(x + 1, y    ) === 1) || // 右
+					(get(x + 1, y + 1) === 1) || // 右下
+					(get(x    , y + 1) === 1) || // 下
+					(get(x - 1, y + 1) === 1) || // 左下
+					(get(x - 1, y    ) === 1)    // 左
+				)
 
-			if (isSumiNear) this.cellWeights[i] = -0.5;
-		});
-		//#endregion
+				if (isSumiNear) this.cellWeights[i] = -0.5;
+			});
+			//#endregion
+
+		}
 
 		//#endregion
 
@@ -388,10 +403,12 @@ class Session {
 		console.log('Thinked:', pos);
 		console.timeEnd('think');
 
-		process.send({
-			type: 'put',
-			pos
-		});
+		setTimeout(() => {
+			process.send({
+				type: 'put',
+				pos
+			});
+		}, 500);
 	}
 
 	/**
