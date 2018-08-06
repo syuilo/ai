@@ -31,9 +31,9 @@ class Session {
 	private botColor: Color;
 
 	/**
-	 * 各マスの強さ
+	 * 各マスの強さ (-1.0 ~ 1.0)
 	 */
-	private cellWeights;
+	private cellWeights: number[];
 
 
 	/**
@@ -111,7 +111,9 @@ class Session {
 			loopedBoard: this.game.settings.loopedBoard
 		});
 
-		// 各マスの価値を計算しておく
+		//#region 各マスの価値を計算しておく
+
+		//#region 隅
 		this.cellWeights = this.o.map.map((pix, i) => {
 			if (pix == 'null') return 0;
 			const [x, y] = this.o.transformPosToXy(i);
@@ -121,17 +123,62 @@ class Session {
 				return this.o.mapDataGet(this.o.transformXyToPos(x, y));
 			};
 
-			if (get(x    , y - 1) == 'null') count++;
-			if (get(x + 1, y - 1) == 'null') count++;
-			if (get(x + 1, y    ) == 'null') count++;
-			if (get(x + 1, y + 1) == 'null') count++;
-			if (get(x    , y + 1) == 'null') count++;
-			if (get(x - 1, y + 1) == 'null') count++;
-			if (get(x - 1, y    ) == 'null') count++;
-			if (get(x - 1, y - 1) == 'null') count++;
-			//return Math.pow(count, 3);
-			return count >= 4 ? 1 : 0;
+			const isNotSumi = (
+				// -
+				//  +
+				//   -
+				(get(x - 1, y - 1) == 'empty' && get(x + 1, y + 1) == 'empty') ||
+
+				//  -
+				//  +
+				//  -
+				(get(x, y - 1) == 'empty' && get(x, y + 1) == 'empty') ||
+
+				//   -
+				//  +
+				// -
+				(get(x + 1, y - 1) == 'empty' && get(x - 1, y + 1) == 'empty') ||
+
+				//
+				// -+-
+				//
+				(get(x - 1, y) == 'empty' && get(x + 1, y) == 'empty')
+			)
+
+			const isSumi = !isNotSumi;
+
+			return isSumi ? 1 : 0;
 		});
+		//#endregion
+
+		//#region 隅の隣は危険
+		this.cellWeights.forEach((cell, i) => {
+			const [x, y] = this.o.transformPosToXy(i);
+
+			if (cell === 1) return;
+			if (this.o.mapDataGet(this.o.transformXyToPos(x, y)) == 'null') return;
+
+			const get = (x, y) => {
+				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 0;
+				return this.cellWeights[this.o.transformXyToPos(x, y)];
+			};
+
+			const isSumiNear = (
+				(get(x - 1, y - 1) === 1) || // 左上
+				(get(x    , y - 1) === 1) || // 上
+				(get(x + 1, y - 1) === 1) || // 右上
+				(get(x + 1, y    ) === 1) || // 右
+				(get(x + 1, y + 1) === 1) || // 右下
+				(get(x    , y + 1) === 1) || // 下
+				(get(x - 1, y + 1) === 1) || // 左下
+				(get(x - 1, y    ) === 1)    // 左
+			)
+
+			if (isSumiNear) this.cellWeights[i] = -0.5;
+		});
+		//#endregion
+
+		//#endregion
 
 		this.botColor = this.game.user1Id == config.id && this.game.black == 1 || this.game.user2Id == config.id && this.game.black == 2;
 
