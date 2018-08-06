@@ -46,7 +46,8 @@ class Session {
 	}
 
 	private get userName(): string {
-		return `?[${getUserName(this.user)}](${config.host}/@${this.user.username})${titles.some(x => this.user.username.endsWith(x)) ? '' : 'さん'}`;
+		const name = getUserName(this.user);
+		return `?[${name}](${config.host}/@${this.user.username})${titles.some(x => name.endsWith(x)) ? '' : 'さん'}`;
 	}
 
 	private get strength(): number {
