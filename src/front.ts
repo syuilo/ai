@@ -156,13 +156,13 @@ function gameStart(game) {
 				value: 0
 			}, {
 				label: '弱',
-				value: 1
-			}, {
-				label: '中',
 				value: 2
 			}, {
-				label: '強',
+				label: '中',
 				value: 3
+			}, {
+				label: '強',
+				value: 4
 			}, {
 				label: '最強',
 				value: 5
