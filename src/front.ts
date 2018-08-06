@@ -150,7 +150,7 @@ function gameStart(game) {
 			id: 'strength',
 			type: 'radio',
 			label: '強さ',
-			value: 2,
+			value: 3,
 			items: [{
 				label: '接待',
 				value: 0
