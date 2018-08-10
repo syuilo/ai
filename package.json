@@ -8,6 +8,7 @@
     "@types/node": "10.0.5",
     "@types/ws": "5.1.2",
     "misskey-reversi": "0.0.5",
+    "reconnecting-websocket": "4.0.0-rc5",
     "request": "2.87.0",
     "request-promise-native": "1.0.5",
     "ts-node": "6.0.3",
