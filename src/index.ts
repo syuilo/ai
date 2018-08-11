@@ -123,7 +123,5 @@ const ai = new 藍();
 const serverModule = new ServerModule();
 ai.install(serverModule);
 
-if (config.reversiEnabled) {
-	const reversiModule = new ReversiModule();
-	ai.install(reversiModule);
-}
+const reversiModule = new ReversiModule();
+ai.install(reversiModule);
