@@ -100,7 +100,7 @@ export default class 藍 {
 	}
 
 	public post = (param: any) => {
-		request.post('notes/create', param);
+		this.api('notes/create', param);
 	}
 
 	public sendMessage = (userId: any, param: any) => {
