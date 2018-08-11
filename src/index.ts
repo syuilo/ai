@@ -1,13 +1,14 @@
+// AI CORE
+
 import * as WebSocket from 'ws';
 import * as request from 'request-promise-native';
-const ReconnectingWebSocket = require('../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
-
 import serifs from './serifs';
 import config from './config';
 import IModule from './module';
 import MessageLike from './message-like';
-
 import ReversiModule from './modules/reversi';
+import ServerModule from './modules/server';
+const ReconnectingWebSocket = require('../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
 
 /**
  * 藍
@@ -45,6 +46,7 @@ export default class 藍 {
 	}
 
 	public install = (module: IModule) => {
+		module.install(this);
 		this.modules.push(module);
 	}
 
@@ -119,6 +121,9 @@ export default class 藍 {
 }
 
 const ai = new 藍();
+
+const serverModule = new ServerModule();
+ai.install(serverModule);
 
 if (config.reversiEnabled) {
 	const reversiModule = new ReversiModule();

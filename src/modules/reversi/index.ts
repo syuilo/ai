@@ -1,12 +1,11 @@
 import * as childProcess from 'child_process';
-
 const ReconnectingWebSocket = require('../../../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
-
 import 藍 from '../..';
 import IModule from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
 import MessageLike from '../../message-like';
+import * as WebSocket from 'ws';
 
 export default class ReversiModule implements IModule {
 	private ai: 藍;
@@ -55,7 +54,6 @@ export default class ReversiModule implements IModule {
 			return false;
 		}
 	}
-
 
 	private onReversiConnectionMessage = (msg: any) => {
 		switch (msg.type) {
