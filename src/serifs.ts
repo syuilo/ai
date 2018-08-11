@@ -20,6 +20,11 @@ export default {
 	REBOOT: 'では、まもなくサーバーを再起動します！',
 	REBOOT_DETAIL: '(私も再起動に巻き込まれちゃうので、サーバーの再起動が完了したことのお知らせはできません...)',
 
+	REBOOT_CANCEL_REQUESTED_ACCEPT: 'わかりました。再起動の予定を取り消しました！',
+	REBOOT_CANCEL_REQUESTED_REJECT: 'ごめんなさい、再起動の取り消しは管理者のみが行えます...',
+
+	REBOOT_CANCELED: '再起動が取り消されました。お騒がせしました',
+
 	/**
 	 * 絵文字生成
 	 */

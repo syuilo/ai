@@ -9,6 +9,10 @@ export default class MessageLike {
 		return this.messageOrNote.id;
 	}
 
+	public get user() {
+		return this.messageOrNote.user;
+	}
+
 	public get userId() {
 		return this.messageOrNote.userId;
 	}

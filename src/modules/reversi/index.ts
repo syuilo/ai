@@ -38,7 +38,7 @@ export default class ReversiModule implements IModule {
 	}
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.text && msg.text.indexOf('リバーシ') > -1) {
+		if (msg.text && msg.text.includes('リバーシ')) {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.REVERSI_OK);
 

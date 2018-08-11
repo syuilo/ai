@@ -4,14 +4,15 @@ import 藍 from '../../ai';
 import IModule from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
+import MessageLike from '../../message-like';
 const ReconnectingWebSocket = require('../../../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
 
 export default class ServerModule implements IModule {
 	private ai: 藍;
 	private connection?: any;
-	private rebootScheduled = false;
-	private rebootTimer: any;
-	private rebootTimerSub: any;
+	private preventScheduleReboot = false;
+	private rebootTimer: NodeJS.Timer;
+	private rebootTimerSub: NodeJS.Timer;
 
 	public install = (ai: 藍) => {
 		this.ai = ai;
@@ -59,9 +60,9 @@ export default class ServerModule implements IModule {
 	}
 
 	private scheduleReboot = () => {
-		if (this.rebootScheduled) return;
+		if (this.preventScheduleReboot) return;
 
-		this.rebootScheduled = true;
+		this.preventScheduleReboot = true;
 
 		this.ai.post({
 			text: serifs.REBOOT_SCHEDULED
@@ -77,5 +78,29 @@ export default class ServerModule implements IModule {
 				text: serifs.REBOOT_DETAIL
 			});
 		}, 1000 * 50);
+	}
+
+	public onMention = (msg: MessageLike) => {
+		if (msg.text && msg.text.includes('再起動しないで')) {
+			if (msg.user.isAdmin) {
+				msg.reply(serifs.REBOOT_CANCEL_REQUESTED_ACCEPT);
+
+				this.ai.post({
+					text: serifs.REBOOT_CANCELED
+				});
+
+				clearTimeout(this.rebootTimer);
+				clearTimeout(this.rebootTimerSub);
+
+				setTimeout(() => {
+					this.preventScheduleReboot = false;
+				}, 1000 * 60 * 3);
+			} else {
+				msg.reply(serifs.REBOOT_CANCEL_REQUESTED_REJECT);
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

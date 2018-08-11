@@ -28,7 +28,7 @@ export default class EmojiModule implements IModule {
 	public install = (ai: 藍) => { }
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.text && msg.text.indexOf('占') > -1) {
+		if (msg.text && msg.text.includes('占')) {
 			const date = new Date();
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}@${msg.userId}`;
 			const rng = seedrandom(seed);
