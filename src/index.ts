@@ -104,7 +104,7 @@ export default class 藍 {
 	}
 
 	public sendMessage = (userId: any, param: any) => {
-		this.api('messages/create', Object.assign({
+		this.api('messaging/messages/create', Object.assign({
 			userId: userId,
 		}, param));
 	}
