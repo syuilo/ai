@@ -87,12 +87,12 @@ export default class 藍 {
 		setTimeout(() => {
 			if (msg.isMessage) {
 				// 既読にする
-				this.api(`${config.apiUrl}/messaging/messages/read`, {
+				this.api('messaging/messages/read', {
 					messageId: msg.id,
 				});
 			} else {
 				// リアクションする
-				this.api(`${config.apiUrl}/notes/reactions/create`, {
+				this.api('notes/reactions/create', {
 					noteId: msg.id,
 					reaction: 'love'
 				});
