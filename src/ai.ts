@@ -84,18 +84,20 @@ export default class 藍 {
 	private onMention = (msg: MessageLike) => {
 		console.log(`mention received: ${msg.id}`);
 
-		// リアクションする
-		if (!msg.isMessage) {
-			setTimeout(() => {
-				request.post(`${config.apiUrl}/notes/reactions/create`, {
-					json: {
-						i: config.i,
-						noteId: msg.id,
-						reaction: 'love'
-					}
+		setTimeout(() => {
+			if (msg.isMessage) {
+				// 既読にする
+				this.api(`${config.apiUrl}/messaging/messages/read`, {
+					messageId: msg.id,
 				});
-			}, 1000);
-		}
+			} else {
+				// リアクションする
+				this.api(`${config.apiUrl}/notes/reactions/create`, {
+					noteId: msg.id,
+					reaction: 'love'
+				});
+			}
+		}, 1000);
 
 		this.modules.filter(m => m.hasOwnProperty('onMention')).some(m => {
 			return m.onMention(msg);
