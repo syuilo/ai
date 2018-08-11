@@ -1,7 +1,6 @@
 type Config = {
 	host: string;
 	i: string;
-	id: string;
 	wsUrl: string;
 	apiUrl: string;
 	reversiEnabled: boolean;

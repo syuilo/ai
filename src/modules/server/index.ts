@@ -1,6 +1,6 @@
 import * as childProcess from 'child_process';
 import * as WebSocket from 'ws';
-import 藍 from '../..';
+import 藍 from '../../ai';
 import IModule from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';

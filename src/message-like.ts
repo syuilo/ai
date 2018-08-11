@@ -1,4 +1,4 @@
-import 藍 from '.';
+import 藍 from './ai';
 
 export default class MessageLike {
 	private ai: 藍;

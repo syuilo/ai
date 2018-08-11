@@ -1,6 +1,6 @@
 import * as childProcess from 'child_process';
 const ReconnectingWebSocket = require('../../../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
-import 藍 from '../..';
+import 藍 from '../../ai';
 import IModule from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';

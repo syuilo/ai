@@ -1,4 +1,4 @@
-import 藍 from '.';
+import 藍 from './ai';
 import MessageLike from './message-like';
 
 export default interface IModule {

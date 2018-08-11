@@ -1,13 +1,15 @@
 {
   "name": "ai",
-  "main": "./built/front.js",
+  "main": "./built/index.js",
   "scripts": {
     "build": "tsc"
   },
   "dependencies": {
     "@types/node": "10.0.5",
+    "@types/promise-retry": "1.1.2",
     "@types/ws": "5.1.2",
     "misskey-reversi": "0.0.5",
+    "promise-retry": "1.1.1",
     "reconnecting-websocket": "4.0.0-rc5",
     "request": "2.87.0",
     "request-promise-native": "1.0.5",
