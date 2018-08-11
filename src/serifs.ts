@@ -25,4 +25,5 @@ export default {
 	 */
 	EMOJI_SUGGEST: 'こんなのはどうですか？→$',
 
+	FORTUNE_CW: '私が今日のあなたの運勢を占いました...'
 };

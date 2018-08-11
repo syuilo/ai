@@ -23,7 +23,7 @@ export default class MessageLike {
 		this.isMessage = isMessage;
 	}
 
-	public reply = (text: string) => {
+	public reply = (text: string, cw?: string) => {
 		console.log(`sending reply of ${this.id} ...`);
 
 		setTimeout(() => {
@@ -34,7 +34,8 @@ export default class MessageLike {
 			} else {
 				this.ai.post({
 					replyId: this.messageOrNote.id,
-					text: text
+					text: text,
+					cw: cw
 				});
 			}
 		}, 2000);
