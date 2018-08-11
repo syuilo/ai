@@ -79,6 +79,8 @@ export default class 藍 {
 	}
 
 	private onMention = (msg: MessageLike) => {
+		console.log(`mention received: ${msg.id}`);
+
 		// リアクションする
 		if (!msg.isMessage) {
 			setTimeout(() => {
@@ -98,17 +100,13 @@ export default class 藍 {
 	}
 
 	public post = (param: any) => {
-		setTimeout(() => {
-			request.post('notes/create', param);
-		}, 2000);
+		request.post('notes/create', param);
 	}
 
 	public sendMessage = (userId: any, param: any) => {
-		setTimeout(() => {
-			this.api('messages/create', Object.assign({
-				userId: userId,
-			}, param));
-		}, 2000);
+		this.api('messages/create', Object.assign({
+			userId: userId,
+		}, param));
 	}
 
 	public api = (endpoint: string, param) => {

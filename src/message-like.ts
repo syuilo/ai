@@ -24,6 +24,8 @@ export default class MessageLike {
 	}
 
 	public reply = (text: string) => {
+		console.log(`sending reply of ${this.id} ...`);
+
 		setTimeout(() => {
 			if (this.isMessage) {
 				this.ai.sendMessage(this.messageOrNote.userId, {
