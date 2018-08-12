@@ -62,7 +62,7 @@ export default class ServerModule implements IModule {
 
 		const cpuPercentages = this.statsLogs.map(s => s.cpu_usage * 100);
 		const cpuPercentage = average(cpuPercentages);
-		if (cpuPercentage >= 90) {
+		if (cpuPercentage >= 70) {
 			this.scheduleReboot('cpu');
 		}
 	}
