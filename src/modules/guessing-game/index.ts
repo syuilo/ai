@@ -85,6 +85,8 @@ export default class GuessingGameModule implements IModule {
 				this.ai.subscribeReply(this, msg.userId, msg.isMessage, reply.id);
 			});
 		} else {
+			if (guess.length > 3) return;
+
 			const g = parseInt(guess, 10);
 
 			const firsttime = exist.tries.indexOf(g) === -1;
