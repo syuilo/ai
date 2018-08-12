@@ -13,6 +13,12 @@ export default class ServerModule implements IModule {
 	private preventScheduleReboot = false;
 	private rebootTimer: NodeJS.Timer;
 	private rebootTimerSub: NodeJS.Timer;
+	private recentStat: any[] = [];
+
+	/**
+	 * 1秒後とのログ1分間分
+	 */
+	private statsLogs: any;
 
 	public install = (ai: 藍) => {
 		this.ai = ai;
@@ -34,6 +40,31 @@ export default class ServerModule implements IModule {
 
 			this.onConnectionMessage(msg);
 		});
+
+		setInterval(() => {
+			this.statsLogs.push(this.recentStat);
+			if (this.statsLogs.length > 60) this.statsLogs.unshift();
+		}, 1000);
+
+		setInterval(() => {
+			this.check();
+		}, 1000);
+	}
+
+	private check = () => {
+		const average = (arr) => arr.reduce((a, b) => a + b) / arr.length;
+
+		const memPercentages = this.statsLogs.map(s => (s.mem.total - s.mem.used) * 100);
+		const memPercentage = average(memPercentages);
+		if (memPercentage >= 90) {
+			this.scheduleReboot('mem');
+		}
+
+		const cpuPercentages = this.statsLogs.map(s => s.cpu_usage * 100);
+		const cpuPercentage = average(cpuPercentages);
+		if (cpuPercentage >= 90) {
+			this.scheduleReboot('cpu');
+		}
 	}
 
 	private onConnectionMessage = (msg: any) => {
@@ -50,22 +81,16 @@ export default class ServerModule implements IModule {
 	}
 
 	private onStats = async (stats: any) => {
-		const memUsage = Math.round((stats.mem.used / stats.mem.total) * 100);
-
-		console.log(`[SERVER] MEM: ${memUsage}%`);
-
-		if (memUsage >= 90) {
-			this.scheduleReboot();
-		}
+		this.recentStat = stats;
 	}
 
-	private scheduleReboot = () => {
+	private scheduleReboot = (reason: string) => {
 		if (this.preventScheduleReboot) return;
 
 		this.preventScheduleReboot = true;
 
 		this.ai.post({
-			text: serifs.REBOOT_SCHEDULED
+			text: reason == 'cpu' ? serifs.REBOOT_SCHEDULED_CPU : serifs.REBOOT_SCHEDULED_MEM
 		});
 
 		this.rebootTimer = setTimeout(() => {
