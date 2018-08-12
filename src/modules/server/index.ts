@@ -48,7 +48,7 @@ export default class ServerModule implements IModule {
 
 		setInterval(() => {
 			this.check();
-		}, 1000);
+		}, 3000);
 	}
 
 	private check = () => {
@@ -65,6 +65,8 @@ export default class ServerModule implements IModule {
 		if (cpuPercentage >= 70) {
 			this.scheduleReboot('cpu');
 		}
+
+		console.log(`CPU: ${cpuPercentage}% | MEM: ${memPercentage}%`);
 	}
 
 	private onConnectionMessage = (msg: any) => {
