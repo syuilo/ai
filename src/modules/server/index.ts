@@ -54,7 +54,7 @@ export default class ServerModule implements IModule {
 	private check = () => {
 		const average = (arr) => arr.reduce((a, b) => a + b) / arr.length;
 
-		const memPercentages = this.statsLogs.map(s => (s.mem.total - s.mem.used) * 100);
+		const memPercentages = this.statsLogs.map(s => (s.mem.used / s.mem.total) * 100);
 		const memPercentage = average(memPercentages);
 		if (memPercentage >= 90) {
 			this.scheduleReboot('mem');
