@@ -8,6 +8,8 @@ import MessageLike from '../../message-like';
 const ReconnectingWebSocket = require('../../../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
 
 export default class ServerModule implements IModule {
+	public name = 'server';
+
 	private ai: 藍;
 	private connection?: any;
 	private preventScheduleReboot = false;

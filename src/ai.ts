@@ -6,13 +6,14 @@ import serifs from './serifs';
 import config from './config';
 import IModule from './module';
 import MessageLike from './message-like';
+import { contexts } from './memory';
 const ReconnectingWebSocket = require('../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
 
 /**
  * 藍
  */
 export default class 藍 {
-	private account: any;
+	public account: any;
 
 	/**
 	 * ホームストリーム
@@ -99,17 +100,31 @@ export default class 藍 {
 			}
 		}, 1000);
 
-		this.modules.filter(m => m.hasOwnProperty('onMention')).some(m => {
-			return m.onMention(msg);
+		const context = !msg.isMessage && msg.replyId == null ? null : contexts.findOne(msg.isMessage ? {
+			isMessage: true,
+			userId: msg.userId
+		} : {
+			isMessage: false,
+			noteId: msg.replyId
 		});
+
+		if (context != null) {
+			const module = this.modules.find(m => m.name == context.module);
+			module.onReplyThisModule(msg);
+		} else {
+			this.modules.filter(m => m.hasOwnProperty('onMention')).some(m => {
+				return m.onMention(msg);
+			});
+		}
 	}
 
-	public post = (param: any) => {
-		this.api('notes/create', param);
+	public post = async (param: any) => {
+		const res = await this.api('notes/create', param);
+		return res.createdNote;
 	}
 
 	public sendMessage = (userId: any, param: any) => {
-		this.api('messaging/messages/create', Object.assign({
+		return this.api('messaging/messages/create', Object.assign({
 			userId: userId,
 		}, param));
 	}
@@ -121,4 +136,25 @@ export default class 藍 {
 			}, param)
 		});
 	};
+
+	public subscribeReply = (module: IModule, key: string, isMessage: boolean, id: string) => {
+		contexts.insertOne(isMessage ? {
+			isMessage: true,
+			userId: id,
+			module: module.name,
+			key: key,
+		} : {
+			isMessage: false,
+			noteId: id,
+			module: module.name,
+			key: key,
+		});
+	}
+
+	public unsubscribeReply = (module: IModule, key: string) => {
+		contexts.findAndRemove({
+			key: key,
+			module: module.name
+		});
+	}
 }

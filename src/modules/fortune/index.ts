@@ -24,7 +24,9 @@ const items = [
 	'寿司'
 ];
 
-export default class EmojiModule implements IModule {
+export default class FortuneModule implements IModule {
+	public name = 'fortune';
+
 	public install = (ai: 藍) => { }
 
 	public onMention = (msg: MessageLike) => {

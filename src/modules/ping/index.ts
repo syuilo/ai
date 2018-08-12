@@ -3,6 +3,8 @@ import IModule from '../../module';
 import MessageLike from '../../message-like';
 
 export default class PingModule implements IModule {
+	public name = 'ping';
+
 	public install = (ai: 藍) => { }
 
 	public onMention = (msg: MessageLike) => {

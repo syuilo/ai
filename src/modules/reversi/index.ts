@@ -8,6 +8,8 @@ import MessageLike from '../../message-like';
 import * as WebSocket from 'ws';
 
 export default class ReversiModule implements IModule {
+	public name = 'reversi';
+
 	private ai: 藍;
 
 	/**
@@ -38,7 +40,7 @@ export default class ReversiModule implements IModule {
 	}
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.text && msg.text.includes('リバーシ')) {
+		if (msg.text && (msg.text.includes('リバーシ') || msg.text.toLowerCase().includes('reversi'))) {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.REVERSI_OK);
 
