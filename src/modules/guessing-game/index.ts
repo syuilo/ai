@@ -30,24 +30,31 @@ export default class GuessingGameModule implements IModule {
 				isEnded: false
 			});
 
-			if (exist != null) {
-				msg.reply(serifs.GUESSINGGAME_ARLEADY_STARTED);
-			} else {
-				const secret = Math.floor(Math.random() * 100);
+			if (!msg.isMessage) {
+				if (exist != null) {
+					msg.reply(serifs.GUESSINGGAME_ARLEADY_STARTED);
+				} else {
+					msg.reply(serifs.GUESSINGGAME_PLZ_DM);
+				}
 
-				guesses.insertOne({
-					userId: msg.userId,
-					secret: secret,
-					tries: [],
-					isEnded: false,
-					startedAt: Date.now(),
-					endedAt: null
-				});
-
-				msg.reply(serifs.GUESSINGGAME_STARTED).then(reply => {
-					this.ai.subscribeReply(this, msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id);
-				});
+				return true;
 			}
+
+			const secret = Math.floor(Math.random() * 100);
+
+			guesses.insertOne({
+				userId: msg.userId,
+				secret: secret,
+				tries: [],
+				isEnded: false,
+				startedAt: Date.now(),
+				endedAt: null
+			});
+
+			msg.reply(serifs.GUESSINGGAME_STARTED).then(reply => {
+				this.ai.subscribeReply(this, msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id);
+			});
+
 			return true;
 		} else {
 			return false;

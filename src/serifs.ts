@@ -43,6 +43,11 @@ export default {
 	GUESSINGGAME_ARLEADY_STARTED: 'え、ゲームは既に始まってますよ！',
 
 	/**
+	 * タイムライン上で数当てゲームに誘われたとき
+	 */
+	GUESSINGGAME_PLZ_DM: 'メッセージでやりましょう！',
+
+	/**
 	 * 数当てゲーム開始
 	 */
 	GUESSINGGAME_STARTED: '0~100の秘密の数を当ててみてください♪',
