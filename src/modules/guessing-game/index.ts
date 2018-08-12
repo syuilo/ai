@@ -91,6 +91,8 @@ export default class GuessingGameModule implements IModule {
 
 			const firsttime = exist.tries.indexOf(g) === -1;
 
+			exist.tries.push(g);
+
 			let text: string;
 			let end = false;
 
@@ -110,12 +112,10 @@ export default class GuessingGameModule implements IModule {
 			if (end) {
 				exist.isEnded = true;
 				exist.endedAt = Date.now();
-				guesses.update(exist);
 				this.ai.unsubscribeReply(this, msg.userId);
-			} else {
-				exist.tries.push(g);
-				guesses.update(exist);
 			}
+
+			guesses.update(exist);
 
 			msg.reply(text).then(reply => {
 				if (!end) {
