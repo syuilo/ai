@@ -13,12 +13,12 @@ export default class ServerModule implements IModule {
 	private preventScheduleReboot = false;
 	private rebootTimer: NodeJS.Timer;
 	private rebootTimerSub: NodeJS.Timer;
-	private recentStat: any[] = [];
+	private recentStat: any;
 
 	/**
 	 * 1秒後とのログ1分間分
 	 */
-	private statsLogs: any;
+	private statsLogs: any[] = [];
 
 	public install = (ai: 藍) => {
 		this.ai = ai;
