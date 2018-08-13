@@ -5,7 +5,7 @@ type Config = {
 	apiUrl: string;
 	keywordEnabled: boolean;
 	reversiEnabled: boolean;
-	mecabDic?: string;
+	mecab?: string;
 };
 
 const config = require('../config.json');
