@@ -29,7 +29,7 @@ export default class KeywordModule implements IModule {
 
 		await Promise.all(interestedNotes.map(note => new Promise((res, rej) => {
 			this.tokenizer.parse(note.text, (err, tokens) => {
-				const keywordsInThisNote = tokens.filter(token => token[2] == '固有名詞' && keyword[8] != null);
+				const keywordsInThisNote = tokens.filter(token => token[2] == '固有名詞' && token[8] != null);
 				keywords = keywords.concat(keywordsInThisNote);
 				res();
 			});
