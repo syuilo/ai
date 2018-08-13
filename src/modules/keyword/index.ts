@@ -44,7 +44,7 @@ export default class KeywordModule implements IModule {
 
 		console.log(keywords);
 
-		const keyword = keywords[Math.floor(Math.random() * keywords.length)];
+		const keyword = keywords.sort((a, b) => a[0].length < b[0].length ? 1 : -1)[0];
 
 		const text = serifs.KEYWORD
 			.replace('{word}', keyword[0])
