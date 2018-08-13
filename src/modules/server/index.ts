@@ -95,6 +95,8 @@ export default class ServerModule implements IModule {
 
 		this.ai.post({
 			text: reason == 'cpu' ? serifs.REBOOT_SCHEDULED_CPU : serifs.REBOOT_SCHEDULED_MEM
+		}).then(post => {
+			this.ai.subscribeReply(this, 'reboot', false, post.id);
 		});
 
 		this.rebootTimer = setTimeout(() => {
@@ -109,6 +111,26 @@ export default class ServerModule implements IModule {
 		}, 1000 * 50);
 	}
 
+	public onReplyThisModule = (msg: MessageLike) => {
+		if (msg.text == null) return;
+
+		if (msg.text.includes('やめ')) {
+			if (msg.user.isAdmin) {
+				msg.reply(serifs.REBOOT_CANCEL_REQUESTED_ACCEPT);
+
+				this.ai.post({
+					text: serifs.REBOOT_CANCELED
+				});
+
+				this.cancelReboot();
+			} else {
+				msg.reply(serifs.REBOOT_CANCEL_REQUESTED_REJECT);
+			}
+		}
+
+		this.ai.unsubscribeReply(this, 'reboot');
+	}
+
 	public onMention = (msg: MessageLike) => {
 		if (msg.text && msg.text.includes('再起動しないで')) {
 			if (msg.user.isAdmin) {
@@ -118,12 +140,7 @@ export default class ServerModule implements IModule {
 					text: serifs.REBOOT_CANCELED
 				});
 
-				clearTimeout(this.rebootTimer);
-				clearTimeout(this.rebootTimerSub);
-
-				setTimeout(() => {
-					this.preventScheduleReboot = false;
-				}, 1000 * 60 * 3);
+				this.cancelReboot();
 			} else {
 				msg.reply(serifs.REBOOT_CANCEL_REQUESTED_REJECT);
 			}
@@ -131,5 +148,15 @@ export default class ServerModule implements IModule {
 		} else {
 			return false;
 		}
+	}
+
+	private cancelReboot = () => {
+		clearTimeout(this.rebootTimer);
+		clearTimeout(this.rebootTimerSub);
+
+		// 10分間延期
+		setTimeout(() => {
+			this.preventScheduleReboot = false;
+		}, 1000 * 60 * 10);
 	}
 }
