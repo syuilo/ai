@@ -53,7 +53,9 @@ export default class KeywordModule implements IModule {
 		if (msg) {
 			msg.reply(text);
 		} else {
-			this.ai.post(text);
+			this.ai.post({
+				text: text
+			});
 		}
 	}
 
