@@ -24,7 +24,7 @@ export default class KeywordModule implements IModule {
 		this.tokenizer = new MeCab();
 		this.tokenizer.command = config.mecab;
 
-		setTimeout(this.say, 1000 * 60 * 60);
+		setInterval(this.say, 1000 * 60 * 60);
 	}
 
 	private say = async (msg?: MessageLike) => {
