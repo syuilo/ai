@@ -44,7 +44,7 @@ export default class ServerModule implements IModule {
 		});
 
 		setInterval(() => {
-			this.statsLogs.push(this.recentStat);
+			this.statsLogs.unshift(this.recentStat);
 			if (this.statsLogs.length > 60) this.statsLogs.pop();
 		}, 1000);
 
