@@ -3,7 +3,9 @@ type Config = {
 	i: string;
 	wsUrl: string;
 	apiUrl: string;
+	keywordEnabled: boolean;
 	reversiEnabled: boolean;
+	mecabDic?: string;
 };
 
 const config = require('../config.json');

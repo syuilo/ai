@@ -6,6 +6,7 @@ import PingModule from './modules/ping';
 import EmojiModule from './modules/emoji';
 import FortuneModule from './modules/fortune';
 import GuessingGameModule from './modules/guessing-game';
+import KeywordModule from './modules/keyword';
 import * as request from 'request-promise-native';
 const promiseRetry = require('promise-retry');
 
@@ -24,4 +25,5 @@ promiseRetry(retry => {
 	ai.install(new GuessingGameModule());
 	ai.install(new ServerModule());
 	ai.install(new ReversiModule());
+	if (config.keywordEnabled) ai.install(new KeywordModule());
 });

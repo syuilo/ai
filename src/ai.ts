@@ -129,7 +129,7 @@ export default class 藍 {
 		}, param));
 	}
 
-	public api = (endpoint: string, param) => {
+	public api = (endpoint: string, param?: any) => {
 		return request.post(`${config.apiUrl}/${endpoint}`, {
 			json: Object.assign({
 				i: config.i
