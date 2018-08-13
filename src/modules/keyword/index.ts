@@ -59,7 +59,7 @@ export default class KeywordModule implements IModule {
 
 	public onMention = (msg: MessageLike) => {
 		if (msg.user.isAdmin && msg.isMessage && msg.text && msg.text.includes('なんか皆に言って')) {
-			this.say(msg);
+			this.say();
 			return true;
 		} else if (msg.text && msg.text.includes('なんか言って')) {
 			this.say(msg);
