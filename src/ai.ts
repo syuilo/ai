@@ -20,11 +20,17 @@ export default class 藍 {
 	 */
 	private connection: any;
 
+	/**
+	 * ローカルタイムラインストリーム
+	 */
+	private localTimelineConnection: any;
+
 	private modules: IModule[] = [];
 
 	constructor(account: any) {
 		this.account = account;
 
+		//#region Home stream
 		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/?i=${config.i}`, [], {
 			WebSocket: WebSocket
 		});
@@ -42,9 +48,27 @@ export default class 藍 {
 
 			this.onMessage(msg);
 		});
+		//#endregion
 
-		if (config.reversiEnabled) {
-		}
+		//#region Local timeline stream
+		this.localTimelineConnection = new ReconnectingWebSocket(`${config.wsUrl}/local-timeline?i=${config.i}`, [], {
+			WebSocket: WebSocket
+		});
+
+		this.localTimelineConnection.addEventListener('open', () => {
+			console.log('local-timeline stream opened');
+		});
+
+		this.localTimelineConnection.addEventListener('close', () => {
+			console.log('local-timeline stream closed');
+		});
+
+		this.localTimelineConnection.addEventListener('message', message => {
+			const msg = JSON.parse(message.data);
+
+			this.onLocalNote(msg.body);
+		});
+		//#endregion
 	}
 
 	public install = (module: IModule) => {
@@ -80,6 +104,12 @@ export default class 藍 {
 			default:
 				break;
 		}
+	}
+
+	private onLocalNote = (note: any) => {
+		this.modules.filter(m => m.hasOwnProperty('onLocalNote')).forEach(m => {
+			return m.onLocalNote(note);
+		});
 	}
 
 	private onMention = (msg: MessageLike) => {

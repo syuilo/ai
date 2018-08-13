@@ -5,5 +5,6 @@ export default interface IModule {
 	name: string;
 	install?: (ai: 藍) => void;
 	onMention?: (msg: MessageLike) => boolean;
+	onLocalNote?: (note: any) => void;
 	onReplyThisModule?: (msg: MessageLike) => void;
 }
