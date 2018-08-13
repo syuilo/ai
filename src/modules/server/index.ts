@@ -114,7 +114,7 @@ export default class ServerModule implements IModule {
 	public onReplyThisModule = (msg: MessageLike) => {
 		if (msg.text == null) return;
 
-		if (msg.text.includes('やめ')) {
+		if (msg.text.includes('やめ') || msg.text.includes('まって')) {
 			if (msg.user.isAdmin) {
 				msg.reply(serifs.REBOOT_CANCEL_REQUESTED_ACCEPT);
 
