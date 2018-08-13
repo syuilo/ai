@@ -90,5 +90,5 @@ export default {
 	/**
 	 * キーワード
 	 */
-	KEYWORD: '({word}... {reading}...)',
+	KEYWORD: '({word}..... {reading}..... 覚えました)',
 };

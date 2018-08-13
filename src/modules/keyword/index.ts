@@ -28,7 +28,9 @@ export default class KeywordModule implements IModule {
 	}
 
 	private say = async (msg?: MessageLike) => {
-		const tl = await this.ai.api('notes/local-timeline');
+		const tl = await this.ai.api('notes/local-timeline', {
+			limit: 30
+		});
 
 		const interestedNotes = tl.filter(note => note.userId !== this.ai.account.id && note.text != null);
 
