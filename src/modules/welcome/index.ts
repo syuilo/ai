@@ -11,7 +11,7 @@ export default class WelcomeModule implements IModule {
 	}
 
 	public onLocalNote = (note: any) => {
-		if (note.user.notesCount == 1) {
+		if (note.isFirstNote) {
 			setTimeout(() => {
 				this.ai.api('notes/create', {
 					renoteId: note.id
