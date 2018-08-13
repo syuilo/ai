@@ -5,6 +5,13 @@ import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 const MeCab = require('mecab-async');
 
+function kanaToHira(str: string) {
+	return str.replace(/[\u30a1-\u30f6]/g, match => {
+		const chr = match.charCodeAt(0) - 0x60;
+		return String.fromCharCode(chr);
+	});
+}
+
 export default class KeywordModule implements IModule {
 	public name = 'keyword';
 
@@ -41,7 +48,7 @@ export default class KeywordModule implements IModule {
 
 		const text = serifs.KEYWORD
 			.replace('{word}', keyword[0])
-			.replace('{reading}', keyword[8])
+			.replace('{reading}', kanaToHira(keyword[8]))
 
 		if (msg) {
 			msg.reply(text);
@@ -51,7 +58,10 @@ export default class KeywordModule implements IModule {
 	}
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.user.isAdmin && msg.text && msg.text.includes('なんか言って')) {
+		if (msg.user.isAdmin && msg.isMessage && msg.text && msg.text.includes('なんか皆に言って')) {
+			this.say(msg);
+			return true;
+		} else if (msg.text && msg.text.includes('なんか言って')) {
 			this.say(msg);
 			return true;
 		} else {
