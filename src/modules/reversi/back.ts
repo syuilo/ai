@@ -8,8 +8,7 @@
 
 import * as request from 'request-promise-native';
 import Reversi, { Color } from 'misskey-reversi';
-
-const config = require('../config.json');
+import config from '../../config';
 
 const db = {};
 
@@ -25,6 +24,7 @@ const titles = [
 ];
 
 class Session {
+	private account: any;
 	private game: any;
 	private form: any;
 	private o: Reversi;
@@ -35,14 +35,13 @@ class Session {
 	 */
 	private cellWeights: number[];
 
-
 	/**
 	 * 対局が開始したことを知らせた投稿
 	 */
 	private startedNote: any = null;
 
 	private get user(): any {
-		return this.game.user1Id == config.id ? this.game.user2 : this.game.user1;
+		return this.game.user1Id == this.account.id ? this.game.user2 : this.game.user1;
 	}
 
 	private get userName(): string {
@@ -84,6 +83,7 @@ class Session {
 	private onInit = (msg: any) => {
 		this.game = msg.game;
 		this.form = msg.form;
+		this.account = msg.account;
 	}
 
 	/**
@@ -195,7 +195,7 @@ class Session {
 
 		//#endregion
 
-		this.botColor = this.game.user1Id == config.id && this.game.black == 1 || this.game.user2Id == config.id && this.game.black == 2;
+		this.botColor = this.game.user1Id == this.account.id && this.game.black == 1 || this.game.user2Id == this.account.id && this.game.black == 2;
 
 		if (this.botColor) {
 			this.think();
@@ -220,7 +220,7 @@ class Session {
 				text = `${this.userName}が投了しちゃいました`;
 			}
 		} else if (msg.body.winnerId) {
-			if (msg.body.winnerId == config.id) {
+			if (msg.body.winnerId == this.account.id) {
 				if (this.isSettai) {
 					text = `${this.userName}に接待で勝ってしまいました...`;
 				} else {

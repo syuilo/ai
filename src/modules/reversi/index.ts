@@ -145,7 +145,8 @@ export default class ReversiModule implements IModule {
 			ai.send({
 				type: '_init_',
 				game,
-				form
+				form,
+				account: this.ai.account
 			});
 
 			ai.on('message', msg => {
