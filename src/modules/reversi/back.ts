@@ -430,7 +430,8 @@ class Session {
 		if (this.allowPost) {
 			const body = {
 				i: config.i,
-				text: text
+				text: text,
+				visibility: 'home'
 			} as any;
 
 			if (renote) {
