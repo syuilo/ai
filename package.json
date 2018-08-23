@@ -2,6 +2,7 @@
   "name": "ai",
   "main": "./built/index.js",
   "scripts": {
+    "start": "node ./built",
     "build": "tsc"
   },
   "dependencies": {

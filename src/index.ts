@@ -1,5 +1,6 @@
 import 藍 from './ai';
 import config from './config';
+
 import ReversiModule from './modules/reversi';
 import ServerModule from './modules/server';
 import PingModule from './modules/ping';
@@ -8,8 +9,12 @@ import FortuneModule from './modules/fortune';
 import GuessingGameModule from './modules/guessing-game';
 import KeywordModule from './modules/keyword';
 import WelcomeModule from './modules/welcome';
+import TimerModule from './modules/timer';
+
 import * as request from 'request-promise-native';
 const promiseRetry = require('promise-retry');
+
+console.log('starting ai...');
 
 promiseRetry(retry => {
 	return request.post(`${config.apiUrl}/i`, {
@@ -18,6 +23,8 @@ promiseRetry(retry => {
 		}
 	}).catch(retry);
 }).then(account => {
+	console.log('account fetched');
+
 	const ai = new 藍(account);
 
 	ai.install(new PingModule());
@@ -27,5 +34,8 @@ promiseRetry(retry => {
 	ai.install(new GuessingGameModule());
 	ai.install(new ServerModule());
 	ai.install(new ReversiModule());
+	ai.install(new TimerModule());
 	if (config.keywordEnabled) ai.install(new KeywordModule());
+
+	console.log('ai started');
 });

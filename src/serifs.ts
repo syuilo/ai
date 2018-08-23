@@ -91,4 +91,10 @@ export default {
 	 * キーワード
 	 */
 	KEYWORD: '({word}..... {reading}..... 覚えました)',
+
+	timer: {
+		set: 'わかりました！',
+		invalid: 'うーん...？',
+		notify: '{time}経ちましたよ！'
+	}
 };

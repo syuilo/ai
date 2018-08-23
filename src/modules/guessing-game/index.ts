@@ -24,7 +24,7 @@ export default class GuessingGameModule implements IModule {
 	}
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.text && msg.text.includes('数当て')) {
+		if (msg.text && (msg.text.includes('数当て') || msg.text.includes('数あて'))) {
 			const exist = guesses.findOne({
 				userId: msg.userId,
 				isEnded: false

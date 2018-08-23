@@ -40,7 +40,7 @@ export default class ReversiModule implements IModule {
 	}
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.text && (msg.text.includes('リバーシ') || msg.text.toLowerCase().includes('reversi'))) {
+		if (msg.text && (msg.text.includes('リバーシ') || msg.text.includes('りばーし') || msg.text.includes('オセロ') || msg.text.includes('おせろ') || msg.text.toLowerCase().includes('reversi'))) {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.REVERSI_OK);
 
