@@ -41,6 +41,8 @@ export default class 藍 {
 
 		this.connection.addEventListener('close', () => {
 			console.log('home stream closed');
+
+			this.connection.reconnect();
 		});
 
 		this.connection.addEventListener('message', message => {
