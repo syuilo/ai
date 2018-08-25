@@ -32,9 +32,9 @@ promiseRetry(retry => {
 	ai.install(new EmojiModule());
 	ai.install(new FortuneModule());
 	ai.install(new GuessingGameModule());
-	ai.install(new ServerModule());
 	ai.install(new ReversiModule());
 	ai.install(new TimerModule());
+	if (config.serverMonitoring) ai.install(new ServerModule());
 	if (config.keywordEnabled) ai.install(new KeywordModule());
 
 	console.log('ai started');
