@@ -30,6 +30,8 @@ export default class ReversiModule implements IModule {
 
 		this.reversiConnection.addEventListener('close', () => {
 			console.log('reversi stream closed');
+
+			this.reversiConnection.reconnect();
 		});
 
 		this.reversiConnection.addEventListener('message', message => {
