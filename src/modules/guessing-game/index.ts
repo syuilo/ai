@@ -1,31 +1,37 @@
+import * as loki from 'lokijs';
 import 藍 from '../../ai';
 import IModule from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
-import db from '../../memory';
-
-export const guesses = db.addCollection<{
-	userId: string;
-	secret: number;
-	tries: number[];
-	isEnded: boolean;
-	startedAt: number;
-	endedAt: number;
-}>('guessingGame', {
-	indices: ['userId']
-});
 
 export default class GuessingGameModule implements IModule {
 	public name = 'guessingGame';
 	private ai: 藍;
+	private guesses: loki.Collection<{
+		userId: string;
+		secret: number;
+		tries: number[];
+		isEnded: boolean;
+		startedAt: number;
+		endedAt: number;
+	}>;
 
 	public install = (ai: 藍) => {
 		this.ai = ai;
+
+		//#region Init DB
+		this.guesses = this.ai.db.getCollection('guessingGame');
+		if (this.guesses === null) {
+			this.guesses = this.ai.db.addCollection('guessingGame', {
+				indices: ['userId']
+			});
+		}
+		//#endregion
 	}
 
 	public onMention = (msg: MessageLike) => {
 		if (msg.text && (msg.text.includes('数当て') || msg.text.includes('数あて'))) {
-			const exist = guesses.findOne({
+			const exist = this.guesses.findOne({
 				userId: msg.userId,
 				isEnded: false
 			});
@@ -42,7 +48,7 @@ export default class GuessingGameModule implements IModule {
 
 			const secret = Math.floor(Math.random() * 100);
 
-			guesses.insertOne({
+			this.guesses.insertOne({
 				userId: msg.userId,
 				secret: secret,
 				tries: [],
@@ -64,7 +70,7 @@ export default class GuessingGameModule implements IModule {
 	public onReplyThisModule = (msg: MessageLike) => {
 		if (msg.text == null) return;
 
-		const exist = guesses.findOne({
+		const exist = this.guesses.findOne({
 			userId: msg.userId,
 			isEnded: false
 		});
@@ -73,7 +79,7 @@ export default class GuessingGameModule implements IModule {
 			msg.reply(serifs.GUESSINGGAME_CANCEL);
 			exist.isEnded = true;
 			exist.endedAt = Date.now();
-			guesses.update(exist);
+			this.guesses.update(exist);
 			this.ai.unsubscribeReply(this, msg.userId);
 			return;
 		}
@@ -115,7 +121,7 @@ export default class GuessingGameModule implements IModule {
 				this.ai.unsubscribeReply(this, msg.userId);
 			}
 
-			guesses.update(exist);
+			this.guesses.update(exist);
 
 			msg.reply(text).then(reply => {
 				if (!end) {

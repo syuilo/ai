@@ -1,12 +1,12 @@
 // AI CORE
 
+import * as loki from 'lokijs';
 import * as WebSocket from 'ws';
 import * as request from 'request-promise-native';
 import serifs from './serifs';
 import config from './config';
 import IModule from './module';
 import MessageLike from './message-like';
-import { contexts } from './memory';
 const ReconnectingWebSocket = require('../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
 
 /**
@@ -27,8 +27,39 @@ export default class 藍 {
 
 	private modules: IModule[] = [];
 
+	public db: loki;
+
+	private contexts: loki.Collection<{
+		isMessage: boolean;
+		noteId?: string;
+		userId?: string;
+		module: string;
+		key: string;
+	}>;
+
 	constructor(account: any) {
 		this.account = account;
+
+		this.db = new loki('memory.json', {
+			autoload: true,
+			autosave: true,
+			autosaveInterval: 1000,
+			autoloadCallback: this.init
+		});
+	}
+
+	private init = () => {
+		//#region Init DB
+		this.contexts = this.db.getCollection('contexts');
+		if (this.contexts === null) {
+			this.contexts = this.db.addCollection('contexts', {
+				indices: ['key']
+			});
+		}
+		//#endregion
+
+		// Install modules
+		this.modules.forEach(m => m.install(this));
 
 		//#region Home stream
 		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/?i=${config.i}`, [], {
@@ -74,7 +105,6 @@ export default class 藍 {
 	}
 
 	public install = (module: IModule) => {
-		module.install(this);
 		this.modules.push(module);
 	}
 
@@ -132,7 +162,7 @@ export default class 藍 {
 			}
 		}, 1000);
 
-		const context = !msg.isMessage && msg.replyId == null ? null : contexts.findOne(msg.isMessage ? {
+		const context = !msg.isMessage && msg.replyId == null ? null : this.contexts.findOne(msg.isMessage ? {
 			isMessage: true,
 			userId: msg.userId
 		} : {
@@ -170,7 +200,7 @@ export default class 藍 {
 	};
 
 	public subscribeReply = (module: IModule, key: string, isMessage: boolean, id: string) => {
-		contexts.insertOne(isMessage ? {
+		this.contexts.insertOne(isMessage ? {
 			isMessage: true,
 			userId: id,
 			module: module.name,
@@ -184,7 +214,7 @@ export default class 藍 {
 	}
 
 	public unsubscribeReply = (module: IModule, key: string) => {
-		contexts.findAndRemove({
+		this.contexts.findAndRemove({
 			key: key,
 			module: module.name
 		});

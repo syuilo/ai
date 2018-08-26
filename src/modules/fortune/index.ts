@@ -30,7 +30,7 @@ export default class FortuneModule implements IModule {
 	public install = (ai: 藍) => { }
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.text && (msg.text.includes('占') || msg.text.includes('運勢'))) {
+		if (msg.text && (msg.text.includes('占') || msg.text.includes('うらな') || msg.text.includes('運勢'))) {
 			const date = new Date();
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}@${msg.userId}`;
 			const rng = seedrandom(seed);
