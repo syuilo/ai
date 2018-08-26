@@ -26,6 +26,11 @@ export default class CoreModule implements IModule {
 
 			const name = msg.text.match(/^(.+?)って呼んで/)[1];
 
+			if (name.length > 10) {
+				msg.reply(serifs.core.tooLong);
+				return true;
+			}
+
 			const withSan =
 				name.endsWith('さん') ||
 				name.endsWith('くん') ||

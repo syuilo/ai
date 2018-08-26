@@ -7,6 +7,7 @@ export default {
 		goodMorningWithName: 'おはようございます、{name}！',
 		goodNight: 'おやすみなさい！',
 		goodNightWithName: 'おやすみなさい、{name}！',
+		tooLong: '長すぎる気がします...'
 	},
 
 	/**
