@@ -1,6 +1,7 @@
 import 藍 from './ai';
 import config from './config';
 
+import CoreModule from './modules/core';
 import ReversiModule from './modules/reversi';
 import ServerModule from './modules/server';
 import PingModule from './modules/ping';
@@ -14,7 +15,7 @@ import TimerModule from './modules/timer';
 import * as request from 'request-promise-native';
 const promiseRetry = require('promise-retry');
 
-console.log('starting ai...');
+console.log('--- starting ai... ---');
 
 promiseRetry(retry => {
 	return request.post(`${config.apiUrl}/i`, {
@@ -27,6 +28,7 @@ promiseRetry(retry => {
 
 	const ai = new 藍(account);
 
+	ai.install(new CoreModule());
 	ai.install(new PingModule());
 	ai.install(new WelcomeModule());
 	ai.install(new EmojiModule());
@@ -37,5 +39,5 @@ promiseRetry(retry => {
 	if (config.serverMonitoring) ai.install(new ServerModule());
 	if (config.keywordEnabled) ai.install(new KeywordModule());
 
-	console.log('ai started');
+	console.log('--- ai started! ---');
 });

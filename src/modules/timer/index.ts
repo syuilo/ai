@@ -35,8 +35,9 @@ export default class TimerModule implements IModule {
 				const str = `${hours ? hoursQuery[0] : ''}${minutes ? minutesQuery[0] : ''}${seconds ? secondsQuery[0] : ''}`;
 
 				setTimeout(() => {
+					const name = this.ai.getName(msg.userId);
 					this.ai.sendMessage(msg.userId, {
-						text: serifs.timer.notify.replace('{time}', str)
+						text: name ? serifs.timer.notifyWithName.replace('{time}', str).replace('{name}', name) : serifs.timer.notify.replace('{time}', str)
 					});
 				}, time);
 

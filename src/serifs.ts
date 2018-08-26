@@ -1,4 +1,14 @@
 export default {
+	core: {
+		setNameOk: 'わかりました。これからは{name}とお呼びしますね！',
+		san: 'さん付けした方がいいですか？',
+		yesOrNo: '「はい」か「いいえ」しかわからないんです...',
+		goodMorning: 'おはようございます！',
+		goodMorningWithName: 'おはようございます、{name}！',
+		goodNight: 'おやすみなさい！',
+		goodNightWithName: 'おやすみなさい、{name}！',
+	},
+
 	/**
 	 * リバーシへの誘いを承諾するとき
 	 */
@@ -95,6 +105,7 @@ export default {
 	timer: {
 		set: 'わかりました！',
 		invalid: 'うーん...？',
-		notify: '{time}経ちましたよ！'
+		notify: '{time}経ちましたよ！',
+		notifyWithName: '{name}、{time}経ちましたよ！'
 	}
 };

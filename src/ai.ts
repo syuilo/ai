@@ -35,6 +35,12 @@ export default class 藍 {
 		userId?: string;
 		module: string;
 		key: string;
+		data?: any;
+	}>;
+
+	public friends: loki.Collection<{
+		userId: string;
+		name?: string;
 	}>;
 
 	constructor(account: any) {
@@ -54,6 +60,13 @@ export default class 藍 {
 		if (this.contexts === null) {
 			this.contexts = this.db.addCollection('contexts', {
 				indices: ['key']
+			});
+		}
+
+		this.friends = this.db.getCollection('friends');
+		if (this.friends === null) {
+			this.friends = this.db.addCollection('friends', {
+				indices: ['userId']
 			});
 		}
 		//#endregion
@@ -106,6 +119,17 @@ export default class 藍 {
 
 	public install = (module: IModule) => {
 		this.modules.push(module);
+	}
+
+	/**
+	 * 指定したユーザーの「呼んでもらいたい名前」を取得します
+	 */
+	public getName = (userId: string) => {
+		const friend = this.friends.findOne({
+			userId: userId
+		});
+
+		return friend != null ? friend.name : null;
 	}
 
 	private onMessage = (msg: any) => {
@@ -172,7 +196,7 @@ export default class 藍 {
 
 		if (context != null) {
 			const module = this.modules.find(m => m.name == context.module);
-			module.onReplyThisModule(msg);
+			module.onReplyThisModule(msg, context.data);
 		} else {
 			this.modules.filter(m => m.hasOwnProperty('onMention')).some(m => {
 				return m.onMention(msg);
@@ -199,17 +223,19 @@ export default class 藍 {
 		});
 	};
 
-	public subscribeReply = (module: IModule, key: string, isMessage: boolean, id: string) => {
+	public subscribeReply = (module: IModule, key: string, isMessage: boolean, id: string, data?: any) => {
 		this.contexts.insertOne(isMessage ? {
 			isMessage: true,
 			userId: id,
 			module: module.name,
 			key: key,
+			data: data
 		} : {
 			isMessage: false,
 			noteId: id,
 			module: module.name,
 			key: key,
+			data: data
 		});
 	}
 
