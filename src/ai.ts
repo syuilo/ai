@@ -123,17 +123,6 @@ export default class 藍 {
 		this.modules.push(module);
 	}
 
-	/**
-	 * 指定したユーザーの「呼んでもらいたい名前」を取得します
-	 */
-	public getName = (userId: string) => {
-		const friend = this.friends.findOne({
-			userId: userId
-		});
-
-		return friend != null ? friend.name : null;
-	}
-
 	private onMessage = (msg: any) => {
 		switch (msg.type) {
 			// メンションされたとき

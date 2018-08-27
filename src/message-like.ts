@@ -26,10 +26,22 @@ export default class MessageLike {
 		return this.messageOrNote.replyId;
 	}
 
+	public friend: ReturnType<藍['friends']['findOne']>;
+
 	constructor(ai: 藍, messageOrNote: any, isMessage: boolean) {
 		this.ai = ai;
 		this.messageOrNote = messageOrNote;
 		this.isMessage = isMessage;
+
+		this.friend = this.ai.friends.findOne({
+			userId: this.userId
+		});
+
+		if (this.friend == null) {
+			this.friend = this.ai.friends.insertOne({
+				userId: this.userId
+			});
+		}
 	}
 
 	public reply = async (text: string, cw?: string) => {

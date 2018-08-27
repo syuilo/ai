@@ -16,16 +16,6 @@ export default class CoreModule implements IModule {
 		if (!msg.text) return false;
 
 		if (msg.text.includes('って呼んで') && !msg.text.startsWith('って呼んで')) {
-			let friend = this.ai.friends.findOne({
-				userId: msg.userId
-			});
-
-			if (friend == null) {
-				friend = this.ai.friends.insertOne({
-					userId: msg.userId
-				});
-			}
-
 			const name = msg.text.match(/^(.+?)って呼んで/)[1];
 
 			if (name.length > 10) {
@@ -41,13 +31,12 @@ export default class CoreModule implements IModule {
 				name.endsWith('様');
 
 			if (withSan) {
-				friend.name = name;
-				this.ai.friends.update(friend);
+				msg.friend.name = name;
+				this.ai.friends.update(msg.friend);
 				msg.reply(serifs.core.setNameOk.replace('{name}', name));
 			} else {
 				msg.reply(serifs.core.san).then(reply => {
 					this.ai.subscribeReply(this, msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id, {
-						friend: friend,
 						name: name
 					});
 				});
@@ -55,24 +44,16 @@ export default class CoreModule implements IModule {
 
 			return true;
 		} else if (msg.text.includes('おはよう')) {
-			const friend = this.ai.friends.findOne({
-				userId: msg.userId
-			});
-
-			if (friend && friend.name) {
-				msg.reply(serifs.core.goodMorningWithName.replace('{name}', friend.name));
+			if (msg.friend.name) {
+				msg.reply(serifs.core.goodMorningWithName.replace('{name}', msg.friend.name));
 			} else {
 				msg.reply(serifs.core.goodMorning);
 			}
 
 			return true;
 		} else if (msg.text.includes('おやすみ')) {
-			const friend = this.ai.friends.findOne({
-				userId: msg.userId
-			});
-
-			if (friend && friend.name) {
-				msg.reply(serifs.core.goodNightWithName.replace('{name}', friend.name));
+			if (msg.friend.name) {
+				msg.reply(serifs.core.goodNightWithName.replace('{name}', msg.friend.name));
 			} else {
 				msg.reply(serifs.core.goodNight);
 			}
@@ -87,16 +68,16 @@ export default class CoreModule implements IModule {
 		if (msg.text == null) return;
 
 		const done = () => {
-			this.ai.friends.update(data.friend);
-			msg.reply(serifs.core.setNameOk.replace('{name}', data.friend.name));
+			this.ai.friends.update(msg.friend);
+			msg.reply(serifs.core.setNameOk.replace('{name}', msg.friend.name));
 			this.ai.unsubscribeReply(this, msg.userId);
 		};
 
 		if (msg.text.includes('はい')) {
-			data.friend.name = data.name + 'さん';
+			msg.friend.name = data.name + 'さん';
 			done();
 		} else if (msg.text.includes('いいえ')) {
-			data.friend.name = data.name;
+			msg.friend.name = data.name;
 			done();
 		} else {
 			msg.reply(serifs.core.yesOrNo).then(reply => {
