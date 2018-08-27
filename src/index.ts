@@ -24,7 +24,7 @@ promiseRetry(retry => {
 		}
 	}).catch(retry);
 }).then(account => {
-	console.log('account fetched');
+	console.log(`account fetched: @${account.username}`);
 
 	const ai = new 藍(account);
 
