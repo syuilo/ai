@@ -70,8 +70,7 @@ export default class KeywordModule implements IModule {
 		let text: string;
 
 		if (exist) {
-			text = serifs.keyword.learned
-				.replace('{word}', keyword[0])
+			text = serifs.keyword.remembered
 				.replace('{reading}', kanaToHira(keyword[8]));
 		} else {
 			this.learnedKeywords.insertOne({
@@ -79,7 +78,8 @@ export default class KeywordModule implements IModule {
 				learnedAt: Date.now()
 			});
 
-			text = serifs.keyword.remembered
+			text = serifs.keyword.learned
+				.replace('{word}', keyword[0])
 				.replace('{reading}', kanaToHira(keyword[8]));
 		}
 
