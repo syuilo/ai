@@ -13,7 +13,9 @@ export default class CoreModule implements IModule {
 	}
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.text && msg.text.includes('って呼んで') && !msg.text.startsWith('って呼んで')) {
+		if (!msg.text) return false;
+
+		if (msg.text.includes('って呼んで') && !msg.text.startsWith('って呼んで')) {
 			let friend = this.ai.friends.findOne({
 				userId: msg.userId
 			});
@@ -52,7 +54,7 @@ export default class CoreModule implements IModule {
 			}
 
 			return true;
-		} else if (msg.text && msg.text.includes('おはよう')) {
+		} else if (msg.text.includes('おはよう')) {
 			const friend = this.ai.friends.findOne({
 				userId: msg.userId
 			});
@@ -64,7 +66,7 @@ export default class CoreModule implements IModule {
 			}
 
 			return true;
-		} else if (msg.text && msg.text.includes('おやすみ')) {
+		} else if (msg.text.includes('おやすみ')) {
 			const friend = this.ai.friends.findOne({
 				userId: msg.userId
 			});
