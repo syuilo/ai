@@ -10,6 +10,11 @@ export default {
 		tooLong: '長すぎる気がします...'
 	},
 
+	keyword: {
+		learned: '({word}..... {reading}..... 覚えました)',
+		remembered: '{reading}！'
+	},
+
 	/**
 	 * リバーシへの誘いを承諾するとき
 	 */
@@ -97,11 +102,6 @@ export default {
 	 * 数当てゲームで正解したとき
 	 */
 	GUESSINGGAME_CONGRATS: '正解です🎉 ({tries}回目で当てました)',
-
-	/**
-	 * キーワード
-	 */
-	KEYWORD: '({word}..... {reading}..... 覚えました)',
 
 	timer: {
 		set: 'わかりました！',

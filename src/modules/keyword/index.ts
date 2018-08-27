@@ -1,3 +1,4 @@
+import * as loki from 'lokijs';
 import 藍 from '../../ai';
 import IModule from '../../module';
 import config from '../../config';
@@ -12,14 +13,29 @@ function kanaToHira(str: string) {
 	});
 }
 
+const db = '_keyword_learnedKeywords';
+
 export default class KeywordModule implements IModule {
 	public name = 'keyword';
 
 	private ai: 藍;
 	private tokenizer: any;
+	private learnedKeywords: loki.Collection<{
+		keyword: string;
+		learnedAt: number;
+	}>;
 
 	public install = (ai: 藍) => {
 		this.ai = ai;
+
+		//#region Init DB
+		this.learnedKeywords = this.ai.db.getCollection(db);
+		if (this.learnedKeywords === null) {
+			this.learnedKeywords = this.ai.db.addCollection(db, {
+				indices: ['keyword']
+			});
+		}
+		//#endregion
 
 		this.tokenizer = new MeCab();
 		this.tokenizer.command = config.mecab;
@@ -27,7 +43,7 @@ export default class KeywordModule implements IModule {
 		setInterval(this.say, 1000 * 60 * 60);
 	}
 
-	private say = async (msg?: MessageLike) => {
+	private say = async () => {
 		const tl = await this.ai.api('notes/local-timeline', {
 			limit: 30
 		});
@@ -44,33 +60,31 @@ export default class KeywordModule implements IModule {
 			});
 		})));
 
-		console.log(keywords);
-
 		const rnd = Math.floor((1 - Math.sqrt(Math.random())) * keywords.length);
 		const keyword = keywords.sort((a, b) => a[0].length < b[0].length ? 1 : -1)[rnd];
 
-		const text = serifs.KEYWORD
-			.replace('{word}', keyword[0])
-			.replace('{reading}', kanaToHira(keyword[8]))
+		const exist = this.learnedKeywords.findOne({
+			keyword: keyword[0]
+		});
 
-		if (msg) {
-			msg.reply(text);
+		let text: string;
+
+		if (exist) {
+			text = serifs.keyword.learned
+				.replace('{word}', keyword[0])
+				.replace('{reading}', kanaToHira(keyword[8]));
 		} else {
-			this.ai.post({
-				text: text
+			this.learnedKeywords.insertOne({
+				keyword: keyword[0],
+				learnedAt: Date.now()
 			});
-		}
-	}
 
-	public onMention = (msg: MessageLike) => {
-		if (msg.user.isAdmin && msg.isMessage && msg.text && msg.text.includes('なんか皆に言って')) {
-			this.say();
-			return true;
-		} else if (msg.text && msg.text.includes('なんか言って')) {
-			this.say(msg);
-			return true;
-		} else {
-			return false;
+			text = serifs.keyword.remembered
+				.replace('{reading}', kanaToHira(keyword[8]));
 		}
+
+		this.ai.post({
+			text: text
+		});
 	}
 }
