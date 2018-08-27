@@ -107,6 +107,8 @@ export default class 藍 {
 
 		this.localTimelineConnection.addEventListener('close', () => {
 			console.log('local-timeline stream closed');
+
+			this.localTimelineConnection.reconnect();
 		});
 
 		this.localTimelineConnection.addEventListener('message', message => {
