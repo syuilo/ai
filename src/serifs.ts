@@ -10,7 +10,11 @@ export default {
 		tooLong: '長すぎる気がします...',
 		requireMoreLove: 'もっと仲良くなったら考えてあげてもいいですよ？',
 		happyBirthday: 'お誕生日おめでとうございます🎉',
-		happyBirthdayWithName: 'お誕生日おめでとうございます、{name}🎉'
+		happyBirthdayWithName: 'お誕生日おめでとうございます、{name}🎉',
+		nadenade1: '…っ！ びっくりしました',
+		nadenade2: 'わわっ… 恥ずかしいです',
+		nadenade3: 'ん… ありがとうございます♪',
+		kawaii: 'ありがとうございます♪'
 	},
 
 	keyword: {

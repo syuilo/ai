@@ -23,7 +23,7 @@ export default class CoreModule implements IModule {
 	public onMention = (msg: MessageLike) => {
 		if (!msg.text) return false;
 
-		return this.setName(msg) || this.greet(msg);
+		return this.setName(msg) || this.greet(msg) || this.nadenade(msg) || this.kawaii(msg);
 	}
 
 	/**
@@ -105,13 +105,13 @@ export default class CoreModule implements IModule {
 			const y = now.getFullYear();
 			const m = now.getMonth();
 			const d = now.getDate();
-			const date = `${y}/${m + 1}/${d}`;
+			const today = `${y}/${m + 1}/${d}`;
 
 			const data = msg.friend.getPerModulesData(this);
 
-			if (data.lastGreetedAt == date) return;
+			if (data.lastGreetedAt == today) return;
 
-			data.lastGreetedAt = date;
+			data.lastGreetedAt = today;
 			msg.friend.setPerModulesData(this, data);
 
 			msg.friend.incLove();
@@ -140,6 +140,43 @@ export default class CoreModule implements IModule {
 		} else {
 			return false;
 		}
+	}
+
+	private nadenade = (msg: MessageLike): boolean => {
+		if (!msg.text) return false;
+		if (!msg.text.includes('なでなで')) return false;
+
+		const now = new Date();
+		const y = now.getFullYear();
+		const m = now.getMonth();
+		const d = now.getDate();
+		const today = `${y}/${m + 1}/${d}`;
+
+		const data = msg.friend.getPerModulesData(this);
+
+		if (data.lastNadenadeAt != today) {
+			data.lastNadenadeAt = today;
+			msg.friend.setPerModulesData(this, data);
+
+			msg.friend.incLove();
+		}
+
+		msg.reply(
+			msg.friend.love >= 5 ? serifs.core.nadenade2 :
+			msg.friend.love >= 10 ? serifs.core.nadenade3 :
+			serifs.core.nadenade1
+		);
+
+		return true;
+	}
+
+	private kawaii = (msg: MessageLike): boolean => {
+		if (!msg.text) return false;
+		if (!msg.text.includes('かわいい') && !msg.text.includes('可愛い')) return false;
+
+		msg.reply(serifs.core.kawaii);
+
+		return true;
 	}
 
 	public onReplyThisModule = (msg: MessageLike, data: any) => {
