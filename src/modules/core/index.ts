@@ -3,6 +3,11 @@ import 藍 from '../../ai';
 import IModule from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
+import Friend from '../../friend';
+
+function zeroPadding(num: number, length: number): string {
+	return ('0000000000' + num).slice(-length);
+}
 
 export default class CoreModule implements IModule {
 	public name = 'core';
@@ -10,45 +15,116 @@ export default class CoreModule implements IModule {
 
 	public install = (ai: 藍) => {
 		this.ai = ai;
+
+		this.crawleBirthday();
+		setInterval(this.crawleBirthday, 1000 * 60 * 3);
 	}
 
 	public onMention = (msg: MessageLike) => {
 		if (!msg.text) return false;
 
-		if (msg.text.includes('って呼んで') && !msg.text.startsWith('って呼んで')) {
-			const name = msg.text.match(/^(.+?)って呼んで/)[1];
+		return this.setName(msg) || this.greet(msg);
+	}
 
-			if (name.length > 10) {
-				msg.reply(serifs.core.tooLong);
-				return true;
-			}
+	/**
+	 * 誕生日のユーザーがいないかチェック(いたら祝う)
+	 */
+	private crawleBirthday = () => {
+		const now = new Date();
+		const y = now.getFullYear();
+		const m = now.getMonth();
+		const d = now.getDate();
+		// Misskeyの誕生日は 2018-06-16 のような形式
+		const today = `${zeroPadding(m + 1, 2)}-${d}`;
 
-			const withSan =
-				name.endsWith('さん') ||
-				name.endsWith('くん') ||
-				name.endsWith('君') ||
-				name.endsWith('ちゃん') ||
-				name.endsWith('様');
+		const birthFriends = this.ai.friends.find({
+			'user.profile.birthday': { '$regex': new RegExp('-' + today + '$') }
+		} as any);
 
-			if (withSan) {
-				msg.friend.name = name;
-				this.ai.friends.update(msg.friend);
-				msg.reply(serifs.core.setNameOk.replace('{name}', name));
-			} else {
-				msg.reply(serifs.core.san).then(reply => {
-					this.ai.subscribeReply(this, msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id, {
-						name: name
-					});
-				});
-			}
+		birthFriends.forEach(f => {
+			const friend = new Friend(this.ai, { doc: f });
 
+			const data = friend.getPerModulesData(this);
+
+			if (data.lastBirthdayChecked == today) return;
+
+			data.lastBirthdayChecked = today;
+			friend.setPerModulesData(this, data);
+
+			const text = friend.name ? serifs.core.happyBirthdayWithName.replace('{name}', friend.name) : serifs.core.happyBirthday;
+
+			this.ai.sendMessage(friend.userId, {
+				text: text
+			});
+		});
+	}
+
+	private setName = (msg: MessageLike): boolean => {
+		if (!msg.text) return false;
+		if (!msg.text.includes('って呼んで')) return false;
+		if (msg.text.startsWith('って呼んで')) return false;
+
+		if (msg.friend.love < 5) {
+			msg.reply(serifs.core.requireMoreLove);
 			return true;
-		} else if (msg.text.includes('おはよう')) {
+		}
+
+		const name = msg.text.match(/^(.+?)って呼んで/)[1];
+
+		if (name.length > 10) {
+			msg.reply(serifs.core.tooLong);
+			return true;
+		}
+
+		const withSan =
+			name.endsWith('さん') ||
+			name.endsWith('くん') ||
+			name.endsWith('君') ||
+			name.endsWith('ちゃん') ||
+			name.endsWith('様');
+
+		if (withSan) {
+			msg.friend.updateName(name);
+			msg.reply(serifs.core.setNameOk.replace('{name}', name));
+		} else {
+			msg.reply(serifs.core.san).then(reply => {
+				this.ai.subscribeReply(this, msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id, {
+					name: name
+				});
+			});
+		}
+
+		return true;
+	}
+
+	private greet = (msg: MessageLike): boolean => {
+		if (!msg.text) return false;
+
+		const incLove = () => {
+			const now = new Date();
+			const y = now.getFullYear();
+			const m = now.getMonth();
+			const d = now.getDate();
+			const date = `${y}/${m + 1}/${d}`;
+
+			const data = msg.friend.getPerModulesData(this);
+
+			if (data.lastGreetedAt == date) return;
+
+			data.lastGreetedAt = date;
+			msg.friend.setPerModulesData(this, data);
+
+			msg.friend.incLove();
+		};
+
+		if (msg.text.includes('おはよう')) {
 			if (msg.friend.name) {
 				msg.reply(serifs.core.goodMorningWithName.replace('{name}', msg.friend.name));
 			} else {
 				msg.reply(serifs.core.goodMorning);
 			}
+
+			incLove();
 
 			return true;
 		} else if (msg.text.includes('おやすみ')) {
@@ -57,6 +133,8 @@ export default class CoreModule implements IModule {
 			} else {
 				msg.reply(serifs.core.goodNight);
 			}
+
+			incLove();
 
 			return true;
 		} else {
@@ -68,16 +146,15 @@ export default class CoreModule implements IModule {
 		if (msg.text == null) return;
 
 		const done = () => {
-			this.ai.friends.update(msg.friend);
 			msg.reply(serifs.core.setNameOk.replace('{name}', msg.friend.name));
 			this.ai.unsubscribeReply(this, msg.userId);
 		};
 
 		if (msg.text.includes('はい')) {
-			msg.friend.name = data.name + 'さん';
+			msg.friend.updateName(data.name + 'さん');
 			done();
 		} else if (msg.text.includes('いいえ')) {
-			msg.friend.name = data.name;
+			msg.friend.updateName(data.name);
 			done();
 		} else {
 			msg.reply(serifs.core.yesOrNo).then(reply => {

@@ -7,7 +7,10 @@ export default {
 		goodMorningWithName: 'おはようございます、{name}！',
 		goodNight: 'おやすみなさい！',
 		goodNightWithName: 'おやすみなさい、{name}！',
-		tooLong: '長すぎる気がします...'
+		tooLong: '長すぎる気がします...',
+		requireMoreLove: 'もっと仲良くなったら考えてあげてもいいですよ？',
+		happyBirthday: 'お誕生日おめでとうございます🎉',
+		happyBirthdayWithName: 'お誕生日おめでとうございます、{name}🎉'
 	},
 
 	keyword: {

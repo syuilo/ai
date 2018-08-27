@@ -1,4 +1,5 @@
 import 藍 from './ai';
+import Friend from './friend';
 const delay = require('timeout-as-promise');
 
 export default class MessageLike {
@@ -26,22 +27,21 @@ export default class MessageLike {
 		return this.messageOrNote.replyId;
 	}
 
-	public friend: ReturnType<藍['friends']['findOne']>;
+	public friend: Friend;
 
 	constructor(ai: 藍, messageOrNote: any, isMessage: boolean) {
 		this.ai = ai;
 		this.messageOrNote = messageOrNote;
 		this.isMessage = isMessage;
 
-		this.friend = this.ai.friends.findOne({
-			userId: this.userId
-		});
+		this.friend = new Friend(ai, { user: this.user });
 
-		if (this.friend == null) {
-			this.friend = this.ai.friends.insertOne({
-				userId: this.userId
-			});
-		}
+		// メッセージなどに付いているユーザー情報は省略されている場合があるので完全なユーザー情報を持ってくる
+		this.ai.api('users/show', {
+			userId: this.userId
+		}).then(user => {
+			this.friend.updateUser(user);
+		});
 	}
 
 	public reply = async (text: string, cw?: string) => {

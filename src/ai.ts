@@ -3,10 +3,10 @@
 import * as loki from 'lokijs';
 import * as WebSocket from 'ws';
 import * as request from 'request-promise-native';
-import serifs from './serifs';
 import config from './config';
 import IModule from './module';
 import MessageLike from './message-like';
+import { FriendDoc } from './friend';
 const ReconnectingWebSocket = require('../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
 
 /**
@@ -38,10 +38,7 @@ export default class 藍 {
 		data?: any;
 	}>;
 
-	public friends: loki.Collection<{
-		userId: string;
-		name?: string;
-	}>;
+	public friends: loki.Collection<FriendDoc>;
 
 	constructor(account: any) {
 		this.account = account;
