@@ -68,6 +68,9 @@ export default class CoreModule implements IModule {
 		if (!msg.text.includes('って呼んで')) return false;
 		if (msg.text.startsWith('って呼んで')) return false;
 
+		// メッセージのみ
+		if (!msg.isMessage) return true;
+
 		if (msg.friend.love < 5) {
 			msg.reply(serifs.core.requireMoreLove);
 			return true;
@@ -147,6 +150,9 @@ export default class CoreModule implements IModule {
 	private nadenade = (msg: MessageLike): boolean => {
 		if (!msg.text) return false;
 		if (!msg.text.includes('なでなで')) return false;
+
+		// メッセージのみ
+		if (!msg.isMessage) return true;
 
 		//#region 1日に1回だけ親愛度を上げる
 		const today = getDate();
