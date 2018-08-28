@@ -2,7 +2,6 @@ import * as loki from 'lokijs';
 import 藍 from '../../ai';
 import IModule from '../../module';
 import config from '../../config';
-import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 const MeCab = require('mecab-async');
 
