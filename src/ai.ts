@@ -40,8 +40,9 @@ export default class 藍 {
 
 	public friends: loki.Collection<FriendDoc>;
 
-	constructor(account: any) {
+	constructor(account: any, modules: IModule[]) {
 		this.account = account;
+		this.modules = modules;
 
 		this.db = new loki('memory.json', {
 			autoload: true,
@@ -114,10 +115,6 @@ export default class 藍 {
 			this.onLocalNote(msg.body);
 		});
 		//#endregion
-	}
-
-	public install = (module: IModule) => {
-		this.modules.push(module);
 	}
 
 	private onMessage = (msg: any) => {

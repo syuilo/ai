@@ -12,6 +12,7 @@ import WelcomeModule from './modules/welcome';
 import TimerModule from './modules/timer';
 
 import * as request from 'request-promise-native';
+import IModule from './module';
 const promiseRetry = require('promise-retry');
 
 console.log('--- starting ai... ---');
@@ -25,17 +26,20 @@ promiseRetry(retry => {
 }).then(account => {
 	console.log(`account fetched: @${account.username}`);
 
-	const ai = new 藍(account);
+	const modules: IModule[] = [
+		new CoreModule(),
+		new PingModule(),
+		new WelcomeModule(),
+		new EmojiModule(),
+		new FortuneModule(),
+		new GuessingGameModule(),
+		new ReversiModule(),
+		new TimerModule()
+	];
 
-	ai.install(new CoreModule());
-	ai.install(new PingModule());
-	ai.install(new WelcomeModule());
-	ai.install(new EmojiModule());
-	ai.install(new FortuneModule());
-	ai.install(new GuessingGameModule());
-	ai.install(new ReversiModule());
-	ai.install(new TimerModule());
-	if (config.keywordEnabled) ai.install(new KeywordModule());
+	if (config.keywordEnabled) modules.push(new KeywordModule());
+
+	new 藍(account, modules);
 
 	console.log('--- ai started! ---');
 });
