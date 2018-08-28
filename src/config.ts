@@ -5,7 +5,6 @@ type Config = {
 	apiUrl: string;
 	keywordEnabled: boolean;
 	reversiEnabled: boolean;
-	serverMonitoring: boolean;
 	mecab?: string;
 };
 

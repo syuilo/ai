@@ -9,6 +9,7 @@
 import * as request from 'request-promise-native';
 import Reversi, { Color } from 'misskey-reversi';
 import config from '../../config';
+import serifs from '../../serifs';
 
 const db = {};
 
@@ -208,36 +209,36 @@ class Session {
 	private onEnded = async (msg: any) =>  {
 		// ストリームから切断
 		process.send({
-			type: 'close'
+			type: 'ended'
 		});
 
 		let text: string;
 
 		if (msg.body.game.surrendered) {
 			if (this.isSettai) {
-				text = `(${this.userName}を接待していたら投了されちゃいました... ごめんなさい)`;
+				text = serifs.reversi.settaiButYouSurrendered.replace('{name}', this.userName);
 			} else {
-				text = `${this.userName}が投了しちゃいました`;
+				text = serifs.reversi.youSurrendered.replace('{name}', this.userName);
 			}
 		} else if (msg.body.winnerId) {
 			if (msg.body.winnerId == this.account.id) {
 				if (this.isSettai) {
-					text = `${this.userName}に接待で勝ってしまいました...`;
+					text = serifs.reversi.iWonButSettai.replace('{name}', this.userName);
 				} else {
-					text = `${this.userName}に勝ちました♪`;
+					text = serifs.reversi.iWon.replace('{name}', this.userName);
 				}
 			} else {
 				if (this.isSettai) {
-					text = `(${this.userName}に接待で負けてあげました...♪)`;
+					text = serifs.reversi.iLoseButSettai.replace('{name}', this.userName);
 				} else {
-					text = `${this.userName}に負けました...`;
+					text = serifs.reversi.iLose.replace('{name}', this.userName);
 				}
 			}
 		} else {
 			if (this.isSettai) {
-				text = `(${this.userName}に接待で引き分けました...)`;
+				text = serifs.reversi.drawnSettai.replace('{name}', this.userName);
 			} else {
-				text = `${this.userName}と引き分けました～`;
+				text = serifs.reversi.drawn.replace('{name}', this.userName);
 			}
 		}
 
@@ -416,8 +417,8 @@ class Session {
 	 */
 	private postGameStarted = async () => {
 		const text = this.isSettai
-			? `${this.userName}の接待を始めました！`
-			: `対局を${this.userName}と始めました！ (強さ${this.strength})`;
+			? serifs.reversi.startedSettai.replace('{name}', this.userName)
+			: serifs.reversi.started.replace('{name}', this.userName).replace('{strength}', this.strength.toString());
 
 		return await this.post(`${text}\n→[観戦する](${this.url})`);
 	}

@@ -6,6 +6,9 @@ import serifs from '../../serifs';
 import config from '../../config';
 import MessageLike from '../../message-like';
 import * as WebSocket from 'ws';
+import Friend from '../../friend';
+import getDate from '../../utils/get-date';
+import { User } from '../../misskey/user';
 
 export default class ReversiModule implements IModule {
 	public name = 'reversi';
@@ -44,13 +47,13 @@ export default class ReversiModule implements IModule {
 	public onMention = (msg: MessageLike) => {
 		if (msg.text && (msg.text.includes('リバーシ') || msg.text.includes('りばーし') || msg.text.includes('オセロ') || msg.text.includes('おせろ') || msg.text.toLowerCase().includes('reversi'))) {
 			if (config.reversiEnabled) {
-				msg.reply(serifs.REVERSI_OK);
+				msg.reply(serifs.reversi.ok);
 
 				this.ai.api('games/reversi/match', {
 					userId: msg.userId
 				});
 			} else {
-				msg.reply(serifs.REVERSI_DECLINE);
+				msg.reply(serifs.reversi.decline);
 			}
 
 			return true;
@@ -157,8 +160,10 @@ export default class ReversiModule implements IModule {
 						type: 'set',
 						pos: msg.pos
 					});
-				} else if (msg.type == 'close') {
+				} else if (msg.type == 'ended') {
 					gw.close();
+
+					this.onGameEnded(game);
 				}
 			});
 
@@ -188,5 +193,24 @@ export default class ReversiModule implements IModule {
 		gw.addEventListener('close', () => {
 			console.log('reversi game stream closed');
 		});
+	}
+
+	private onGameEnded(game: any) {
+		const user = game.user1Id == this.ai.account.id ? game.user2 : game.user1;
+
+		//#region 1日に1回だけ親愛度を上げる
+		const today = getDate();
+
+		const friend = new Friend(this.ai, { user: user });
+
+		const data = friend.getPerModulesData(this);
+
+		if (data.lastPlayedAt != today) {
+			data.lastPlayedAt = today;
+			friend.setPerModulesData(this, data);
+
+			friend.incLove();
+		}
+		//#endregion
 	}
 }

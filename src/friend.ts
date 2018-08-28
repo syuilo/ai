@@ -1,9 +1,11 @@
 import 藍 from './ai';
 import IModule from './module';
+import getDate from './utils/get-date';
+import { User } from './misskey/user';
 
 export type FriendDoc = {
 	userId: string;
-	user: any;
+	user: User;
 	name?: string;
 	love?: number;
 	lastLoveIncrementedAt?: string;
@@ -50,7 +52,7 @@ export default class Friend {
 		}
 	}
 
-	public updateUser = (user: any) => {
+	public updateUser = (user: User) => {
 		this.doc.user = user;
 		this.save();
 	}
@@ -79,11 +81,7 @@ export default class Friend {
 	}
 
 	public incLove = () => {
-		const now = new Date();
-		const y = now.getFullYear();
-		const m = now.getMonth();
-		const d = now.getDate();
-		const today = `${y}/${m + 1}/${d}`;
+		const today = getDate();
 
 		if (this.doc.lastLoveIncrementedAt != today) {
 			this.doc.todayLoveIncrements = 0;

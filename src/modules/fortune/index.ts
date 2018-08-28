@@ -36,7 +36,7 @@ export default class FortuneModule implements IModule {
 			const rng = seedrandom(seed);
 			const omikuji = omikujis[Math.floor(rng() * omikujis.length)];
 			const item = items[Math.floor(rng() * items.length)];
-			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${item}`, serifs.FORTUNE_CW);
+			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${item}`, serifs.fortune.cw);
 			return true;
 		} else {
 			return false;

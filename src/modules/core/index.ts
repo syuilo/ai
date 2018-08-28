@@ -4,6 +4,7 @@ import IModule from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import Friend from '../../friend';
+import getDate from '../../utils/get-date';
 
 function zeroPadding(num: number, length: number): string {
 	return ('0000000000' + num).slice(-length);
@@ -76,12 +77,9 @@ export default class CoreModule implements IModule {
 			return true;
 		}
 
-		const withSan =
-			name.endsWith('さん') ||
-			name.endsWith('くん') ||
-			name.endsWith('君') ||
-			name.endsWith('ちゃん') ||
-			name.endsWith('様');
+		const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
+
+		const withSan = titles.some(t => name.endsWith(t));
 
 		if (withSan) {
 			msg.friend.updateName(name);
@@ -101,11 +99,7 @@ export default class CoreModule implements IModule {
 		if (!msg.text) return false;
 
 		const incLove = () => {
-			const now = new Date();
-			const y = now.getFullYear();
-			const m = now.getMonth();
-			const d = now.getDate();
-			const today = `${y}/${m + 1}/${d}`;
+			const today = getDate();
 
 			const data = msg.friend.getPerModulesData(this);
 
@@ -146,6 +140,7 @@ export default class CoreModule implements IModule {
 		if (!msg.text) return false;
 		if (!msg.text.includes('なでなで')) return false;
 
+		//#region 1日に1回だけ親愛度を上げる
 		const now = new Date();
 		const y = now.getFullYear();
 		const m = now.getMonth();
@@ -160,6 +155,7 @@ export default class CoreModule implements IModule {
 
 			msg.friend.incLove();
 		}
+		//#endregion
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.nadenade2 :

@@ -38,9 +38,9 @@ export default class GuessingGameModule implements IModule {
 
 			if (!msg.isMessage) {
 				if (exist != null) {
-					msg.reply(serifs.GUESSINGGAME_ARLEADY_STARTED);
+					msg.reply(serifs.guessingGame.arleadyStarted);
 				} else {
-					msg.reply(serifs.GUESSINGGAME_PLZ_DM);
+					msg.reply(serifs.guessingGame.plzDm);
 				}
 
 				return true;
@@ -57,7 +57,7 @@ export default class GuessingGameModule implements IModule {
 				endedAt: null
 			});
 
-			msg.reply(serifs.GUESSINGGAME_STARTED).then(reply => {
+			msg.reply(serifs.guessingGame.started).then(reply => {
 				this.ai.subscribeReply(this, msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id);
 			});
 
@@ -76,7 +76,7 @@ export default class GuessingGameModule implements IModule {
 		});
 
 		if (msg.text.includes('やめ')) {
-			msg.reply(serifs.GUESSINGGAME_CANCEL);
+			msg.reply(serifs.guessingGame.cancel);
 			exist.isEnded = true;
 			exist.endedAt = Date.now();
 			this.guesses.update(exist);
@@ -87,7 +87,7 @@ export default class GuessingGameModule implements IModule {
 		const guess = msg.text.toLowerCase().replace(this.ai.account.username.toLowerCase(), '').match(/[0-9]+/);
 
 		if (guess == null) {
-			msg.reply(serifs.GUESSINGGAME_NAN).then(reply => {
+			msg.reply(serifs.guessingGame.nan).then(reply => {
 				this.ai.subscribeReply(this, msg.userId, msg.isMessage, reply.id);
 			});
 		} else {
@@ -104,15 +104,15 @@ export default class GuessingGameModule implements IModule {
 
 			if (exist.secret < g) {
 				text = firsttime
-					? serifs.GUESSINGGAME_LESS.replace('$', g.toString())
-					: serifs.GUESSINGGAME_LESS_AGAIN.replace('$', g.toString());
+					? serifs.guessingGame.less.replace('$', g.toString())
+					: serifs.guessingGame.lessAgain.replace('$', g.toString());
 			} else if (exist.secret > g) {
 				text = firsttime
-					? serifs.GUESSINGGAME_GRATER.replace('$', g.toString())
-					: serifs.GUESSINGGAME_GRATER_AGAIN.replace('$', g.toString());
+					? serifs.guessingGame.grater.replace('$', g.toString())
+					: serifs.guessingGame.graterAgain.replace('$', g.toString());
 			} else {
 				end = true;
-				text = serifs.GUESSINGGAME_CONGRATS.replace('{tries}', exist.tries.length.toString());
+				text = serifs.guessingGame.congrats.replace('{tries}', exist.tries.length.toString());
 			}
 
 			if (end) {
