@@ -30,7 +30,7 @@ export default class Friend {
 
 	public doc: FriendDoc;
 
-	constructor(ai: 藍, opts: { user?: any, doc?: FriendDoc }) {
+	constructor(ai: 藍, opts: { user?: User, doc?: FriendDoc }) {
 		this.ai = ai;
 
 		if (opts.user) {
