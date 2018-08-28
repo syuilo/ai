@@ -8,6 +8,7 @@ export default {
 		goodNight: 'おやすみなさい！',
 		goodNightWithName: 'おやすみなさい、{name}！',
 		tooLong: '長すぎる気がします...',
+		invalidName: '発音が難しい気がします',
 		requireMoreLove: 'もっと仲良くなったら考えてあげてもいいですよ？',
 		happyBirthday: 'お誕生日おめでとうございます🎉',
 		happyBirthdayWithName: 'お誕生日おめでとうございます、{name}🎉',

@@ -80,6 +80,11 @@ export default class CoreModule implements IModule {
 			return true;
 		}
 
+		if (name.includes('@')) {
+			msg.reply(serifs.core.invalidName);
+			return true;
+		}
+
 		const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
 
 		const withSan = titles.some(t => name.endsWith(t));
