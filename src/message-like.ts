@@ -1,5 +1,6 @@
 import 藍 from './ai';
 import Friend from './friend';
+import { User } from './misskey/user';
 const delay = require('timeout-as-promise');
 
 export default class MessageLike {
@@ -7,23 +8,23 @@ export default class MessageLike {
 	private messageOrNote: any;
 	public isMessage: boolean;
 
-	public get id() {
+	public get id(): string {
 		return this.messageOrNote.id;
 	}
 
-	public get user() {
+	public get user(): User {
 		return this.messageOrNote.user;
 	}
 
-	public get userId() {
+	public get userId(): string {
 		return this.messageOrNote.userId;
 	}
 
-	public get text() {
+	public get text(): string {
 		return this.messageOrNote.text;
 	}
 
-	public get replyId() {
+	public get replyId(): string {
 		return this.messageOrNote.replyId;
 	}
 
