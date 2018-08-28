@@ -144,11 +144,7 @@ export default class CoreModule implements IModule {
 		if (!msg.text.includes('なでなで')) return false;
 
 		//#region 1日に1回だけ親愛度を上げる
-		const now = new Date();
-		const y = now.getFullYear();
-		const m = now.getMonth();
-		const d = now.getDate();
-		const today = `${y}/${m + 1}/${d}`;
+		const today = getDate();
 
 		const data = msg.friend.getPerModulesData(this);
 
