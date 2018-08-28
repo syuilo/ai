@@ -1,4 +1,3 @@
-import * as loki from 'lokijs';
 import 藍 from '../../ai';
 import IModule from '../../module';
 import MessageLike from '../../message-like';
