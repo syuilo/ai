@@ -10,6 +10,7 @@ import * as request from 'request-promise-native';
 import Reversi, { Color } from 'misskey-reversi';
 import config from '../../config';
 import serifs from '../../serifs';
+import { User } from '../../misskey/user';
 
 const db = {};
 
@@ -25,7 +26,7 @@ const titles = [
 ];
 
 class Session {
-	private account: any;
+	private account: User;
 	private game: any;
 	private form: any;
 	private o: Reversi;
@@ -41,7 +42,7 @@ class Session {
 	 */
 	private startedNote: any = null;
 
-	private get user(): any {
+	private get user(): User {
 		return this.game.user1Id == this.account.id ? this.game.user2 : this.game.user1;
 	}
 

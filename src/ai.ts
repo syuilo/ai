@@ -7,13 +7,14 @@ import config from './config';
 import IModule from './module';
 import MessageLike from './message-like';
 import { FriendDoc } from './friend';
+import { User } from './misskey/user';
 const ReconnectingWebSocket = require('../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
 
 /**
  * 藍
  */
 export default class 藍 {
-	public account: any;
+	public account: User;
 
 	/**
 	 * ホームストリーム
@@ -40,7 +41,7 @@ export default class 藍 {
 
 	public friends: loki.Collection<FriendDoc>;
 
-	constructor(account: any, modules: IModule[]) {
+	constructor(account: User, modules: IModule[]) {
 		this.account = account;
 		this.modules = modules;
 
