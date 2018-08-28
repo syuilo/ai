@@ -32,7 +32,6 @@ export default class CoreModule implements IModule {
 	 */
 	private crawleBirthday = () => {
 		const now = new Date();
-		const y = now.getFullYear();
 		const m = now.getMonth();
 		const d = now.getDate();
 		// Misskeyの誕生日は 2018-06-16 のような形式
