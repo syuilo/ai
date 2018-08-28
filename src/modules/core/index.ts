@@ -132,7 +132,9 @@ export default class CoreModule implements IModule {
 			incLove();
 
 			return true;
-		} else if (msg.text.includes('おやすみ')) {
+		}
+
+		if (msg.text.includes('おやすみ')) {
 			if (msg.friend.name) {
 				msg.reply(serifs.core.goodNightWithName.replace('{name}', msg.friend.name));
 			} else {
@@ -142,9 +144,9 @@ export default class CoreModule implements IModule {
 			incLove();
 
 			return true;
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	private nadenade = (msg: MessageLike): boolean => {
