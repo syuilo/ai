@@ -53,7 +53,7 @@ export default class CoreModule implements IModule {
 			data.lastBirthdayChecked = today;
 			friend.setPerModulesData(this, data);
 
-			const text = friend.name ? serifs.core.happyBirthdayWithName.replace('{name}', friend.name) : serifs.core.happyBirthday;
+			const text = serifs.core.happyBirthday(friend.name);
 
 			this.ai.sendMessage(friend.userId, {
 				text: text
@@ -92,7 +92,7 @@ export default class CoreModule implements IModule {
 
 		if (withSan) {
 			msg.friend.updateName(name);
-			msg.reply(serifs.core.setNameOk.replace('{name}', name));
+			msg.reply(serifs.core.setNameOk(name));
 		} else {
 			msg.reply(serifs.core.san).then(reply => {
 				this.ai.subscribeReply(this, msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id, {
@@ -108,6 +108,7 @@ export default class CoreModule implements IModule {
 		if (!msg.text) return false;
 
 		const incLove = () => {
+			//#region 1日に1回だけ親愛度を上げる
 			const today = getDate();
 
 			const data = msg.friend.getPerModulesData(this);
@@ -118,41 +119,24 @@ export default class CoreModule implements IModule {
 			msg.friend.setPerModulesData(this, data);
 
 			msg.friend.incLove();
+			//#endregion
 		};
 
 		if (msg.text.includes('こんにちは')) {
-			if (msg.friend.name) {
-				msg.reply(serifs.core.helloWithName.replace('{name}', msg.friend.name));
-			} else {
-				msg.reply(serifs.core.hello);
-			}
-
+			msg.reply(serifs.core.hello(msg.friend.name));
 			incLove();
-
 			return true;
 		}
 
 		if (msg.text.includes('おはよ')) {
-			if (msg.friend.name) {
-				msg.reply(serifs.core.goodMorningWithName.replace('{name}', msg.friend.name));
-			} else {
-				msg.reply(serifs.core.goodMorning);
-			}
-
+			msg.reply(serifs.core.goodMorning(msg.friend.name));
 			incLove();
-
 			return true;
 		}
 
 		if (msg.text.includes('おやすみ')) {
-			if (msg.friend.name) {
-				msg.reply(serifs.core.goodNightWithName.replace('{name}', msg.friend.name));
-			} else {
-				msg.reply(serifs.core.goodNight);
-			}
-
+			msg.reply(serifs.core.goodNight(msg.friend.name));
 			incLove();
-
 			return true;
 		}
 
@@ -201,7 +185,7 @@ export default class CoreModule implements IModule {
 		if (msg.text == null) return;
 
 		const done = () => {
-			msg.reply(serifs.core.setNameOk.replace('{name}', msg.friend.name));
+			msg.reply(serifs.core.setNameOk(msg.friend.name));
 			this.ai.unsubscribeReply(this, msg.userId);
 		};
 

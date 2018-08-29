@@ -37,7 +37,7 @@ export default class TimerModule implements IModule {
 				setTimeout(() => {
 					const name = msg.friend.name;
 					this.ai.sendMessage(msg.userId, {
-						text: name ? serifs.timer.notifyWithName.replace('{time}', str).replace('{name}', name) : serifs.timer.notify.replace('{time}', str)
+						text: serifs.timer.notify(str, name)
 					});
 				}, time);
 

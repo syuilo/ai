@@ -217,29 +217,29 @@ class Session {
 
 		if (msg.body.game.surrendered) {
 			if (this.isSettai) {
-				text = serifs.reversi.settaiButYouSurrendered.replace('{name}', this.userName);
+				text = serifs.reversi.settaiButYouSurrendered(this.userName);
 			} else {
-				text = serifs.reversi.youSurrendered.replace('{name}', this.userName);
+				text = serifs.reversi.youSurrendered(this.userName);
 			}
 		} else if (msg.body.winnerId) {
 			if (msg.body.winnerId == this.account.id) {
 				if (this.isSettai) {
-					text = serifs.reversi.iWonButSettai.replace('{name}', this.userName);
+					text = serifs.reversi.iWonButSettai(this.userName);
 				} else {
-					text = serifs.reversi.iWon.replace('{name}', this.userName);
+					text = serifs.reversi.iWon(this.userName);
 				}
 			} else {
 				if (this.isSettai) {
-					text = serifs.reversi.iLoseButSettai.replace('{name}', this.userName);
+					text = serifs.reversi.iLoseButSettai(this.userName);
 				} else {
-					text = serifs.reversi.iLose.replace('{name}', this.userName);
+					text = serifs.reversi.iLose(this.userName);
 				}
 			}
 		} else {
 			if (this.isSettai) {
-				text = serifs.reversi.drawnSettai.replace('{name}', this.userName);
+				text = serifs.reversi.drawnSettai(this.userName);
 			} else {
-				text = serifs.reversi.drawn.replace('{name}', this.userName);
+				text = serifs.reversi.drawn(this.userName);
 			}
 		}
 
@@ -418,8 +418,8 @@ class Session {
 	 */
 	private postGameStarted = async () => {
 		const text = this.isSettai
-			? serifs.reversi.startedSettai.replace('{name}', this.userName)
-			: serifs.reversi.started.replace('{name}', this.userName).replace('{strength}', this.strength.toString());
+			? serifs.reversi.startedSettai(this.userName)
+			: serifs.reversi.started(this.userName, this.strength.toString());
 
 		return await this.post(`${text}\n→[観戦する](${this.url})`);
 	}

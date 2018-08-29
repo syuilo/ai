@@ -102,15 +102,15 @@ export default class GuessingGameModule implements IModule {
 
 			if (exist.secret < g) {
 				text = firsttime
-					? serifs.guessingGame.less.replace('$', g.toString())
-					: serifs.guessingGame.lessAgain.replace('$', g.toString());
+					? serifs.guessingGame.less(g.toString())
+					: serifs.guessingGame.lessAgain(g.toString());
 			} else if (exist.secret > g) {
 				text = firsttime
-					? serifs.guessingGame.grater.replace('$', g.toString())
-					: serifs.guessingGame.graterAgain.replace('$', g.toString());
+					? serifs.guessingGame.grater(g.toString())
+					: serifs.guessingGame.graterAgain(g.toString());
 			} else {
 				end = true;
-				text = serifs.guessingGame.congrats.replace('{tries}', exist.tries.length.toString());
+				text = serifs.guessingGame.congrats(exist.tries.length.toString());
 			}
 
 			if (end) {
