@@ -5,7 +5,7 @@ export default function(db: loki, name: string, opts?: any): loki.Collection {
 
 	collection = db.getCollection(name);
 
-	if (collection === null) {
+	if (collection == null) {
 		collection = db.addCollection(name, opts);
 	}
 
