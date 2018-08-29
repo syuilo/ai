@@ -93,7 +93,7 @@ export default class GuessingGameModule implements IModule {
 		} else {
 			if (guess.length > 3) return;
 
-			const g = parseInt(guess, 10);
+			const g = parseInt(guess[0], 10);
 
 			const firsttime = exist.tries.indexOf(g) === -1;
 
