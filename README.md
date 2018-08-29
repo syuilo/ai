@@ -11,3 +11,6 @@
 }
 ```
 `npm install` して `npm run build` して `node built` すれば起動できます
+
+## ライセンス
+MIT
