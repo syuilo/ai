@@ -3,6 +3,8 @@ export default {
 		setNameOk: 'わかりました。これからは{name}とお呼びしますね！',
 		san: 'さん付けした方がいいですか？',
 		yesOrNo: '「はい」か「いいえ」しかわからないんです...',
+		hello: 'こんにちは♪',
+		helloWithName: 'こんにちは、{name}♪',
 		goodMorning: 'おはようございます！',
 		goodMorningWithName: 'おはようございます、{name}！',
 		goodNight: 'おやすみなさい！',

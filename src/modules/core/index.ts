@@ -120,6 +120,18 @@ export default class CoreModule implements IModule {
 			msg.friend.incLove();
 		};
 
+		if (msg.text.includes('こんにちは')) {
+			if (msg.friend.name) {
+				msg.reply(serifs.core.helloWithName.replace('{name}', msg.friend.name));
+			} else {
+				msg.reply(serifs.core.hello);
+			}
+
+			incLove();
+
+			return true;
+		}
+
 		if (msg.text.includes('おはよ')) {
 			if (msg.friend.name) {
 				msg.reply(serifs.core.goodMorningWithName.replace('{name}', msg.friend.name));
