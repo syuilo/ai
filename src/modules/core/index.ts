@@ -168,8 +168,8 @@ export default class CoreModule implements IModule {
 		//#endregion
 
 		msg.reply(
-			msg.friend.love >= 5 ? serifs.core.nadenade2 :
 			msg.friend.love >= 10 ? serifs.core.nadenade3 :
+			msg.friend.love >= 5 ? serifs.core.nadenade2 :
 			serifs.core.nadenade1
 		);
 
