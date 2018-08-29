@@ -3,6 +3,7 @@ import 藍 from '../../ai';
 import IModule from '../../module';
 import config from '../../config';
 import serifs from '../../serifs';
+import getCollection from '../../utils/get-collection';
 const MeCab = require('mecab-async');
 
 function kanaToHira(str: string) {
@@ -11,8 +12,6 @@ function kanaToHira(str: string) {
 		return String.fromCharCode(chr);
 	});
 }
-
-const db = '_keyword_learnedKeywords';
 
 export default class KeywordModule implements IModule {
 	public name = 'keyword';
@@ -28,12 +27,9 @@ export default class KeywordModule implements IModule {
 		this.ai = ai;
 
 		//#region Init DB
-		this.learnedKeywords = this.ai.db.getCollection(db);
-		if (this.learnedKeywords === null) {
-			this.learnedKeywords = this.ai.db.addCollection(db, {
-				indices: ['keyword']
-			});
-		}
+		this.learnedKeywords = getCollection(this.ai.db, '_keyword_learnedKeywords', {
+			indices: ['userId']
+		});
 		//#endregion
 
 		this.tokenizer = new MeCab();

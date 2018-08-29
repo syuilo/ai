@@ -3,6 +3,7 @@ import 藍 from '../../ai';
 import IModule from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
+import getCollection from '../../utils/get-collection';
 
 export default class GuessingGameModule implements IModule {
 	public name = 'guessingGame';
@@ -20,12 +21,9 @@ export default class GuessingGameModule implements IModule {
 		this.ai = ai;
 
 		//#region Init DB
-		this.guesses = this.ai.db.getCollection('guessingGame');
-		if (this.guesses === null) {
-			this.guesses = this.ai.db.addCollection('guessingGame', {
-				indices: ['userId']
-			});
-		}
+		this.guesses = getCollection(this.ai.db, 'guessingGame', {
+			indices: ['userId']
+		});
 		//#endregion
 	}
 

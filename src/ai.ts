@@ -8,6 +8,7 @@ import IModule from './module';
 import MessageLike from './message-like';
 import { FriendDoc } from './friend';
 import { User } from './misskey/user';
+import getCollection from './utils/get-collection';
 const ReconnectingWebSocket = require('../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
 
 /**
@@ -55,19 +56,13 @@ export default class 藍 {
 
 	private init = () => {
 		//#region Init DB
-		this.contexts = this.db.getCollection('contexts');
-		if (this.contexts === null) {
-			this.contexts = this.db.addCollection('contexts', {
-				indices: ['key']
-			});
-		}
+		this.contexts = getCollection(this.db, 'contexts', {
+			indices: ['key']
+		});
 
-		this.friends = this.db.getCollection('friends');
-		if (this.friends === null) {
-			this.friends = this.db.addCollection('friends', {
-				indices: ['userId']
-			});
-		}
+		this.friends = getCollection(this.db, 'friends', {
+			indices: ['userId']
+		});
 		//#endregion
 
 		// Install modules
