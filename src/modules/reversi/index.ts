@@ -11,7 +11,7 @@ import getDate from '../../utils/get-date';
 import { User } from '../../misskey/user';
 
 export default class ReversiModule implements IModule {
-	public name = 'reversi';
+	public readonly name = 'reversi';
 
 	private ai: 藍;
 

@@ -4,7 +4,7 @@ import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 
 export default class TimerModule implements IModule {
-	public name = 'timer';
+	public readonly name = 'timer';
 	private ai: 藍;
 
 	public install = (ai: 藍) => {

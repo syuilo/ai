@@ -14,7 +14,7 @@ const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
 const invalidChars = ['@', '#', '*', ':', '(', '[', ' ', '　'];
 
 export default class CoreModule implements IModule {
-	public name = 'core';
+	public readonly name = 'core';
 	private ai: 藍;
 
 	public install = (ai: 藍) => {

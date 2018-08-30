@@ -119,7 +119,7 @@ const faces = [
 ]
 
 export default class EmojiModule implements IModule {
-	public name = 'emoji';
+	public readonly name = 'emoji';
 
 	public install = (ai: 藍) => { }
 

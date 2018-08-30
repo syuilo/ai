@@ -25,7 +25,7 @@ const items = [
 ];
 
 export default class FortuneModule implements IModule {
-	public name = 'fortune';
+	public readonly name = 'fortune';
 
 	public install = (ai: 藍) => { }
 

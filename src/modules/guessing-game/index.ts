@@ -6,7 +6,7 @@ import serifs from '../../serifs';
 import getCollection from '../../utils/get-collection';
 
 export default class GuessingGameModule implements IModule {
-	public name = 'guessingGame';
+	public readonly name = 'guessingGame';
 	private ai: 藍;
 	private guesses: loki.Collection<{
 		userId: string;

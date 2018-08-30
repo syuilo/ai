@@ -2,7 +2,7 @@ import 藍 from '../../ai';
 import IModule from '../../module';
 
 export default class WelcomeModule implements IModule {
-	public name = 'welcome';
+	public readonly name = 'welcome';
 
 	private ai: 藍;
 

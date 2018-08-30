@@ -14,7 +14,7 @@ function kanaToHira(str: string) {
 }
 
 export default class KeywordModule implements IModule {
-	public name = 'keyword';
+	public readonly name = 'keyword';
 
 	private ai: 藍;
 	private tokenizer: any;
