@@ -178,7 +178,7 @@ export default class CoreModule implements IModule {
 		if (!msg.text) return false;
 		if (!msg.text.includes('かわいい') && !msg.text.includes('可愛い')) return false;
 
-		msg.reply(serifs.core.kawaii);
+		msg.reply(msg.friend.love >= 5 ? serifs.core.kawaii2 : serifs.core.kawaii1);
 
 		return true;
 	}

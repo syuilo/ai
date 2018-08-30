@@ -26,7 +26,9 @@ export default {
 
 		nadenade3: 'ん… ありがとうございます♪',
 
-		kawaii: 'ありがとうございます♪'
+		kawaii1: 'ありがとうございます♪',
+
+		kawaii2: '嬉しいです♪'
 	},
 
 	keyword: {
