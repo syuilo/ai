@@ -9,6 +9,10 @@ function zeroPadding(num: number, length: number): string {
 	return ('0000000000' + num).slice(-length);
 }
 
+const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
+
+const invalidChars = ['@', '#', '*', ':', '(', '[', ' ', '　'];
+
 export default class CoreModule implements IModule {
 	public name = 'core';
 	private ai: 藍;
@@ -81,12 +85,10 @@ export default class CoreModule implements IModule {
 			return true;
 		}
 
-		if (name.includes('@')) {
+		if (invalidChars.some(c => name.includes(c))) {
 			msg.reply(serifs.core.invalidName);
 			return true;
 		}
-
-		const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
 
 		const withSan = titles.some(t => name.endsWith(t));
 
