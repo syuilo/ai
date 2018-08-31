@@ -4,6 +4,7 @@ import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import Friend from '../../friend';
 import getDate from '../../utils/get-date';
+import includes from '../../utils/includes';
 
 function zeroPadding(num: number, length: number): string {
 	return ('0000000000' + num).slice(-length);
@@ -107,8 +108,6 @@ export default class CoreModule implements IModule {
 	}
 
 	private greet = (msg: MessageLike): boolean => {
-		if (!msg.text) return false;
-
 		const incLove = () => {
 			//#region 1日に1回だけ親愛度を上げる
 			const today = getDate();
@@ -124,19 +123,25 @@ export default class CoreModule implements IModule {
 			//#endregion
 		};
 
-		if (msg.text.includes('こんにちは')) {
+		if (includes(msg.text, ['こんにちは'])) {
 			msg.reply(serifs.core.hello(msg.friend.name));
 			incLove();
 			return true;
 		}
 
-		if (msg.text.includes('おはよ')) {
+		if (includes(msg.text, ['こんばんは'])) {
+			msg.reply(serifs.core.helloNight(msg.friend.name));
+			incLove();
+			return true;
+		}
+
+		if (includes(msg.text, ['おはよ', 'お早う'])) {
 			msg.reply(serifs.core.goodMorning(msg.friend.name));
 			incLove();
 			return true;
 		}
 
-		if (msg.text.includes('おやすみ')) {
+		if (includes(msg.text, ['おやすみ', 'お休み'])) {
 			msg.reply(serifs.core.goodNight(msg.friend.name));
 			incLove();
 			return true;
@@ -146,8 +151,7 @@ export default class CoreModule implements IModule {
 	}
 
 	private nadenade = (msg: MessageLike): boolean => {
-		if (!msg.text) return false;
-		if (!msg.text.includes('なでなで')) return false;
+		if (!includes(msg.text, ['なでなで'])) return false;
 
 		// メッセージのみ
 		if (!msg.isMessage) return true;
@@ -175,8 +179,7 @@ export default class CoreModule implements IModule {
 	}
 
 	private kawaii = (msg: MessageLike): boolean => {
-		if (!msg.text) return false;
-		if (!msg.text.includes('かわいい') && !msg.text.includes('可愛い')) return false;
+		if (!includes(msg.text, ['かわいい', '可愛い'])) return false;
 
 		msg.reply(msg.friend.love >= 5 ? serifs.core.kawaii2 : serifs.core.kawaii1);
 

@@ -8,6 +8,8 @@ export default {
 
 		hello: name => name ? `こんにちは、${name}♪` : `こんにちは♪`,
 
+		helloNight: name => name ? `こんばんは、${name}♪` : `こんばんは♪`,
+
 		goodMorning: name => name ? `おはようございます、${name}！` : 'おはようございます！',
 
 		goodNight: name => name ? `おやすみなさい、${name}！` : 'おやすみなさい！',

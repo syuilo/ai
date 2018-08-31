@@ -9,6 +9,7 @@ import * as WebSocket from 'ws';
 import Friend from '../../friend';
 import getDate from '../../utils/get-date';
 import { User } from '../../misskey/user';
+import includes from '../../utils/includes';
 
 export default class ReversiModule implements IModule {
 	public readonly name = 'reversi';
@@ -45,7 +46,7 @@ export default class ReversiModule implements IModule {
 	}
 
 	public onMention = (msg: MessageLike) => {
-		if (msg.text && (msg.text.includes('リバーシ') || msg.text.includes('りばーし') || msg.text.includes('オセロ') || msg.text.includes('おせろ') || msg.text.toLowerCase().includes('reversi'))) {
+		if (includes(msg.text, ['リバーシ', 'オセロ', 'reversi', 'othello'])) {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.reversi.ok);
 
