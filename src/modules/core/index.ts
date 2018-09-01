@@ -129,13 +129,13 @@ export default class CoreModule implements IModule {
 			//#endregion
 		};
 
-		if (includes(msg.text, ['こんにちは'])) {
+		if (includes(msg.text, ['こんにちは', 'こんにちわ'])) {
 			msg.reply(serifs.core.hello(msg.friend.name));
 			incLove();
 			return true;
 		}
 
-		if (includes(msg.text, ['こんばんは'])) {
+		if (includes(msg.text, ['こんばんは', 'こんばんわ'])) {
 			msg.reply(serifs.core.helloNight(msg.friend.name));
 			incLove();
 			return true;
