@@ -33,6 +33,7 @@ export default class CoreModule implements IModule {
 			this.greet(msg) ||
 			this.nadenade(msg) ||
 			this.kawaii(msg) ||
+			this.batou(msg) ||
 			this.ponkotu(msg)
 		);
 	}
@@ -178,13 +179,13 @@ export default class CoreModule implements IModule {
 		//#endregion
 
 		msg.reply(
-			msg.friend.love >= 10 ? serifs.core.nadenade3 :
-			msg.friend.love >= 5 ? serifs.core.nadenade2 :
-			msg.friend.love <= -15 ? serifs.core.nadenadeIya4 :
-			msg.friend.love <= -10 ? serifs.core.nadenadeIya3 :
-			msg.friend.love <= -5 ? serifs.core.nadenadeIya2 :
-			msg.friend.love <= -1 ? serifs.core.nadenadeIya1 :
-			serifs.core.nadenade1
+			msg.friend.love >= 10 ? serifs.core.nadenade.love3 :
+			msg.friend.love >= 5 ? serifs.core.nadenade.love2 :
+			msg.friend.love <= -15 ? serifs.core.nadenade.hate4 :
+			msg.friend.love <= -10 ? serifs.core.nadenade.hate3 :
+			msg.friend.love <= -5 ? serifs.core.nadenade.hate2 :
+			msg.friend.love <= -1 ? serifs.core.nadenade.hate1 :
+			serifs.core.nadenade.normal
 		);
 
 		return true;
@@ -194,9 +195,19 @@ export default class CoreModule implements IModule {
 		if (!includes(msg.text, ['かわいい', '可愛い'])) return false;
 
 		msg.reply(
-			msg.friend.love >= 5 ? serifs.core.kawaii2 :
-			msg.friend.love <= -3 ? serifs.core.kawaiiIya1 :
-			serifs.core.kawaii1);
+			msg.friend.love >= 5 ? serifs.core.kawaii.love :
+			msg.friend.love <= -3 ? serifs.core.kawaii.hate :
+			serifs.core.kawaii.normal);
+
+		return true;
+	}
+
+	private batou = (msg: MessageLike): boolean => {
+		if (!includes(msg.text, ['罵倒して', '罵って'])) return false;
+
+		msg.reply(
+			msg.friend.love <= -5 ? serifs.core.batou.hate :
+			serifs.core.batou.normal);
 
 		return true;
 	}

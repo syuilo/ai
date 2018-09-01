@@ -22,25 +22,35 @@ export default {
 
 		happyBirthday: name => name ? `お誕生日おめでとうございます、${name}🎉` : 'お誕生日おめでとうございます🎉',
 
-		nadenade1: '…！ びっくりしました',
+		nadenade: {
+			normal: '…！ びっくりしました',
 
-		nadenade2: 'わわっ… 恥ずかしいです',
+			love2: 'わわっ… 恥ずかしいです',
 
-		nadenade3: 'ん… ありがとうございます♪',
+			love3: 'ん… ありがとうございます♪',
 
-		nadenadeIya1: '…っ！ やめてほしいです...',
+			hate1: '…っ！ やめてほしいです...',
 
-		nadenadeIya2: '触らないでください',
+			hate2: '触らないでください',
 
-		nadenadeIya3: '近寄らないでください',
+			hate3: '近寄らないでください',
 
-		nadenadeIya4: 'やめてください。刺しますよ？',
+			hate4: 'やめてください。刺しますよ？',
+		},
 
-		kawaii1: 'ありがとうございます♪',
+		kawaii: {
+			normal: 'ありがとうございます♪',
 
-		kawaii2: '嬉しいです♪',
+			love: '嬉しいです♪',
 
-		kawaiiIya1: '...ありがとうございます',
+			hate: '...ありがとうございます'
+		},
+
+		batou: {
+			normal: '...AIに罵られたいんですか？ この変態！',
+
+			hate: '...頭大丈夫ですか？'
+		}
 	},
 
 	keyword: {
