@@ -28,7 +28,13 @@ export default class CoreModule implements IModule {
 	public onMention = (msg: MessageLike) => {
 		if (!msg.text) return false;
 
-		return this.setName(msg) || this.greet(msg) || this.nadenade(msg) || this.kawaii(msg);
+		return (
+			this.setName(msg) ||
+			this.greet(msg) ||
+			this.nadenade(msg) ||
+			this.kawaii(msg) ||
+			this.ponkotu(msg)
+		);
 	}
 
 	/**
@@ -147,11 +153,6 @@ export default class CoreModule implements IModule {
 			return true;
 		}
 
-		if (includes(msg.text, ['ぽんこつ'])) {
-			msg.friend.decLove();
-			return true;
-		}
-
 		return false;
 	}
 
@@ -196,6 +197,14 @@ export default class CoreModule implements IModule {
 			msg.friend.love >= 5 ? serifs.core.kawaii2 :
 			msg.friend.love <= -3 ? serifs.core.kawaiiIya1 :
 			serifs.core.kawaii1);
+
+		return true;
+	}
+
+	private ponkotu = (msg: MessageLike): boolean => {
+		if (!includes(msg.text, ['ぽんこつ'])) return false;
+
+		msg.friend.decLove();
 
 		return true;
 	}
