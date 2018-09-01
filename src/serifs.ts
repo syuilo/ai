@@ -34,9 +34,9 @@ export default {
 	},
 
 	keyword: {
-		learned: '({word}..... {reading}..... 覚えました)',
+		learned: (word, reading) => `(${word}..... ${reading}..... 覚えました)`,
 
-		remembered: '{reading}！'
+		remembered: (word) => `${word}`
 	},
 
 	/**

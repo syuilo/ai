@@ -65,17 +65,14 @@ export default class KeywordModule implements IModule {
 		let text: string;
 
 		if (exist) {
-			text = serifs.keyword.remembered
-				.replace('{reading}', kanaToHira(keyword[8]));
+			text = serifs.keyword.remembered(kanaToHira(keyword[8]));
 		} else {
 			this.learnedKeywords.insertOne({
 				keyword: keyword[0],
 				learnedAt: Date.now()
 			});
 
-			text = serifs.keyword.learned
-				.replace('{word}', keyword[0])
-				.replace('{reading}', kanaToHira(keyword[8]));
+			text = serifs.keyword.learned(keyword[0], kanaToHira(keyword[8]));
 		}
 
 		this.ai.post({
