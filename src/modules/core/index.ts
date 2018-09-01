@@ -147,6 +147,11 @@ export default class CoreModule implements IModule {
 			return true;
 		}
 
+		if (includes(msg.text, ['ぽんこつ'])) {
+			msg.friend.decLove();
+			return true;
+		}
+
 		return false;
 	}
 
@@ -156,22 +161,28 @@ export default class CoreModule implements IModule {
 		// メッセージのみ
 		if (!msg.isMessage) return true;
 
-		//#region 1日に1回だけ親愛度を上げる
-		const today = getDate();
+		//#region 1日に1回だけ親愛度を上げる(嫌われてない場合のみ)
+		if (msg.friend.love >= 0) {
+			const today = getDate();
 
-		const data = msg.friend.getPerModulesData(this);
+			const data = msg.friend.getPerModulesData(this);
 
-		if (data.lastNadenadeAt != today) {
-			data.lastNadenadeAt = today;
-			msg.friend.setPerModulesData(this, data);
+			if (data.lastNadenadeAt != today) {
+				data.lastNadenadeAt = today;
+				msg.friend.setPerModulesData(this, data);
 
-			msg.friend.incLove();
+				msg.friend.incLove();
+			}
 		}
 		//#endregion
 
 		msg.reply(
 			msg.friend.love >= 10 ? serifs.core.nadenade3 :
 			msg.friend.love >= 5 ? serifs.core.nadenade2 :
+			msg.friend.love <= -15 ? serifs.core.nadenadeIya4 :
+			msg.friend.love <= -10 ? serifs.core.nadenadeIya3 :
+			msg.friend.love <= -5 ? serifs.core.nadenadeIya2 :
+			msg.friend.love <= -1 ? serifs.core.nadenadeIya1 :
 			serifs.core.nadenade1
 		);
 
@@ -181,7 +192,10 @@ export default class CoreModule implements IModule {
 	private kawaii = (msg: MessageLike): boolean => {
 		if (!includes(msg.text, ['かわいい', '可愛い'])) return false;
 
-		msg.reply(msg.friend.love >= 5 ? serifs.core.kawaii2 : serifs.core.kawaii1);
+		msg.reply(
+			msg.friend.love >= 5 ? serifs.core.kawaii2 :
+			msg.friend.love <= -3 ? serifs.core.kawaiiIya1 :
+			serifs.core.kawaii1);
 
 		return true;
 	}

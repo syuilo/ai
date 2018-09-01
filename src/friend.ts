@@ -92,8 +92,27 @@ export default class Friend {
 
 		if (this.doc.love == null) this.doc.love = 0;
 		this.doc.love++;
+
+		// 最大 100
+		if (this.doc.love > 100) this.doc.love = 100;
+
 		this.doc.lastLoveIncrementedAt = today;
 		this.doc.todayLoveIncrements = (this.doc.todayLoveIncrements || 0) + 1;
+		this.save();
+	}
+
+	public decLove = () => {
+		if (this.doc.love == null) this.doc.love = 0;
+		this.doc.love--;
+
+		// 最低 -30
+		if (this.doc.love < -30) this.doc.love = -30;
+
+		// 親愛度マイナスなら名前を忘れる
+		if (this.doc.love < 0) {
+			this.doc.name = null;
+		}
+
 		this.save();
 	}
 
