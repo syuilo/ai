@@ -4,7 +4,6 @@ import IModule from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import getCollection from '../../utils/get-collection';
-import includes from '../../utils/includes';
 
 export default class GuessingGameModule implements IModule {
 	public readonly name = 'guessingGame';
@@ -29,7 +28,7 @@ export default class GuessingGameModule implements IModule {
 	}
 
 	public onMention = (msg: MessageLike) => {
-		if (includes(msg.text, ['数当て', '数あて'])) {
+		if (msg.includes(['数当て', '数あて'])) {
 			const exist = this.guesses.findOne({
 				userId: msg.userId,
 				isEnded: false

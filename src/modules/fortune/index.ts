@@ -3,7 +3,6 @@ import IModule from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import * as seedrandom from 'seedrandom';
-import includes from '../../utils/includes';
 
 const omikujis = [
 	'大大吉',
@@ -31,7 +30,7 @@ export default class FortuneModule implements IModule {
 	public install = (ai: 藍) => { }
 
 	public onMention = (msg: MessageLike) => {
-		if (includes(msg.text, ['占', 'うらな', '運勢', 'おみくじ'])) {
+		if (msg.includes(['占', 'うらな', '運勢', 'おみくじ'])) {
 			const date = new Date();
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}@${msg.userId}`;
 			const rng = seedrandom(seed);

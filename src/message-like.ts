@@ -1,6 +1,7 @@
 import 藍 from './ai';
 import Friend from './friend';
 import { User } from './misskey/user';
+import includes from './utils/includes';
 const delay = require('timeout-as-promise');
 
 export default class MessageLike {
@@ -61,5 +62,9 @@ export default class MessageLike {
 				cw: cw
 			});
 		}
+	}
+
+	public includes = (words: string[]): boolean => {
+		return includes(this.text, words);
 	}
 }

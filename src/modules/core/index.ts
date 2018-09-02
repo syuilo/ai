@@ -4,7 +4,6 @@ import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import Friend from '../../friend';
 import getDate from '../../utils/get-date';
-import includes from '../../utils/includes';
 
 function zeroPadding(num: number, length: number): string {
 	return ('0000000000' + num).slice(-length);
@@ -137,25 +136,25 @@ export default class CoreModule implements IModule {
 			.sort((a, b) => a.length < b.length ? 1 : -1)[0]
 			.substr(1);
 
-		if (includes(msg.text, ['こんにちは', 'こんにちわ'])) {
+		if (msg.includes(['こんにちは', 'こんにちわ'])) {
 			msg.reply(serifs.core.hello(msg.friend.name));
 			incLove();
 			return true;
 		}
 
-		if (includes(msg.text, ['こんばんは', 'こんばんわ'])) {
+		if (msg.includes(['こんばんは', 'こんばんわ'])) {
 			msg.reply(serifs.core.helloNight(msg.friend.name));
 			incLove();
 			return true;
 		}
 
-		if (includes(msg.text, ['おは', 'お早う'])) {
+		if (msg.includes(['おは', 'お早う'])) {
 			msg.reply(serifs.core.goodMorning(tension, msg.friend.name));
 			incLove();
 			return true;
 		}
 
-		if (includes(msg.text, ['おやすみ', 'お休み'])) {
+		if (msg.includes(['おやすみ', 'お休み'])) {
 			msg.reply(serifs.core.goodNight(msg.friend.name));
 			incLove();
 			return true;
@@ -165,7 +164,7 @@ export default class CoreModule implements IModule {
 	}
 
 	private nadenade = (msg: MessageLike): boolean => {
-		if (!includes(msg.text, ['なでなで'])) return false;
+		if (!msg.includes(['なでなで'])) return false;
 
 		// メッセージのみ
 		if (!msg.isMessage) return true;
@@ -199,7 +198,7 @@ export default class CoreModule implements IModule {
 	}
 
 	private kawaii = (msg: MessageLike): boolean => {
-		if (!includes(msg.text, ['かわいい', '可愛い'])) return false;
+		if (!msg.includes(['かわいい', '可愛い'])) return false;
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.kawaii.love :
@@ -210,7 +209,7 @@ export default class CoreModule implements IModule {
 	}
 
 	private humu = (msg: MessageLike): boolean => {
-		if (!includes(msg.text, ['踏んで'])) return false;
+		if (!msg.includes(['踏んで'])) return false;
 
 		// メッセージのみ
 		if (!msg.isMessage) return true;
@@ -223,7 +222,7 @@ export default class CoreModule implements IModule {
 	}
 
 	private batou = (msg: MessageLike): boolean => {
-		if (!includes(msg.text, ['罵倒して', '罵って'])) return false;
+		if (!msg.includes(['罵倒して', '罵って'])) return false;
 
 		// メッセージのみ
 		if (!msg.isMessage) return true;
@@ -237,7 +236,7 @@ export default class CoreModule implements IModule {
 	}
 
 	private ponkotu = (msg: MessageLike): boolean => {
-		if (!includes(msg.text, ['ぽんこつ'])) return false;
+		if (!msg.includes(['ぽんこつ'])) return false;
 
 		msg.friend.decLove();
 

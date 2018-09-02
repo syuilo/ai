@@ -1,4 +1,4 @@
-import { hiraganaToKatagana, zenkakuToHankaku, hankakuToZenkaku } from './japanese';
+import { hiraganaToKatagana, hankakuToZenkaku } from './japanese';
 
 export default function(text: string, words: string[]): boolean {
 	if (text == null) return false;
