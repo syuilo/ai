@@ -212,6 +212,9 @@ export default class CoreModule implements IModule {
 	private humu = (msg: MessageLike): boolean => {
 		if (!includes(msg.text, ['踏んで'])) return false;
 
+		// メッセージのみ
+		if (!msg.isMessage) return true;
+
 		msg.reply(
 			msg.friend.love <= -3 ? serifs.core.humu.hate :
 			serifs.core.humu.normal);
@@ -221,6 +224,9 @@ export default class CoreModule implements IModule {
 
 	private batou = (msg: MessageLike): boolean => {
 		if (!includes(msg.text, ['罵倒して', '罵って'])) return false;
+
+		// メッセージのみ
+		if (!msg.isMessage) return true;
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.batou.love :
