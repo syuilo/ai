@@ -2,7 +2,7 @@ import 藍 from './ai';
 import Friend from './friend';
 import { User } from './misskey/user';
 import includes from './utils/includes';
-import includes from './utils/or';
+import or from './utils/or';
 const delay = require('timeout-as-promise');
 
 export default class MessageLike {
