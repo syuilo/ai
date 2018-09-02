@@ -206,6 +206,7 @@ export default class CoreModule implements IModule {
 		if (!includes(msg.text, ['罵倒して', '罵って'])) return false;
 
 		msg.reply(
+			msg.friend.love >= 5 ? serifs.core.batou.love :
 			msg.friend.love <= -5 ? serifs.core.batou.hate :
 			serifs.core.batou.normal);
 
