@@ -49,7 +49,7 @@ export default {
 		suki: {
 			normal: 'えっ… ありがとうございます…♪',
 
-			love: name => `私も${name}のこと好きですよ♪`,
+			love: name => `私もその… ${name}のこと好きですよ♪`,
 
 			hate: null
 		},
