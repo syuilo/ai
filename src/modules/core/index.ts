@@ -132,7 +132,7 @@ export default class CoreModule implements IModule {
 			//#endregion
 		};
 
-		const tension = (msg.text.match(/[！!]{2,}/g) || [])
+		const tension = (msg.text.match(/[！!]{2,}/g) || [''])
 			.sort((a, b) => a.length < b.length ? 1 : -1)[0]
 			.substr(1);
 
