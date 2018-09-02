@@ -217,7 +217,7 @@ export default class CoreModule implements IModule {
 		if (!msg.isMessage) return true;
 
 		msg.reply(
-			msg.friend.love >= 5 ? serifs.core.suki.love :
+			msg.friend.love >= 5 ? (msg.friend.name ? serifs.core.suki.love(msg.friend.name) : serifs.core.suki.normal) :
 			msg.friend.love <= -3 ? serifs.core.suki.hate :
 			serifs.core.suki.normal);
 
