@@ -115,6 +115,8 @@ export default class CoreModule implements IModule {
 	}
 
 	private greet = (msg: MessageLike): boolean => {
+		if (msg.text == null) return false;
+
 		const incLove = () => {
 			//#region 1日に1回だけ親愛度を上げる
 			const today = getDate();
@@ -130,6 +132,10 @@ export default class CoreModule implements IModule {
 			//#endregion
 		};
 
+		const tension = (msg.text.match(/[！!]{2,}/g) || [])
+			.sort((a, b) => a.length < b.length ? 1 : -1)[0]
+			.substr(1);
+
 		if (includes(msg.text, ['こんにちは', 'こんにちわ'])) {
 			msg.reply(serifs.core.hello(msg.friend.name));
 			incLove();
@@ -143,7 +149,7 @@ export default class CoreModule implements IModule {
 		}
 
 		if (includes(msg.text, ['おは', 'お早う'])) {
-			msg.reply(serifs.core.goodMorning(msg.friend.name));
+			msg.reply(serifs.core.goodMorning(tension, msg.friend.name));
 			incLove();
 			return true;
 		}

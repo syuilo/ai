@@ -10,7 +10,7 @@ export default {
 
 		helloNight: name => name ? `こんばんは、${name}♪` : `こんばんは♪`,
 
-		goodMorning: name => name ? `おはようございます、${name}！` : 'おはようございます！',
+		goodMorning: (tension, name) => name ? `おはようございます、${name}！${tension}` : `おはようございます！${tension}`,
 
 		goodNight: name => name ? `おやすみなさい、${name}！` : 'おやすみなさい！',
 
