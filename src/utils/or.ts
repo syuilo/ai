@@ -13,5 +13,8 @@ function cleanup(text: string): string {
 	return text.trim()
 		.replace(/[！!]+$/, '')
 		.replace(/。$/, '')
-		.replace(/(です|デス)$/, '');
+		.replace(/デス$/, '')
+		.replace(/^藍/, '')
+		.replace(/^チャン/, '')
+		.replace(/、+$/, '');
 }
