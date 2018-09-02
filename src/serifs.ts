@@ -47,7 +47,7 @@ export default {
 		},
 
 		batou: {
-			love: '…AIに罵られたいんですか？ この変態！',
+			love: 'AIに罵られたいって... ちょっと引きます',
 
 			normal: '(じとー…)',
 
