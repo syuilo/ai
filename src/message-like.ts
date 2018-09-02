@@ -2,6 +2,7 @@ import 藍 from './ai';
 import Friend from './friend';
 import { User } from './misskey/user';
 import includes from './utils/includes';
+import includes from './utils/or';
 const delay = require('timeout-as-promise');
 
 export default class MessageLike {
@@ -47,6 +48,8 @@ export default class MessageLike {
 	}
 
 	public reply = async (text: string, cw?: string) => {
+		if (text == null) return;
+
 		console.log(`sending reply of ${this.id} ...`);
 
 		await delay(2000);
@@ -66,5 +69,9 @@ export default class MessageLike {
 
 	public includes = (words: string[]): boolean => {
 		return includes(this.text, words);
+	}
+
+	public or = (words: string[]): boolean => {
+		return or(this.text, words);
 	}
 }

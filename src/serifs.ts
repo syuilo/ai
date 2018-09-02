@@ -46,6 +46,14 @@ export default {
 			hate: '…ありがとうございます'
 		},
 
+		suki: {
+			normal: 'えっ… ありがとうございます…♪',
+
+			love: name => `私も${name}のこと好きですよ♪`,
+
+			hate: null
+		},
+
 		humu: {
 			normal: 'え、えっと…… ふみふみ……… どうですか…？',
 

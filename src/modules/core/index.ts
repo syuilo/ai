@@ -32,6 +32,7 @@ export default class CoreModule implements IModule {
 			this.greet(msg) ||
 			this.nadenade(msg) ||
 			this.kawaii(msg) ||
+			this.suki(msg) ||
 			this.humu(msg) ||
 			this.batou(msg) ||
 			this.ponkotu(msg)
@@ -204,6 +205,20 @@ export default class CoreModule implements IModule {
 			msg.friend.love >= 5 ? serifs.core.kawaii.love :
 			msg.friend.love <= -3 ? serifs.core.kawaii.hate :
 			serifs.core.kawaii.normal);
+
+		return true;
+	}
+
+	private suki = (msg: MessageLike): boolean => {
+		if (!msg.or(['好き', 'すき'])) return false;
+
+		// メッセージのみ
+		if (!msg.isMessage) return true;
+
+		msg.reply(
+			msg.friend.love >= 5 ? serifs.core.suki.love :
+			msg.friend.love <= -3 ? serifs.core.suki.hate :
+			serifs.core.suki.normal);
 
 		return true;
 	}
