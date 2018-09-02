@@ -33,6 +33,7 @@ export default class CoreModule implements IModule {
 			this.greet(msg) ||
 			this.nadenade(msg) ||
 			this.kawaii(msg) ||
+			this.humu(msg) ||
 			this.batou(msg) ||
 			this.ponkotu(msg)
 		);
@@ -204,6 +205,16 @@ export default class CoreModule implements IModule {
 			msg.friend.love >= 5 ? serifs.core.kawaii.love :
 			msg.friend.love <= -3 ? serifs.core.kawaii.hate :
 			serifs.core.kawaii.normal);
+
+		return true;
+	}
+
+	private humu = (msg: MessageLike): boolean => {
+		if (!includes(msg.text, ['踏んで'])) return false;
+
+		msg.reply(
+			msg.friend.love <= -3 ? serifs.core.humu.hate :
+			serifs.core.humu.normal);
 
 		return true;
 	}

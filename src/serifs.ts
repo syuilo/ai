@@ -46,6 +46,12 @@ export default {
 			hate: '…ありがとうございます'
 		},
 
+		humu: {
+			normal: 'え、えっと…… ふみふみ……… どうですか…？',
+
+			hate: '…'
+		},
+
 		batou: {
 			love: 'AIに罵られたいって... ちょっと引きます',
 
