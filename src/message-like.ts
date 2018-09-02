@@ -71,7 +71,7 @@ export default class MessageLike {
 		return includes(this.text, words);
 	}
 
-	public or = (words: string[]): boolean => {
+	public or = (words: (string | RegExp)[]): boolean => {
 		return or(this.text, words);
 	}
 }

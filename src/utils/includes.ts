@@ -1,10 +1,10 @@
-import { hiraganaToKatagana, hankakuToZenkaku } from './japanese';
+import { katakanaToHiragana, hankakuToZenkaku } from './japanese';
 
 export default function(text: string, words: string[]): boolean {
 	if (text == null) return false;
 
-	text = hankakuToZenkaku(hiraganaToKatagana(text));
-	words = words.map(word => hiraganaToKatagana(word));
+	text = katakanaToHiragana(hankakuToZenkaku(text));
+	words = words.map(word => katakanaToHiragana(word));
 
 	return words.some(word => text.includes(word));
 }

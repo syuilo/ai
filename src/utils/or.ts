@@ -1,10 +1,10 @@
-import { hiraganaToKatagana, hankakuToZenkaku } from './japanese';
+import { hankakuToZenkaku, katakanaToHiragana } from './japanese';
 
-export default function(text: string, words: string[]): boolean {
+export default function(text: string, words: (string | RegExp)[]): boolean {
 	if (text == null) return false;
 
-	text = hankakuToZenkaku(hiraganaToKatagana(text));
-	words = words.map(word => hiraganaToKatagana(word));
+	text = katakanaToHiragana(hankakuToZenkaku(text));
+	words = words.map(word => typeof word == 'string' ? katakanaToHiragana(word) : word);
 
 	return words.some(word => {
 		/**
@@ -19,16 +19,20 @@ export default function(text: string, words: string[]): boolean {
 				// ただそのままだと「セーラー」などの本来「ー」が含まれているワードも「ー」が除去され
 				// 「セーラ」になり、「セーラー」を期待している場合はマッチしなくなり期待する動作にならなくなるので、
 				// 期待するワードの末尾にもともと「ー」が含まれている場合は(対象のテキストの「ー」をすべて除去した後に)「ー」を付けてあげる
-				.replace(/ー+$/, '') + (word[word.length - 1] == 'ー' ? 'ー' : '')
-				.replace(/ッ+$/, '')
+				.replace(/ー+$/, '') + ((typeof word == 'string' && word[word.length - 1] == 'ー') ? 'ー' : '')
+				.replace(/っ+$/, '')
 				.replace(/。$/, '')
-				.replace(/デス$/, '')
+				.replace(/です$/, '')
 				.replace(/^藍/, '')
-				.replace(/^チャン/, '')
+				.replace(/^ちゃん/, '')
 				.replace(/、+$/, '');
 		}
 
-		return (text == word) || (cleanup(text) == word);
+		if (typeof word == 'string') {
+			return (text == word) || (cleanup(text) == word);
+		} else {
+			return (word.test(text)) || (word.test(cleanup(text)));
+		}
 	});
 }
 

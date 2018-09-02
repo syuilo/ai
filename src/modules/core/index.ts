@@ -225,7 +225,7 @@ export default class CoreModule implements IModule {
 	}
 
 	private hug = (msg: MessageLike): boolean => {
-		if (!msg.or(['ぎゅ'])) return false;
+		if (!msg.or(['ぎゅ', /^はぐ(し(て|よ|よう)?)?$/])) return false;
 
 		// メッセージのみ
 		if (!msg.isMessage) return true;
