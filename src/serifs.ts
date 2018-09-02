@@ -54,6 +54,14 @@ export default {
 			hate: null
 		},
 
+		hug: {
+			normal: 'ぎゅー...',
+
+			love: 'ぎゅー♪',
+
+			hate: '離れてください...'
+		},
+
 		humu: {
 			normal: 'え、えっと…… ふみふみ……… どうですか…？',
 
