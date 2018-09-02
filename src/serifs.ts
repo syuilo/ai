@@ -217,6 +217,8 @@ export default {
 
 		invalid: 'うーん...？',
 
+		tooLong: '長すぎます…',
+
 		notify: (time, name) => name ? `${name}、${time}経ちましたよ！` : `${time}経ちましたよ！`
 	}
 };

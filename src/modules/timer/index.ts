@@ -24,25 +24,30 @@ export default class TimerModule implements IModule {
 			if ((seconds + minutes + hours) == 0) {
 				msg.reply(serifs.timer.invalid);
 				return true;
-			} else {
-				msg.reply(serifs.timer.set);
+			}
 
-				const time =
-					(1000 * seconds) +
-					(1000 * 60 * minutes) +
-					(1000 * 60 * 60 * hours);
+			const time =
+				(1000 * seconds) +
+				(1000 * 60 * minutes) +
+				(1000 * 60 * 60 * hours);
 
-				const str = `${hours ? hoursQuery[0] : ''}${minutes ? minutesQuery[0] : ''}${seconds ? secondsQuery[0] : ''}`;
-
-				setTimeout(() => {
-					const name = msg.friend.name;
-					this.ai.sendMessage(msg.userId, {
-						text: serifs.timer.notify(str, name)
-					});
-				}, time);
-
+			if (time > 86400000) {
+				msg.reply(serifs.timer.tooLong);
 				return true;
 			}
+
+			msg.reply(serifs.timer.set);
+
+			const str = `${hours ? hoursQuery[0] : ''}${minutes ? minutesQuery[0] : ''}${seconds ? secondsQuery[0] : ''}`;
+
+			setTimeout(() => {
+				const name = msg.friend.name;
+				this.ai.sendMessage(msg.userId, {
+					text: serifs.timer.notify(str, name)
+				});
+			}, time);
+
+			return true;
 		} else {
 			return false;
 		}
