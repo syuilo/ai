@@ -11,7 +11,7 @@ export default function(text: string, words: (string | RegExp)[]): boolean {
 		 * テキストの余分な部分を取り除く
 		 * 例えば「藍ちゃん好き！」のようなテキストを「好き」にする
 		 */
-		function cleanup(text: string): string {
+		function denoise(text: string): string {
 			text = text.trim()
 				.replace(/[！!]+$/, '')
 				.replace(/っ+$/, '')
@@ -33,9 +33,9 @@ export default function(text: string, words: (string | RegExp)[]): boolean {
 		}
 
 		if (typeof word == 'string') {
-			return (text == word) || (cleanup(text) == word);
+			return (text == word) || (denoise(text) == word);
 		} else {
-			return (word.test(text)) || (word.test(cleanup(text)));
+			return (word.test(text)) || (word.test(denoise(text)));
 		}
 	});
 }
