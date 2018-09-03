@@ -230,6 +230,25 @@ export default class CoreModule implements IModule {
 		// メッセージのみ
 		if (!msg.isMessage) return true;
 
+		//#region 前のハグから1分経ってない場合は返信しない
+		// これは、「ハグ」と言って「ぎゅー」と返信したとき、相手が
+		// それに対してさらに「ぎゅー」と返信するケースがあったため。
+		// そうするとその「ぎゅー」に対してもマッチするため、また
+		// 藍がそれに返信してしまうことになり、少し不自然になる。
+		// これを防ぐために前にハグしてから少し時間が経っていないと
+		// 返信しないようにする
+		const now = Date.now();
+
+		const data = msg.friend.getPerModulesData(this);
+
+		if (data.lastHuggedAt != null) {
+			if (now - data.lastHuggedAt < (1000 * 60)) return true;
+		}
+
+		data.lastHuggedAt = now;
+		msg.friend.setPerModulesData(this, data);
+		//#endregion
+
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.hug.love :
 			msg.friend.love <= -3 ? serifs.core.hug.hate :
