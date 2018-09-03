@@ -10,6 +10,7 @@ import GuessingGameModule from './modules/guessing-game';
 import KeywordModule from './modules/keyword';
 import WelcomeModule from './modules/welcome';
 import TimerModule from './modules/timer';
+import DiceModule from './modules/dice';
 import ServerModule from './modules/server';
 
 import * as request from 'request-promise-native';
@@ -36,6 +37,7 @@ promiseRetry(retry => {
 		new GuessingGameModule(),
 		new ReversiModule(),
 		new TimerModule(),
+		new DiceModule(),
 		new ServerModule()
 	];
 
