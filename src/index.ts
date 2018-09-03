@@ -10,6 +10,7 @@ import GuessingGameModule from './modules/guessing-game';
 import KeywordModule from './modules/keyword';
 import WelcomeModule from './modules/welcome';
 import TimerModule from './modules/timer';
+import ServerModule from './modules/server';
 
 import * as request from 'request-promise-native';
 import IModule from './module';
@@ -34,7 +35,8 @@ promiseRetry(retry => {
 		new FortuneModule(),
 		new GuessingGameModule(),
 		new ReversiModule(),
-		new TimerModule()
+		new TimerModule(),
+		new ServerModule()
 	];
 
 	if (config.keywordEnabled) modules.push(new KeywordModule());

@@ -228,5 +228,9 @@ export default {
 		tooLong: '長すぎます…',
 
 		notify: (time, name) => name ? `${name}、${time}経ちましたよ！` : `${time}経ちましたよ！`
+	},
+
+	server: {
+		cpu: 'サーバーの負荷が高そうです。大丈夫でしょうか...？'
 	}
 };
