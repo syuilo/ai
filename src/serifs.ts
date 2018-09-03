@@ -57,15 +57,17 @@ export default {
 		hug: {
 			normal: 'ぎゅー...',
 
-			love: 'ぎゅー♪',
+			love: 'ぎゅーっ♪',
 
 			hate: '離れてください...'
 		},
 
 		humu: {
-			normal: 'え、えっと…… ふみふみ……… どうですか…？',
+			love: 'え、えっと…… ふみふみ……… どうですか…？',
 
-			hate: '…'
+			normal: 'えぇ... それはちょっと...',
+
+			hate: '……'
 		},
 
 		batou: {
