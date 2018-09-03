@@ -25,6 +25,8 @@ export default function(text: string, words: (string | RegExp)[]): boolean {
 			text = text
 				.replace(/。$/, '')
 				.replace(/です$/, '')
+				.replace(/(\.|…)+$/, '')
+				.replace(/[♪♥]+$/, '')
 				.replace(/^藍/, '')
 				.replace(/^ちゃん/, '')
 				.replace(/、+$/, '');
