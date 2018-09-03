@@ -1,6 +1,7 @@
 import 藍 from '../../ai';
 import IModule from '../../module';
 import MessageLike from '../../message-like';
+import serifs from '../../serifs';
 
 export default class DiceModule implements IModule {
 	public readonly name = 'dice';
@@ -29,7 +30,7 @@ export default class DiceModule implements IModule {
 			results.push(Math.floor(Math.random() * dice) + 1);
 		}
 
-		msg.reply(results.join(' '));
+		msg.reply(serifs.dice.done(results.join(' ')));
 
 		return true;
 	}

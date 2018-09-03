@@ -85,6 +85,10 @@ export default {
 		remembered: (word) => `${word}`
 	},
 
+	dice: {
+		done: res => `${res} です！`
+	},
+
 	/**
 	 * リバーシ
 	 */
