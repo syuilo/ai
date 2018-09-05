@@ -134,6 +134,7 @@ export default class CoreModule implements IModule {
 			//#endregion
 		};
 
+		// 末尾のエクスクラメーションマーク
 		const tension = (msg.text.match(/[！!]{2,}/g) || [''])
 			.sort((a, b) => a.length < b.length ? 1 : -1)[0]
 			.substr(1);
@@ -158,6 +159,24 @@ export default class CoreModule implements IModule {
 
 		if (msg.includes(['おやすみ', 'お休み'])) {
 			msg.reply(serifs.core.goodNight(msg.friend.name));
+			incLove();
+			return true;
+		}
+
+		if (msg.includes(['行ってくる', '行ってきます', 'いってくる', 'いってきます'])) {
+			msg.reply(
+				msg.friend.love >= 7
+					? serifs.core.itterassyai.love(msg.friend.name)
+					: serifs.core.itterassyai.normal(msg.friend.name));
+			incLove();
+			return true;
+		}
+
+		if (msg.includes(['ただいま'])) {
+			msg.reply(
+				msg.friend.love >= 7
+					? serifs.core.okaeri.love(msg.friend.name)
+					: serifs.core.okaeri.normal(msg.friend.name));
 			incLove();
 			return true;
 		}

@@ -1,3 +1,5 @@
+// せりふ
+
 export default {
 	core: {
 		setNameOk: name => `わかりました。これからは${name}とお呼びしますね！`,
@@ -13,6 +15,18 @@ export default {
 		goodMorning: (tension, name) => name ? `おはようございます、${name}！${tension}` : `おはようございます！${tension}`,
 
 		goodNight: name => name ? `おやすみなさい、${name}！` : 'おやすみなさい！',
+
+		okaeri: {
+			love: name => name ? `おかえりなさい、${name}♪` : 'おかえりなさい♪',
+
+			normal: name => name ? `おかえりなさい、${name}！` : 'おかえりなさい！',
+		},
+
+		itterassyai: {
+			love: name => name ? `いってらっしゃい、${name}♪` : 'いってらっしゃい♪',
+
+			normal: name => name ? `いってらっしゃい、${name}！` : 'いってらっしゃい！',
+		},
 
 		tooLong: '長すぎる気がします...',
 
