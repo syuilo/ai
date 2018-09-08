@@ -1,3 +1,5 @@
+<img src="https://github.com/syuilo/ai/blob/master/ai.png?raw=true" align="right" height="320px"/>
+
 # 取扱説明書
 
 名前はAIなので藍(あい)。愛という意味も込められています。
