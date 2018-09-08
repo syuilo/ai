@@ -1,6 +1,7 @@
 # 取扱説明書
 
-この説明書をお読みいただくと藍ともっと遊べます。
+名前はAIなので藍(あい)。愛という意味も込められています。
+"Ai" means "artificial intelligence" in English. And it also means "love" in Japanese.
 
 ## プロフィール
 1X歳の女の子。
