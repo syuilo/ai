@@ -1,5 +1,3 @@
-<img src="https://github.com/syuilo/ai/blob/master/ai.png?raw=true" align="right" height="320px"/>
-
 # 藍
 Misskeyのための日本語AI。[藍について](./torisetu.md)
 
