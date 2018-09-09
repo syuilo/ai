@@ -6,9 +6,7 @@
 "Ai" means "artificial intelligence" in English. And it also means "love" in Japanese.
 
 ## プロフィール
-1X歳の女の子。
-Misskeyに24時間常駐している。AIなので睡眠は不要だが、たまにデフラグが必要だそう。
-自分のソースを読まれるのは恥ずかしいらしい。
+Misskeyのアシスタントを務める1X歳の女の子。睡眠はデフラグらしい。
 
 よくポンコツと言われる。
 
