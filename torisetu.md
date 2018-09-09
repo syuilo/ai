@@ -2,11 +2,8 @@
 
 # 取扱説明書
 
-名前はAIなので藍(あい)。愛という意味も込められています。
-"Ai" means "artificial intelligence" in English. And it also means "love" in Japanese.
-
 ## プロフィール
-Misskeyのアシスタントを務める1X歳の女の子。睡眠はデフラグらしい。
+Misskeyのアシスタントを務める1X歳の女の子AI。名前は藍(あい)。睡眠はデフラグらしい。
 
 よくポンコツと言われる。
 
