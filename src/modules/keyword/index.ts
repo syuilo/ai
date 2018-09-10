@@ -65,7 +65,7 @@ export default class KeywordModule implements IModule {
 		let text: string;
 
 		if (exist) {
-			text = serifs.keyword.remembered(keyword[0]);
+			return;
 		} else {
 			this.learnedKeywords.insertOne({
 				keyword: keyword[0],
