@@ -1,5 +1,5 @@
 import 藍 from '../../ai';
-import IModule from '../../module';
+import IModule, { Result } from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import Friend from '../../friend';
@@ -304,12 +304,14 @@ export default class CoreModule implements IModule {
 		return true;
 	}
 
-	private ponkotu = (msg: MessageLike): boolean => {
+	private ponkotu = (msg: MessageLike): boolean |Result => {
 		if (!msg.includes(['ぽんこつ'])) return false;
 
 		msg.friend.decLove();
 
-		return true;
+		return {
+			reaction: 'angry'
+		};
 	}
 
 	public onReplyThisModule = (msg: MessageLike, data: any) => {

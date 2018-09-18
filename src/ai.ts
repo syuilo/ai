@@ -152,6 +152,36 @@ export default class 藍 {
 	private onMention = (msg: MessageLike) => {
 		console.log(`mention received: ${msg.id}`);
 
+		const context = !msg.isMessage && msg.replyId == null ? null : this.contexts.findOne(msg.isMessage ? {
+			isMessage: true,
+			userId: msg.userId
+		} : {
+			isMessage: false,
+			noteId: msg.replyId
+		});
+
+		let reaction = 'love';
+
+		if (context != null) {
+			const module = this.modules.find(m => m.name == context.module);
+			const res = module.onReplyThisModule(msg, context.data);
+
+			if (res != null && typeof res === 'object') {
+				reaction = res.reaction;
+			}
+		} else {
+			let res: ReturnType<IModule['onMention']>;
+
+			this.modules.filter(m => m.hasOwnProperty('onMention')).some(m => {
+				res = m.onMention(msg);
+				return res === true || typeof res === 'object';
+			});
+
+			if (res != null && typeof res === 'object') {
+				reaction = res.reaction;
+			}
+		}
+
 		setTimeout(() => {
 			if (msg.isMessage) {
 				// 既読にする
@@ -162,27 +192,10 @@ export default class 藍 {
 				// リアクションする
 				this.api('notes/reactions/create', {
 					noteId: msg.id,
-					reaction: 'love'
+					reaction: reaction
 				});
 			}
 		}, 1000);
-
-		const context = !msg.isMessage && msg.replyId == null ? null : this.contexts.findOne(msg.isMessage ? {
-			isMessage: true,
-			userId: msg.userId
-		} : {
-			isMessage: false,
-			noteId: msg.replyId
-		});
-
-		if (context != null) {
-			const module = this.modules.find(m => m.name == context.module);
-			module.onReplyThisModule(msg, context.data);
-		} else {
-			this.modules.filter(m => m.hasOwnProperty('onMention')).some(m => {
-				return m.onMention(msg);
-			});
-		}
 	}
 
 	public post = async (param: any) => {
