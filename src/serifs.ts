@@ -37,7 +37,7 @@ export default {
 		happyBirthday: name => name ? `お誕生日おめでとうございます、${name}🎉` : 'お誕生日おめでとうございます🎉',
 
 		nadenade: {
-			normal: '…！ びっくりしました',
+			normal: 'ひゃっ…！ びっくりしました',
 
 			love2: 'わわっ… 恥ずかしいです',
 
@@ -85,7 +85,7 @@ export default {
 		},
 
 		batou: {
-			love: 'AIに罵られたいって... ちょっと引きます',
+			love: 'おたんこなす！',
 
 			normal: '(じとー…)',
 
