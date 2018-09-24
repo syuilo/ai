@@ -23,7 +23,7 @@ export default class ServerModule implements IModule {
 		this.ai = ai;
 
 		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/server-stats`, [], {
-			constructor: WebSocket
+			WebSocket: WebSocket
 		});
 
 		this.connection.addEventListener('open', () => {
@@ -32,6 +32,7 @@ export default class ServerModule implements IModule {
 
 		this.connection.addEventListener('close', () => {
 			console.log('server-stats stream closed');
+			this.connection._shouldReconnect && this.connection._connect()
 		});
 
 		this.connection.addEventListener('message', message => {
