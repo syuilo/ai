@@ -3,7 +3,7 @@ import 藍 from '../../ai';
 import IModule from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
-const ReconnectingWebSocket = require('../../../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
+const ReconnectingWebSocket = require('reconnecting-websocket');
 
 export default class ServerModule implements IModule {
 	public readonly name = 'server';
@@ -23,7 +23,7 @@ export default class ServerModule implements IModule {
 		this.ai = ai;
 
 		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/server-stats`, [], {
-			WebSocket: WebSocket
+			constructor: WebSocket
 		});
 
 		this.connection.addEventListener('open', () => {
@@ -32,8 +32,6 @@ export default class ServerModule implements IModule {
 
 		this.connection.addEventListener('close', () => {
 			console.log('server-stats stream closed');
-
-			this.connection.reconnect();
 		});
 
 		this.connection.addEventListener('message', message => {

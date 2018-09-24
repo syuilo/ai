@@ -9,7 +9,7 @@ import MessageLike from './message-like';
 import { FriendDoc } from './friend';
 import { User } from './misskey/user';
 import getCollection from './utils/get-collection';
-const ReconnectingWebSocket = require('../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
+const ReconnectingWebSocket = require('reconnecting-websocket');
 
 /**
  * 藍
@@ -70,7 +70,7 @@ export default class 藍 {
 
 		//#region Home stream
 		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/?i=${config.i}`, [], {
-			WebSocket: WebSocket
+			constructor: WebSocket
 		});
 
 		this.connection.addEventListener('open', () => {
@@ -79,8 +79,6 @@ export default class 藍 {
 
 		this.connection.addEventListener('close', () => {
 			console.log('home stream closed');
-
-			this.connection.reconnect();
 		});
 
 		this.connection.addEventListener('message', message => {
@@ -92,7 +90,7 @@ export default class 藍 {
 
 		//#region Local timeline stream
 		this.localTimelineConnection = new ReconnectingWebSocket(`${config.wsUrl}/local-timeline?i=${config.i}`, [], {
-			WebSocket: WebSocket
+			constructor: WebSocket
 		});
 
 		this.localTimelineConnection.addEventListener('open', () => {
@@ -101,8 +99,6 @@ export default class 藍 {
 
 		this.localTimelineConnection.addEventListener('close', () => {
 			console.log('local-timeline stream closed');
-
-			this.localTimelineConnection.reconnect();
 		});
 
 		this.localTimelineConnection.addEventListener('message', message => {
