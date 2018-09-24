@@ -1,5 +1,5 @@
 import * as childProcess from 'child_process';
-const ReconnectingWebSocket = require('../../../node_modules/reconnecting-websocket/dist/reconnecting-websocket-cjs.js');
+const ReconnectingWebSocket = require('reconnecting-websocket');
 import 藍 from '../../ai';
 import IModule from '../../module';
 import serifs from '../../serifs';
@@ -23,7 +23,7 @@ export default class ReversiModule implements IModule {
 		this.ai = ai;
 
 		this.reversiConnection = new ReconnectingWebSocket(`${config.wsUrl}/games/reversi?i=${config.i}`, [], {
-			WebSocket: WebSocket
+			constructor: WebSocket
 		});
 
 		this.reversiConnection.addEventListener('open', () => {
@@ -32,8 +32,6 @@ export default class ReversiModule implements IModule {
 
 		this.reversiConnection.addEventListener('close', () => {
 			console.log('reversi stream closed');
-
-			this.reversiConnection.reconnect();
 		});
 
 		this.reversiConnection.addEventListener('message', message => {
