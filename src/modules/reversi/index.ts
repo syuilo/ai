@@ -97,7 +97,7 @@ export default class ReversiModule implements IModule {
 	private onReversiGameStart = (game: any) => {
 		// ゲームストリームに接続
 		const gw = new ReconnectingWebSocket(`${config.wsUrl}/games/reversi-game?i=${config.i}&game=${game.id}`, [], {
-			WebSocket: WebSocket
+			constructor: WebSocket
 		});
 
 		function send(msg) {
