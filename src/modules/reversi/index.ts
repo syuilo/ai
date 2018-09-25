@@ -23,7 +23,7 @@ export default class ReversiModule implements IModule {
 		this.ai = ai;
 
 		this.reversiConnection = new ReconnectingWebSocket(`${config.wsUrl}/games/reversi?i=${config.i}`, [], {
-			constructor: WebSocket
+			WebSocket: WebSocket
 		});
 
 		this.reversiConnection.addEventListener('open', () => {
@@ -32,6 +32,7 @@ export default class ReversiModule implements IModule {
 
 		this.reversiConnection.addEventListener('close', () => {
 			console.log('reversi stream closed');
+			this.reversiConnection._shouldReconnect && this.reversiConnection._connect()
 		});
 
 		this.reversiConnection.addEventListener('message', message => {
@@ -97,7 +98,7 @@ export default class ReversiModule implements IModule {
 	private onReversiGameStart = (game: any) => {
 		// ゲームストリームに接続
 		const gw = new ReconnectingWebSocket(`${config.wsUrl}/games/reversi-game?i=${config.i}&game=${game.id}`, [], {
-			constructor: WebSocket
+			WebSocket: WebSocket
 		});
 
 		function send(msg) {
@@ -189,6 +190,7 @@ export default class ReversiModule implements IModule {
 
 		gw.addEventListener('close', () => {
 			console.log('reversi game stream closed');
+			gw._shouldReconnect && gw._connect()
 		});
 	}
 

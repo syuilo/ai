@@ -70,7 +70,7 @@ export default class 藍 {
 
 		//#region Home stream
 		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/?i=${config.i}`, [], {
-			constructor: WebSocket
+			WebSocket: WebSocket
 		});
 
 		this.connection.addEventListener('open', () => {
@@ -79,6 +79,7 @@ export default class 藍 {
 
 		this.connection.addEventListener('close', () => {
 			console.log('home stream closed');
+			this.connection._shouldReconnect && this.connection._connect()
 		});
 
 		this.connection.addEventListener('message', message => {
@@ -90,7 +91,7 @@ export default class 藍 {
 
 		//#region Local timeline stream
 		this.localTimelineConnection = new ReconnectingWebSocket(`${config.wsUrl}/local-timeline?i=${config.i}`, [], {
-			constructor: WebSocket
+			WebSocket: WebSocket
 		});
 
 		this.localTimelineConnection.addEventListener('open', () => {
@@ -99,6 +100,7 @@ export default class 藍 {
 
 		this.localTimelineConnection.addEventListener('close', () => {
 			console.log('local-timeline stream closed');
+			this.localTimelineConnection._shouldReconnect && this.localTimelineConnection._connect()
 		});
 
 		this.localTimelineConnection.addEventListener('message', message => {
