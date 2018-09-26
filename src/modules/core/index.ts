@@ -151,7 +151,6 @@ export default class CoreModule implements IModule {
 			return true;
 		}
 
-			msg.reply(serifs.core.goodMorning(tension, msg.friend.name));
 		if (msg.includes(['おは', 'おっは', 'お早う'])) {
 			incLove();
 			return true;
