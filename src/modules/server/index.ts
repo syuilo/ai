@@ -20,6 +20,8 @@ export default class ServerModule implements IModule {
 	private statsLogs: any[] = [];
 
 	public install = (ai: 藍) => {
+		if (!config.serverMonitoring) return;
+
 		this.ai = ai;
 
 		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/server-stats`, [], {
