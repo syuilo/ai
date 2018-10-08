@@ -20,6 +20,8 @@ export default class ReversiModule implements IModule {
 	private reversiConnection?: any;
 
 	public install = (ai: 藍) => {
+		if (!config.reversiEnabled) return;
+
 		this.ai = ai;
 
 		this.reversiConnection = new ReconnectingWebSocket(`${config.wsUrl}/games/reversi?i=${config.i}`, [], {
