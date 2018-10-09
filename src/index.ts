@@ -29,15 +29,15 @@ promiseRetry(retry => {
 	console.log(`account fetched: @${account.username}`);
 
 	const modules: IModule[] = [
-		new CoreModule(),
-		new PingModule(),
-		new WelcomeModule(),
 		new EmojiModule(),
 		new FortuneModule(),
 		new GuessingGameModule(),
 		new ReversiModule(),
 		new TimerModule(),
 		new DiceModule(),
+		new CoreModule(),
+		new PingModule(),
+		new WelcomeModule(),
 		new ServerModule()
 	];
 
