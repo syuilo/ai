@@ -1,7 +1,6 @@
 // AI CORE
 
 import * as loki from 'lokijs';
-import * as WebSocket from 'ws';
 import * as request from 'request-promise-native';
 import config from './config';
 import IModule from './module';
@@ -9,26 +8,15 @@ import MessageLike from './message-like';
 import { FriendDoc } from './friend';
 import { User } from './misskey/user';
 import getCollection from './utils/get-collection';
-const ReconnectingWebSocket = require('reconnecting-websocket');
+import Stream from './stream';
 
 /**
  * 藍
  */
 export default class 藍 {
 	public account: User;
-
-	/**
-	 * ホームストリーム
-	 */
-	private connection: any;
-
-	/**
-	 * ローカルタイムラインストリーム
-	 */
-	private localTimelineConnection: any;
-
+	public connection: Stream;
 	private modules: IModule[] = [];
-
 	public db: loki;
 
 	private contexts: loki.Collection<{
@@ -65,86 +53,35 @@ export default class 藍 {
 		});
 		//#endregion
 
+		// Init stream
+		this.connection = new Stream();
+
+		//#region Main stream
+		const mainStream = this.connection.useSharedConnection('main');
+
+		// メンションされたとき
+		mainStream.on('mention', data => {
+			if (data.userId == this.account.id) return; // 自分は弾く
+			if (data.text.startsWith('@' + this.account.username)) {
+				this.onMention(new MessageLike(this, data, false));
+			}
+		});
+
+		// 返信されたとき
+		mainStream.on('reply', data => {
+			if (data.userId == this.account.id) return; // 自分は弾く
+			this.onMention(new MessageLike(this, data, false));
+		});
+
+		// メッセージ
+		mainStream.on('messagingMessage', data => {
+			if (data.userId == this.account.id) return; // 自分は弾く
+			this.onMention(new MessageLike(this, data, true));
+		});
+		//#endregion
+
 		// Install modules
 		this.modules.forEach(m => m.install(this));
-
-		//#region Home stream
-		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/?i=${config.i}`, [], {
-			WebSocket: WebSocket
-		});
-
-		this.connection.addEventListener('open', () => {
-			console.log('home stream opened');
-		});
-
-		this.connection.addEventListener('close', () => {
-			console.log('home stream closed');
-			this.connection._shouldReconnect && this.connection._connect()
-		});
-
-		this.connection.addEventListener('message', message => {
-			const msg = JSON.parse(message.data);
-
-			this.onMessage(msg);
-		});
-		//#endregion
-
-		//#region Local timeline stream
-		this.localTimelineConnection = new ReconnectingWebSocket(`${config.wsUrl}/local-timeline?i=${config.i}`, [], {
-			WebSocket: WebSocket
-		});
-
-		this.localTimelineConnection.addEventListener('open', () => {
-			console.log('local-timeline stream opened');
-		});
-
-		this.localTimelineConnection.addEventListener('close', () => {
-			console.log('local-timeline stream closed');
-			this.localTimelineConnection._shouldReconnect && this.localTimelineConnection._connect()
-		});
-
-		this.localTimelineConnection.addEventListener('message', message => {
-			const msg = JSON.parse(message.data);
-
-			this.onLocalNote(msg.body);
-		});
-		//#endregion
-	}
-
-	private onMessage = (msg: any) => {
-		switch (msg.type) {
-			// メンションされたとき
-			case 'mention': {
-				if (msg.body.userId == this.account.id) return; // 自分は弾く
-				if (msg.body.text.startsWith('@' + this.account.username)) {
-					this.onMention(new MessageLike(this, msg.body, false));
-				}
-				break;
-			}
-
-			// 返信されたとき
-			case 'reply': {
-				if (msg.body.userId == this.account.id) return; // 自分は弾く
-				this.onMention(new MessageLike(this, msg.body, false));
-				break;
-			}
-
-			// メッセージ
-			case 'messaging_message': {
-				if (msg.body.userId == this.account.id) return; // 自分は弾く
-				this.onMention(new MessageLike(this, msg.body, true));
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
-
-	private onLocalNote = (note: any) => {
-		this.modules.filter(m => m.hasOwnProperty('onLocalNote')).forEach(m => {
-			return m.onLocalNote(note);
-		});
 	}
 
 	private onMention = (msg: MessageLike) => {

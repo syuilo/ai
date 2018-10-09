@@ -1,6 +1,5 @@
 import * as childProcess from 'child_process';
-const ReconnectingWebSocket = require('reconnecting-websocket');
-import 藍 from '../../ai';
+\import 藍 from '../../ai';
 import IModule from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
@@ -24,24 +23,13 @@ export default class ReversiModule implements IModule {
 
 		this.ai = ai;
 
-		this.reversiConnection = new ReconnectingWebSocket(`${config.wsUrl}/games/reversi?i=${config.i}`, [], {
-			WebSocket: WebSocket
-		});
+		this.reversiConnection = this.ai.connection.useSharedConnection('gamesReversi');
 
-		this.reversiConnection.addEventListener('open', () => {
-			console.log('reversi stream opened');
-		});
+		// 招待されたとき
+		this.reversiConnection.on('invited', msg => this.onReversiInviteMe(msg.parent));
 
-		this.reversiConnection.addEventListener('close', () => {
-			console.log('reversi stream closed');
-			this.reversiConnection._shouldReconnect && this.reversiConnection._connect()
-		});
-
-		this.reversiConnection.addEventListener('message', message => {
-			const msg = JSON.parse(message.data);
-
-			this.onReversiConnectionMessage(msg);
-		});
+		// マッチしたとき
+		this.reversiConnection.on('matched', msg => this.onReversiGameStart(msg));
 	}
 
 	public onMention = (msg: MessageLike) => {
@@ -62,26 +50,6 @@ export default class ReversiModule implements IModule {
 		}
 	}
 
-	private onReversiConnectionMessage = (msg: any) => {
-		switch (msg.type) {
-
-			// 招待されたとき
-			case 'invited': {
-				this.onReversiInviteMe(msg.body.parent);
-				break;
-			}
-
-			// マッチしたとき
-			case 'matched': {
-				this.onReversiGameStart(msg.body);
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
-
 	private onReversiInviteMe = async (inviter: any) => {
 		console.log(`Someone invited me: @${inviter.username}`);
 
@@ -99,8 +67,8 @@ export default class ReversiModule implements IModule {
 
 	private onReversiGameStart = (game: any) => {
 		// ゲームストリームに接続
-		const gw = new ReconnectingWebSocket(`${config.wsUrl}/games/reversi-game?i=${config.i}&game=${game.id}`, [], {
-			WebSocket: WebSocket
+		const gw = this.ai.connection.connectToChannel('gamesReversiGame', {
+			game: game.id
 		});
 
 		function send(msg) {
@@ -111,89 +79,79 @@ export default class ReversiModule implements IModule {
 			}
 		}
 
-		gw.addEventListener('open', () => {
-			console.log('reversi game stream opened');
-
-			// フォーム
-			const form = [{
-				id: 'publish',
-				type: 'switch',
-				label: '藍が対局情報を投稿するのを許可',
-				value: true
+		// フォーム
+		const form = [{
+			id: 'publish',
+			type: 'switch',
+			label: '藍が対局情報を投稿するのを許可',
+			value: true
+		}, {
+			id: 'strength',
+			type: 'radio',
+			label: '強さ',
+			value: 3,
+			items: [{
+				label: '接待',
+				value: 0
 			}, {
-				id: 'strength',
-				type: 'radio',
-				label: '強さ',
-				value: 3,
-				items: [{
-					label: '接待',
-					value: 0
-				}, {
-					label: '弱',
-					value: 2
-				}, {
-					label: '中',
-					value: 3
-				}, {
-					label: '強',
-					value: 4
-				}, {
-					label: '最強',
-					value: 5
-				}]
-			}];
+				label: '弱',
+				value: 2
+			}, {
+				label: '中',
+				value: 3
+			}, {
+				label: '強',
+				value: 4
+			}, {
+				label: '最強',
+				value: 5
+			}]
+		}];
 
-			//#region バックエンドプロセス開始
-			const ai = childProcess.fork(__dirname + '/back.js');
+		//#region バックエンドプロセス開始
+		const ai = childProcess.fork(__dirname + '/back.js');
 
-			// バックエンドプロセスに情報を渡す
-			ai.send({
-				type: '_init_',
-				game,
-				form,
-				account: this.ai.account
-			});
-
-			ai.on('message', msg => {
-				if (msg.type == 'put') {
-					send({
-						type: 'set',
-						pos: msg.pos
-					});
-				} else if (msg.type == 'ended') {
-					gw.close();
-
-					this.onGameEnded(game);
-				}
-			});
-
-			// ゲームストリームから情報が流れてきたらそのままバックエンドプロセスに伝える
-			gw.addEventListener('message', message => {
-				const msg = JSON.parse(message.data);
-				ai.send(msg);
-			});
-			//#endregion
-
-			// フォーム初期化
-			setTimeout(() => {
-				send({
-					type: 'init-form',
-					body: form
-				});
-			}, 1000);
-
-			// どんな設定内容の対局でも受け入れる
-			setTimeout(() => {
-				send({
-					type: 'accept'
-				});
-			}, 2000);
+		// バックエンドプロセスに情報を渡す
+		ai.send({
+			type: '_init_',
+			game,
+			form,
+			account: this.ai.account
 		});
 
-		gw.addEventListener('close', () => {
-			console.log('reversi game stream closed');
-			gw._shouldReconnect && gw._connect()
+		ai.on('message', msg => {
+			if (msg.type == 'put') {
+				send({
+					type: 'set',
+					pos: msg.pos
+				});
+			} else if (msg.type == 'ended') {
+				gw.dispose();
+
+				this.onGameEnded(game);
+			}
 		});
+
+		// ゲームストリームから情報が流れてきたらそのままバックエンドプロセスに伝える
+		gw.addEventListener('*', message => {
+			ai.send(message);
+		});
+		//#endregion
+
+		// フォーム初期化
+		setTimeout(() => {
+			send({
+				type: 'initForm',
+				body: form
+			});
+		}, 1000);
+
+		// どんな設定内容の対局でも受け入れる
+		setTimeout(() => {
+			send({
+				type: 'accept'
+			});
+		}, 2000);
 	}
 
 	private onGameEnded(game: any) {

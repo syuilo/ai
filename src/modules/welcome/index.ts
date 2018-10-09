@@ -8,6 +8,10 @@ export default class WelcomeModule implements IModule {
 
 	public install = (ai: 藍) => {
 		this.ai = ai;
+
+		const tl = this.ai.connection.useSharedConnection('localTimeline');
+
+		tl.on('note', this.onLocalNote);
 	}
 
 	public onLocalNote = (note: any) => {

@@ -74,7 +74,7 @@ class Session {
 	private onMessage = async (msg: any) => {
 		switch (msg.type) {
 			case '_init_': this.onInit(msg); break;
-			case 'update-form': this.onUpdateForn(msg); break;
+			case 'updateForm': this.onUpdateForn(msg); break;
 			case 'started': this.onStarted(msg); break;
 			case 'ended': this.onEnded(msg); break;
 			case 'set': this.onSet(msg); break;

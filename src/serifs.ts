@@ -14,6 +14,14 @@ export default {
 
 		goodMorning: (tension, name) => name ? `おはようございます、${name}！${tension}` : `おはようございます！${tension}`,
 
+		/*
+		goodMorning: {
+			normal: (tension, name) => name ? `おはようございます、${name}！${tension}` : `おはようございます！${tension}`,
+
+			hiru: (tension, name) => name ? `おはようございます、${name}！${tension}もうお昼ですよ？${tension}` : `おはようございます！${tension}もうお昼ですよ？${tension}`,
+		},
+*/
+
 		goodNight: name => name ? `おやすみなさい、${name}！` : 'おやすみなさい！',
 
 		okaeri: {
