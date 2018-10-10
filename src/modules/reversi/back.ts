@@ -73,11 +73,11 @@ class Session {
 
 	private onMessage = async (msg: any) => {
 		switch (msg.type) {
-			case '_init_': this.onInit(msg); break;
-			case 'updateForm': this.onUpdateForn(msg); break;
-			case 'started': this.onStarted(msg); break;
-			case 'ended': this.onEnded(msg); break;
-			case 'set': this.onSet(msg); break;
+			case '_init_': this.onInit(msg.body); break;
+			case 'updateForm': this.onUpdateForn(msg.body); break;
+			case 'started': this.onStarted(msg.body); break;
+			case 'ended': this.onEnded(msg.body); break;
+			case 'set': this.onSet(msg.body); break;
 		}
 	}
 
@@ -92,14 +92,14 @@ class Session {
 	 * フォームが更新されたとき
 	 */
 	private onUpdateForn = (msg: any) => {
-		this.form.find(i => i.id == msg.body.id).value = msg.body.value;
+		this.form.find(i => i.id == msg.id).value = msg.value;
 	}
 
 	/**
 	 * 対局が始まったとき
 	 */
 	private onStarted = (msg: any) =>  {
-		this.game = msg.body;
+		this.game = msg;
 
 		// TLに投稿する
 		this.postGameStarted().then(note => {
@@ -215,14 +215,14 @@ class Session {
 
 		let text: string;
 
-		if (msg.body.game.surrendered) {
+		if (msg.game.surrendered) {
 			if (this.isSettai) {
 				text = serifs.reversi.settaiButYouSurrendered(this.userName);
 			} else {
 				text = serifs.reversi.youSurrendered(this.userName);
 			}
-		} else if (msg.body.winnerId) {
-			if (msg.body.winnerId == this.account.id) {
+		} else if (msg.winnerId) {
+			if (msg.winnerId == this.account.id) {
 				if (this.isSettai) {
 					text = serifs.reversi.iWonButSettai(this.userName);
 				} else {
@@ -252,9 +252,9 @@ class Session {
 	 * 打たれたとき
 	 */
 	private onSet = (msg: any) =>  {
-		this.o.put(msg.body.color, msg.body.pos);
+		this.o.put(msg.color, msg.pos);
 
-		if (msg.body.next === this.botColor) {
+		if (msg.next === this.botColor) {
 			this.think();
 		}
 	}

@@ -66,18 +66,12 @@ export default class ReversiModule implements IModule {
 	}
 
 	private onReversiGameStart = (game: any) => {
+		console.log('enter reversi game room');
+
 		// ゲームストリームに接続
 		const gw = this.ai.connection.connectToChannel('gamesReversiGame', {
-			game: game.id
+			gameId: game.id
 		});
-
-		function send(msg) {
-			try {
-				gw.send(JSON.stringify(msg));
-			} catch (e) {
-				console.error(e);
-			}
-		}
 
 		// フォーム
 		const form = [{
@@ -114,15 +108,16 @@ export default class ReversiModule implements IModule {
 		// バックエンドプロセスに情報を渡す
 		ai.send({
 			type: '_init_',
-			game,
-			form,
-			account: this.ai.account
+			body: {
+				game: game,
+				form: form,
+				account: this.ai.account
+			}
 		});
 
 		ai.on('message', msg => {
 			if (msg.type == 'put') {
-				send({
-					type: 'set',
+				gw.send('set', {
 					pos: msg.pos
 				});
 			} else if (msg.type == 'ended') {
@@ -133,24 +128,19 @@ export default class ReversiModule implements IModule {
 		});
 
 		// ゲームストリームから情報が流れてきたらそのままバックエンドプロセスに伝える
-		gw.addEventListener('*', message => {
+		gw.addListener('*', message => {
 			ai.send(message);
 		});
 		//#endregion
 
 		// フォーム初期化
 		setTimeout(() => {
-			send({
-				type: 'initForm',
-				body: form
-			});
+			gw.send('initForm', form);
 		}, 1000);
 
 		// どんな設定内容の対局でも受け入れる
 		setTimeout(() => {
-			send({
-				type: 'accept'
-			});
+			gw.send('accept', {});
 		}, 2000);
 	}
 
