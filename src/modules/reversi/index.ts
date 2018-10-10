@@ -1,5 +1,5 @@
 import * as childProcess from 'child_process';
-\import 藍 from '../../ai';
+import 藍 from '../../ai';
 import IModule from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
