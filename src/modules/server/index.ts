@@ -1,9 +1,7 @@
-import * as WebSocket from 'ws';
 import 藍 from '../../ai';
 import IModule from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
-const ReconnectingWebSocket = require('reconnecting-websocket');
 
 export default class ServerModule implements IModule {
 	public readonly name = 'server';
@@ -24,24 +22,8 @@ export default class ServerModule implements IModule {
 
 		this.ai = ai;
 
-		this.connection = new ReconnectingWebSocket(`${config.wsUrl}/server-stats`, [], {
-			WebSocket: WebSocket
-		});
-
-		this.connection.addEventListener('open', () => {
-			console.log('server-stats stream opened');
-		});
-
-		this.connection.addEventListener('close', () => {
-			console.log('server-stats stream closed');
-			this.connection._shouldReconnect && this.connection._connect()
-		});
-
-		this.connection.addEventListener('message', message => {
-			const msg = JSON.parse(message.data);
-
-			this.onConnectionMessage(msg);
-		});
+		this.connection = this.ai.connection.useSharedConnection('serverStats');
+		this.connection.on('stats', this.onStats);
 
 		setInterval(() => {
 			this.statsLogs.unshift(this.recentStat);
@@ -65,21 +47,8 @@ export default class ServerModule implements IModule {
 		}
 	}
 
-	private onConnectionMessage = (msg: any) => {
-		switch (msg.type) {
-
-			case 'stats': {
-				this.onStats(msg.body);
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
-
 	private onStats = async (stats: any) => {
-		this.recentStat = stats;
+		this.recentStat = stats.body;
 	}
 
 	private warn = () => {
