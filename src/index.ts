@@ -46,4 +46,6 @@ promiseRetry(retry => {
 	new 藍(account, modules);
 
 	console.log('--- ai started! ---');
+}).catch(e => {
+	console.error('failed to fetch account', e);
 });

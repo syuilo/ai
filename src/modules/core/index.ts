@@ -1,7 +1,7 @@
 import 藍 from '../../ai';
 import IModule, { Result } from '../../module';
 import MessageLike from '../../message-like';
-import serifs from '../../serifs';
+import serifs, { getSerif } from '../../serifs';
 import Friend from '../../friend';
 import getDate from '../../utils/get-date';
 
@@ -205,7 +205,7 @@ export default class CoreModule implements IModule {
 		}
 		//#endregion
 
-		msg.reply(
+		msg.reply(getSerif(
 			msg.friend.love >= 10 ? serifs.core.nadenade.love3 :
 			msg.friend.love >= 5 ? serifs.core.nadenade.love2 :
 			msg.friend.love <= -15 ? serifs.core.nadenade.hate4 :
@@ -213,7 +213,7 @@ export default class CoreModule implements IModule {
 			msg.friend.love <= -5 ? serifs.core.nadenade.hate2 :
 			msg.friend.love <= -1 ? serifs.core.nadenade.hate1 :
 			serifs.core.nadenade.normal
-		);
+		));
 
 		return true;
 	}
