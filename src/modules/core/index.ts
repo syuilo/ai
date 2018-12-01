@@ -221,6 +221,9 @@ export default class CoreModule implements IModule {
 	private kawaii = (msg: MessageLike): boolean => {
 		if (!msg.includes(['かわいい', '可愛い'])) return false;
 
+		// メッセージのみ
+		if (!msg.isMessage) return true;
+
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.kawaii.love :
 			msg.friend.love <= -3 ? serifs.core.kawaii.hate :
