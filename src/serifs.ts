@@ -264,6 +264,8 @@ export default {
 
 	follow: {
 		ok: 'フォローしました！',
+
+		requireMoreLove: 'もう少し仲良くなったらお願いできますか？',
 		
 		alreadyFollowed: 'えっ？既にあなたのことはフォローしていますよ！',
 		

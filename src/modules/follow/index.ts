@@ -17,6 +17,8 @@ export default class FollowModule implements IModule {
 					msg.reply(serifs.follow.alreadyFollowed);
 				} else if (msg.friend.love < -5) {
 					msg.reply(serifs.follow.ng);
+				} else if (msg.friend.love < 3) {
+					msg.reply(serifs.follow.requireMoreLove);
 				} else {
 					this.ai.api("following/create", {
 						userId: msg.userId,
