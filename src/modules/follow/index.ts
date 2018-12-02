@@ -11,10 +11,13 @@ export default class FollowModule implements IModule {
 		this.ai = ai;
 	}
 
-	public onMention = async (msg: MessageLike) => {
+	public onMention = (msg: MessageLike) => {
 		if (msg.text && msg.text.includes('フォロー')) {
-				const user: any = await this.ai.api("users/show", {
+				let user: any;
+				this.ai.api("users/show", {
 					userId: msg.userId,
+				}).then(u => {
+					user = u;
 				});
 
 				if (user.isFollowing) {
