@@ -43,6 +43,7 @@ export default class MessageLike {
 		this.ai.api('users/show', {
 			userId: this.userId
 		}).then(user => {
+			this.messageOrNote.user = user;
 			this.friend.updateUser(user);
 		});
 	}
