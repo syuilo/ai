@@ -13,7 +13,7 @@ export default class FollowModule implements IModule {
 
 	public onMention = (msg: MessageLike) => {
 		if (msg.text && msg.text.includes('フォロー')) {
-				if (msg.user.isFollowing) {
+				if (msg.friend.doc.user.isFollowing) {
 					msg.reply(serifs.follow.alreadyFollowed);
 				} else if (msg.friend.love < -5) {
 					msg.reply(serifs.follow.ng);
