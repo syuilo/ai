@@ -261,16 +261,6 @@ export default {
 	server: {
 		cpu: 'サーバーの負荷が高そうです。大丈夫でしょうか...？'
 	},
-
-	follow: {
-		ok: 'フォローしました！',
-
-		requireMoreLove: 'もう少し仲良くなったらお願いできますか？',
-		
-		alreadyFollowed: 'えっ？既にあなたのことはフォローしていますよ！',
-		
-		ng: '嫌です...',
-	}
 };
 
 export function getSerif(serif: string | string[]): string {

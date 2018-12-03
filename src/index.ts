@@ -12,10 +12,10 @@ import WelcomeModule from './modules/welcome';
 import TimerModule from './modules/timer';
 import DiceModule from './modules/dice';
 import ServerModule from './modules/server';
+import FollowModule from './modules/follow';
 
 import * as request from 'request-promise-native';
 import IModule from './module';
-import FollowModule from './modules/follow';
 const promiseRetry = require('promise-retry');
 
 console.log('--- starting ai... ---');
