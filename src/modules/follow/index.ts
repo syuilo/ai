@@ -17,11 +17,11 @@ export default class FollowModule implements IModule {
 					userId: msg.userId,
 				});
 				return {
-					reaction: 'like'
+					reaction: msg.friend.love >= 0 ? 'like' : null
 				};
 			} else {
 				return {
-					reaction: 'hmm'
+					reaction: msg.friend.love >= 0 ? 'hmm' : null
 				};
 			}
 		} else {
