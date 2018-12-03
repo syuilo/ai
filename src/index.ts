@@ -15,6 +15,7 @@ import ServerModule from './modules/server';
 
 import * as request from 'request-promise-native';
 import IModule from './module';
+import FollowModule from './modules/follow';
 const promiseRetry = require('promise-retry');
 
 console.log('--- starting ai... ---');
@@ -38,7 +39,8 @@ promiseRetry(retry => {
 		new CoreModule(),
 		new PingModule(),
 		new WelcomeModule(),
-		new ServerModule()
+		new ServerModule(),
+		new FollowModule(),
 	];
 
 	if (config.keywordEnabled) modules.push(new KeywordModule());
