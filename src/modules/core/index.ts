@@ -48,7 +48,7 @@ export default class CoreModule implements IModule {
 		const m = now.getMonth();
 		const d = now.getDate();
 		// Misskeyの誕生日は 2018-06-16 のような形式
-		const today = `${zeroPadding(m + 1, 2)}-${d}`;
+		const today = `${zeroPadding(m + 1, 2)}-${zeroPadding(d, 2)}`;
 
 		const birthFriends = this.ai.friends.find({
 			'user.profile.birthday': { '$regex': new RegExp('-' + today + '$') }
