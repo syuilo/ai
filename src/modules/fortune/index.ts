@@ -99,7 +99,8 @@ const items = [
 	'お弁当に入ってる緑の仕切りみたいなやつ',
 	'割りばし',
 	'換気扇',
-	'ペットボトルのキャップ'
+	'ペットボトルのキャップ',
+	'消波ブロック'
 ];
 
 export default class FortuneModule implements IModule {
