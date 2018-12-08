@@ -39,7 +39,8 @@ const itemPrefixes = [
 	'人類の技術を結集して作った',
 	'2018年製',
 	'500kgくらいある',
-	'高級'
+	'高級',
+	'腐った'
 ];
 
 const items = [
@@ -100,7 +101,9 @@ const items = [
 	'割りばし',
 	'換気扇',
 	'ペットボトルのキャップ',
-	'消波ブロック'
+	'消波ブロック',
+	'ピザ',
+	'歯磨き粉'
 ];
 
 export default class FortuneModule implements IModule {
