@@ -173,6 +173,9 @@ const items = [
 	'丸いもの',
 	'四角いもの',
 	'カード状のもの',
+	'気体',
+	'鉛筆',
+	'消しゴム',
 ];
 
 export default class FortuneModule implements IModule {
@@ -186,7 +189,7 @@ export default class FortuneModule implements IModule {
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}@${msg.userId}`;
 			const rng = seedrandom(seed);
 			const omikuji = omikujis[Math.floor(rng() * omikujis.length)];
-			const itemPrefix = Math.floor(rng() * 2) == 0 ? itemPrefixes[Math.floor(rng() * itemPrefixes.length)] : '';
+			const itemPrefix = Math.floor(rng() * 5) != 0 ? itemPrefixes[Math.floor(rng() * itemPrefixes.length)] : '';
 			const item = items[Math.floor(rng() * items.length)];
 			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${itemPrefix}${item}`, serifs.fortune.cw(msg.friend.name));
 			return true;
