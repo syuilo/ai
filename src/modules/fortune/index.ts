@@ -5,6 +5,7 @@ import serifs from '../../serifs';
 import * as seedrandom from 'seedrandom';
 
 const omikujis = [
+	'藍吉',
 	'大大吉',
 	'大吉',
 	'吉',
@@ -110,7 +111,9 @@ const items = [
 	'消波ブロック',
 	'ピザ',
 	'歯磨き粉',
-	'空き缶'
+	'空き缶',
+	'キーホルダー',
+	'金髪碧眼の美少女'
 ];
 
 export default class FortuneModule implements IModule {
