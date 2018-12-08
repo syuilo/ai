@@ -40,7 +40,13 @@ const itemPrefixes = [
 	'2018年製',
 	'500kgくらいある',
 	'高級',
-	'腐った'
+	'腐った',
+	'人工知能搭載',
+	'反重力',
+	'折り畳み式',
+	'携帯型',
+	'遺伝子組み換え',
+	'突然変異して飛行能力を獲得した'
 ];
 
 const items = [
@@ -103,7 +109,8 @@ const items = [
 	'ペットボトルのキャップ',
 	'消波ブロック',
 	'ピザ',
-	'歯磨き粉'
+	'歯磨き粉',
+	'空き缶'
 ];
 
 export default class FortuneModule implements IModule {
@@ -117,7 +124,7 @@ export default class FortuneModule implements IModule {
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}@${msg.userId}`;
 			const rng = seedrandom(seed);
 			const omikuji = omikujis[Math.floor(rng() * omikujis.length)];
-			const itemPrefix = Math.floor(rng() * 3) == 0 ? itemPrefixes[Math.floor(rng() * itemPrefixes.length)] : '';
+			const itemPrefix = Math.floor(rng() * 2) == 0 ? itemPrefixes[Math.floor(rng() * itemPrefixes.length)] : '';
 			const item = items[Math.floor(rng() * items.length)];
 			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${itemPrefix}${item}`, serifs.fortune.cw(msg.friend.name));
 			return true;
