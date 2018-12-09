@@ -6,13 +6,16 @@ import * as seedrandom from 'seedrandom';
 
 const omikujis = [
 	'藍吉',
+	'ギガ吉',
+	'メガ吉',
+	'超吉',
 	'大大吉',
 	'大吉',
 	'吉',
 	'中吉',
 	'小吉',
 	'凶',
-	'大凶'
+	'大凶',
 ];
 
 const itemPrefixes = [
@@ -84,6 +87,7 @@ const itemPrefixes = [
 	'4次元',
 	'脈動する',
 	'得体の知れない',
+	'四角い',
 ];
 
 const items = [
@@ -176,6 +180,17 @@ const items = [
 	'気体',
 	'鉛筆',
 	'消しゴム',
+	'つるぎ',
+	'棒状のもの',
+	'農産物',
+	'メタルスライム',
+	'タコの足',
+	'きのこ',
+	'なめこ',
+	'缶チューハイ',
+	'爪切り',
+	'耳かき',
+	'ぬいぐるみ',
 ];
 
 export default class FortuneModule implements IModule {
