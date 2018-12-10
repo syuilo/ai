@@ -88,6 +88,7 @@ const itemPrefixes = [
 	'脈動する',
 	'得体の知れない',
 	'四角い',
+	'暴れ回る',
 ];
 
 const items = [
@@ -191,6 +192,8 @@ const items = [
 	'爪切り',
 	'耳かき',
 	'ぬいぐるみ',
+	'ティラノサウルス',
+	'尿路結石',
 ];
 
 export default class FortuneModule implements IModule {
