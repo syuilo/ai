@@ -4,7 +4,7 @@ import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import * as seedrandom from 'seedrandom';
 
-const omikujis = [
+const blessing = [
 	'藍吉',
 	'ギガ吉',
 	'メガ吉',
@@ -226,7 +226,7 @@ export default class FortuneModule implements IModule {
 			const date = new Date();
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}@${msg.userId}`;
 			const rng = seedrandom(seed);
-			const omikuji = omikujis[Math.floor(rng() * omikujis.length)];
+			const omikuji = blessing[Math.floor(rng() * blessing.length)];
 			const itemPrefix = Math.floor(rng() * 5) != 0 ? itemPrefixes[Math.floor(rng() * itemPrefixes.length)] : '';
 			const item = items[Math.floor(rng() * items.length)];
 			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${itemPrefix}${item}`, serifs.fortune.cw(msg.friend.name));
