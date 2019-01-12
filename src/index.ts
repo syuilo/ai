@@ -13,6 +13,7 @@ import TimerModule from './modules/timer';
 import DiceModule from './modules/dice';
 import ServerModule from './modules/server';
 import FollowModule from './modules/follow';
+import ValentineModule from './modules/valentine';
 
 import * as request from 'request-promise-native';
 import IModule from './module';
@@ -41,6 +42,7 @@ promiseRetry(retry => {
 		new WelcomeModule(),
 		new ServerModule(),
 		new FollowModule(),
+		new ValentineModule(),
 	];
 
 	if (config.keywordEnabled) modules.push(new KeywordModule());

@@ -258,6 +258,13 @@ export default {
 		notify: (time, name) => name ? `${name}、${time}経ちましたよ！` : `${time}経ちましたよ！`
 	},
 
+	/**
+	 * バレンタイン
+	 */
+	valentine: {
+		chocolateForYou: name => name ? `${name}、その... チョコレート作ったのでよかったらどうぞ！🍫` : 'チョコレート作ったのでよかったらどうぞ！🍫',
+	},
+
 	server: {
 		cpu: 'サーバーの負荷が高そうです。大丈夫でしょうか...？'
 	},
