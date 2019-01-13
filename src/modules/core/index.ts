@@ -307,7 +307,7 @@ export default class CoreModule implements IModule {
 		return true;
 	}
 
-	private ponkotu = (msg: MessageLike): boolean |Result => {
+	private ponkotu = (msg: MessageLike): boolean | Result => {
 		if (!msg.includes(['ぽんこつ'])) return false;
 
 		msg.friend.decLove();
