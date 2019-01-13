@@ -36,7 +36,8 @@ export default class CoreModule implements IModule {
 			this.hug(msg) ||
 			this.humu(msg) ||
 			this.batou(msg) ||
-			this.ponkotu(msg)
+			this.ponkotu(msg) ||
+			this.rmrf(msg)
 		);
 	}
 
@@ -309,6 +310,16 @@ export default class CoreModule implements IModule {
 
 	private ponkotu = (msg: MessageLike): boolean | Result => {
 		if (!msg.includes(['ぽんこつ'])) return false;
+
+		msg.friend.decLove();
+
+		return {
+			reaction: 'angry'
+		};
+	}
+
+	private rmrf = (msg: MessageLike): boolean | Result => {
+		if (!msg.includes(['rm -rf'])) return false;
 
 		msg.friend.decLove();
 
