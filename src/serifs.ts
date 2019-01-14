@@ -42,8 +42,6 @@ export default {
 
 		requireMoreLove: 'もっと仲良くなったら考えてあげてもいいですよ？',
 
-		happyBirthday: name => name ? `お誕生日おめでとうございます、${name}🎉` : 'お誕生日おめでとうございます🎉',
-
 		nadenade: {
 			normal: 'ひゃっ…！ びっくりしました',
 
@@ -111,6 +109,10 @@ export default {
 
 	dice: {
 		done: res => `${res} です！`
+	},
+
+	birthday: {
+		happyBirthday: name => name ? `お誕生日おめでとうございます、${name}🎉` : 'お誕生日おめでとうございます🎉',
 	},
 
 	/**

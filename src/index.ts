@@ -2,6 +2,7 @@ import 藍 from './ai';
 import config from './config';
 
 import CoreModule from './modules/core';
+import BirthdayModule from './modules/birthday';
 import ReversiModule from './modules/reversi';
 import PingModule from './modules/ping';
 import EmojiModule from './modules/emoji';
@@ -42,6 +43,7 @@ promiseRetry(retry => {
 		new WelcomeModule(),
 		new ServerModule(),
 		new FollowModule(),
+		new BirthdayModule(),
 		new ValentineModule(),
 	];
 
