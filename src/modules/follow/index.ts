@@ -1,16 +1,19 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import MessageLike from '../../message-like';
 
-export default class FollowModule implements IModule {
+export default class FollowModule extends Module {
 	public readonly name = 'follow';
-	private ai: 藍;
 
-	public install = (ai: 藍) => {
-		this.ai = ai;
+	@autobind
+	public install() {
+		return {
+			onMention: this.onMention
+		};
 	}
 
-	public onMention = (msg: MessageLike) => {
+	@autobind
+	private onMention(msg: MessageLike) {
 		if (msg.text && msg.includes(['フォロー', 'フォロバ', 'follow me'])) {
 			if (!msg.user.isFollowing) {
 				this.ai.api('following/create', {

@@ -1,5 +1,5 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import Friend from '../../friend';
 import serifs from '../../serifs';
 
@@ -7,22 +7,22 @@ function zeroPadding(num: number, length: number): string {
 	return ('0000000000' + num).slice(-length);
 }
 
-export default class BirthdayModule implements IModule {
+export default class BirthdayModule extends Module {
 	public readonly name = 'birthday';
 
-	private ai: 藍;
-
-	public install = (ai: 藍) => {
-		this.ai = ai;
-
+	@autobind
+	public install() {
 		this.crawleBirthday();
 		setInterval(this.crawleBirthday, 1000 * 60 * 3);
+
+		return {};
 	}
 
 	/**
 	 * 誕生日のユーザーがいないかチェック(いたら祝う)
 	 */
-	private crawleBirthday = () => {
+	@autobind
+	private crawleBirthday() {
 		const now = new Date();
 		const m = now.getMonth();
 		const d = now.getDate();

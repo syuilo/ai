@@ -1,5 +1,5 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 
@@ -126,12 +126,18 @@ const faces = [
 	'👽'
 ]
 
-export default class EmojiModule implements IModule {
+export default class EmojiModule extends Module {
 	public readonly name = 'emoji';
 
-	public install = (ai: 藍) => { }
+	@autobind
+	public install() {
+		return {
+			onMention: this.onMention
+		};
+	}
 
-	public onMention = (msg: MessageLike) => {
+	@autobind
+	private onMention(msg: MessageLike) {
 		if (msg.includes(['顔文字', '絵文字', 'emoji', '福笑い'])) {
 			const hand = hands[Math.floor(Math.random() * hands.length)];
 			const face = faces[Math.floor(Math.random() * faces.length)];

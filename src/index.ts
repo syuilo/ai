@@ -16,42 +16,48 @@ import ServerModule from './modules/server';
 import FollowModule from './modules/follow';
 import ValentineModule from './modules/valentine';
 
+import chalk from 'chalk';
 import * as request from 'request-promise-native';
-import IModule from './module';
 const promiseRetry = require('promise-retry');
 
-console.log('--- starting ai... ---');
+function log(msg: string): void {
+	console.log(`[Boot]: ${msg}`);
+}
+
+log(chalk.bold('Ai v1.0'));
 
 promiseRetry(retry => {
+	log(`Account fetching... >>> ${config.host}`);
 	return request.post(`${config.apiUrl}/i`, {
 		json: {
 			i: config.i
 		}
 	}).catch(retry);
+}, {
+	retries: 3
 }).then(account => {
-	console.log(`account fetched: @${account.username}`);
+	log(chalk.green(`Account fetched successfully: @${account.username}`));
 
-	const modules: IModule[] = [
-		new EmojiModule(),
-		new FortuneModule(),
-		new GuessingGameModule(),
-		new ReversiModule(),
-		new TimerModule(),
-		new DiceModule(),
-		new CoreModule(),
-		new PingModule(),
-		new WelcomeModule(),
-		new ServerModule(),
-		new FollowModule(),
-		new BirthdayModule(),
-		new ValentineModule(),
-	];
+	log('Starting AiOS...');
 
-	if (config.keywordEnabled) modules.push(new KeywordModule());
+	const ai = new 藍(account);
 
-	new 藍(account, modules);
+	new EmojiModule(ai);
+	new FortuneModule(ai);
+	new GuessingGameModule(ai);
+	new ReversiModule(ai);
+	new TimerModule(ai);
+	new DiceModule(ai);
+	new CoreModule(ai);
+	new PingModule(ai);
+	new WelcomeModule(ai);
+	new ServerModule(ai);
+	new FollowModule(ai);
+	new BirthdayModule(ai);
+	new ValentineModule(ai);
+	if (config.keywordEnabled) new KeywordModule(ai);
 
-	console.log('--- ai started! ---');
+	ai.run();
 }).catch(e => {
-	console.error('failed to fetch account', e);
+	log(chalk.red('Failed to fetch the account'));
 });

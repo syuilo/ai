@@ -1,13 +1,19 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import MessageLike from '../../message-like';
 
-export default class PingModule implements IModule {
+export default class PingModule extends Module {
 	public readonly name = 'ping';
 
-	public install = (ai: 藍) => { }
+	@autobind
+	public install() {
+		return {
+			onMention: this.onMention
+		};
+	}
 
-	public onMention = (msg: MessageLike) => {
+	@autobind
+	private onMention(msg: MessageLike) {
 		if (msg.text && msg.text.includes('ping')) {
 			msg.reply('PONG!');
 			return true;

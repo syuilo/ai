@@ -50,7 +50,7 @@ export default class MessageLike {
 	public reply = async (text: string, cw?: string) => {
 		if (text == null) return;
 
-		console.log(`sending reply of ${this.id} ...`);
+		this.ai.log(`sending reply of ${this.id} ...`);
 
 		await delay(2000);
 

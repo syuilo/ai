@@ -1,17 +1,20 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 
-export default class TimerModule implements IModule {
+export default class TimerModule extends Module {
 	public readonly name = 'timer';
-	private ai: 藍;
 
-	public install = (ai: 藍) => {
-		this.ai = ai;
+	@autobind
+	public install() {
+		return {
+			onMention: this.onMention
+		};
 	}
 
-	public onMention = (msg: MessageLike) => {
+	@autobind
+	private onMention(msg: MessageLike) {
 		const secondsQuery = (msg.text || '').match(/([0-9]+)秒/);
 		const minutesQuery = (msg.text || '').match(/([0-9]+)分/);
 		const hoursQuery = (msg.text || '').match(/([0-9]+)時間/);

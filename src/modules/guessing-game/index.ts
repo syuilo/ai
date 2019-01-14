@@ -1,13 +1,12 @@
+import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
-import 藍 from '../../ai';
-import IModule from '../../module';
+import Module from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import getCollection from '../../utils/get-collection';
 
-export default class GuessingGameModule implements IModule {
+export default class GuessingGameModule extends Module {
 	public readonly name = 'guessingGame';
-	private ai: 藍;
 	private guesses: loki.Collection<{
 		userId: string;
 		secret: number;
@@ -17,17 +16,22 @@ export default class GuessingGameModule implements IModule {
 		endedAt: number;
 	}>;
 
-	public install = (ai: 藍) => {
-		this.ai = ai;
-
+	@autobind
+	public install() {
 		//#region Init DB
 		this.guesses = getCollection(this.ai.db, 'guessingGame', {
 			indices: ['userId']
 		});
 		//#endregion
+
+		return {
+			onMention: this.onMention,
+			onContextReply: this.onContextReply
+		};
 	}
 
-	public onMention = (msg: MessageLike) => {
+	@autobind
+	private onMention(msg: MessageLike) {
 		if (msg.includes(['数当て', '数あて'])) {
 			const exist = this.guesses.findOne({
 				userId: msg.userId,
@@ -56,7 +60,7 @@ export default class GuessingGameModule implements IModule {
 			});
 
 			msg.reply(serifs.guessingGame.started).then(reply => {
-				this.ai.subscribeReply(this, msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id);
+				this.subscribeReply(msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id);
 			});
 
 			return true;
@@ -65,7 +69,8 @@ export default class GuessingGameModule implements IModule {
 		}
 	}
 
-	public onReplyThisModule = (msg: MessageLike) => {
+	@autobind
+	private onContextReply(msg: MessageLike) {
 		if (msg.text == null) return;
 
 		const exist = this.guesses.findOne({
@@ -78,7 +83,7 @@ export default class GuessingGameModule implements IModule {
 			exist.isEnded = true;
 			exist.endedAt = Date.now();
 			this.guesses.update(exist);
-			this.ai.unsubscribeReply(this, msg.userId);
+			this.unsubscribeReply(msg.userId);
 			return;
 		}
 
@@ -86,7 +91,7 @@ export default class GuessingGameModule implements IModule {
 
 		if (guess == null) {
 			msg.reply(serifs.guessingGame.nan).then(reply => {
-				this.ai.subscribeReply(this, msg.userId, msg.isMessage, reply.id);
+				this.subscribeReply(msg.userId, msg.isMessage, reply.id);
 			});
 		} else {
 			if (guess.length > 3) return;
@@ -116,14 +121,14 @@ export default class GuessingGameModule implements IModule {
 			if (end) {
 				exist.isEnded = true;
 				exist.endedAt = Date.now();
-				this.ai.unsubscribeReply(this, msg.userId);
+				this.unsubscribeReply(msg.userId);
 			}
 
 			this.guesses.update(exist);
 
 			msg.reply(text).then(reply => {
 				if (!end) {
-					this.ai.subscribeReply(this, msg.userId, msg.isMessage, reply.id);
+					this.subscribeReply(msg.userId, msg.isMessage, reply.id);
 				}
 			});
 		}

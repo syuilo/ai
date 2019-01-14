@@ -1,27 +1,23 @@
 import * as childProcess from 'child_process';
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
 import MessageLike from '../../message-like';
-import * as WebSocket from 'ws';
 import Friend from '../../friend';
 import getDate from '../../utils/get-date';
 
-export default class ReversiModule implements IModule {
+export default class ReversiModule extends Module {
 	public readonly name = 'reversi';
-
-	private ai: 藍;
 
 	/**
 	 * リバーシストリーム
 	 */
 	private reversiConnection?: any;
 
-	public install = (ai: 藍) => {
-		if (!config.reversiEnabled) return;
-
-		this.ai = ai;
+	@autobind
+	public install() {
+		if (!config.reversiEnabled) return {};
 
 		this.reversiConnection = this.ai.connection.useSharedConnection('gamesReversi');
 
@@ -30,9 +26,14 @@ export default class ReversiModule implements IModule {
 
 		// マッチしたとき
 		this.reversiConnection.on('matched', msg => this.onReversiGameStart(msg));
+
+		return {
+			onMention: this.onMention
+		};
 	}
 
-	public onMention = (msg: MessageLike) => {
+	@autobind
+	private onMention(msg: MessageLike) {
 		if (msg.includes(['リバーシ', 'オセロ', 'reversi', 'othello'])) {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.reversi.ok);
@@ -50,8 +51,9 @@ export default class ReversiModule implements IModule {
 		}
 	}
 
-	private onReversiInviteMe = async (inviter: any) => {
-		console.log(`Someone invited me: @${inviter.username}`);
+	@autobind
+	private async onReversiInviteMe(inviter: any) {
+		this.log(`Someone invited me: @${inviter.username}`);
 
 		if (config.reversiEnabled) {
 			// 承認
@@ -65,8 +67,9 @@ export default class ReversiModule implements IModule {
 		}
 	}
 
-	private onReversiGameStart = (game: any) => {
-		console.log('enter reversi game room');
+	@autobind
+	private onReversiGameStart(game: any) {
+		this.log('enter reversi game room');
 
 		// ゲームストリームに接続
 		const gw = this.ai.connection.connectToChannel('gamesReversiGame', {
@@ -144,6 +147,7 @@ export default class ReversiModule implements IModule {
 		}, 2000);
 	}
 
+	@autobind
 	private onGameEnded(game: any) {
 		const user = game.user1Id == this.ai.account.id ? game.user2 : game.user1;
 

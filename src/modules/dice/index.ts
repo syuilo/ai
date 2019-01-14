@@ -1,17 +1,20 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 
-export default class DiceModule implements IModule {
+export default class DiceModule extends Module {
 	public readonly name = 'dice';
-	private ai: 藍;
 
-	public install = (ai: 藍) => {
-		this.ai = ai;
+	@autobind
+	public install() {
+		return {
+			onMention: this.onMention
+		};
 	}
 
-	public onMention = (msg: MessageLike) => {
+	@autobind
+	private onMention(msg: MessageLike) {
 		if (msg.text == null) return false;
 
 		const query = msg.text.match(/([0-9]+)[dD]([0-9]+)/);

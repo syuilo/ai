@@ -1,14 +1,28 @@
 // AI CORE
 
+import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
 import * as request from 'request-promise-native';
+import chalk from 'chalk';
 import config from './config';
-import IModule from './module';
+import Module from './module';
 import MessageLike from './message-like';
 import { FriendDoc } from './friend';
 import { User } from './misskey/user';
 import getCollection from './utils/get-collection';
 import Stream from './stream';
+
+type OnMentionHandler = (msg: MessageLike) => boolean | HandlerResult;
+type OnContextReplyHandler = (msg: MessageLike, data?: any) => void | HandlerResult;
+
+export type HandlerResult = {
+	reaction: string;
+};
+
+export type InstallerResult = {
+	onMention?: OnMentionHandler;
+	onContextReply?: OnContextReplyHandler;
+};
 
 /**
  * 藍
@@ -16,7 +30,9 @@ import Stream from './stream';
 export default class 藍 {
 	public account: User;
 	public connection: Stream;
-	private modules: IModule[] = [];
+	public modules: Module[] = [];
+	private onMentionHandlers: OnMentionHandler[] = [];
+	private onContextReplyHandlers: { [moduleName: string]: OnContextReplyHandler } = {};
 	public db: loki;
 
 	private contexts: loki.Collection<{
@@ -30,19 +46,30 @@ export default class 藍 {
 
 	public friends: loki.Collection<FriendDoc>;
 
-	constructor(account: User, modules: IModule[]) {
+	constructor(account: User, ready?: Function) {
 		this.account = account;
-		this.modules = modules;
 
 		this.db = new loki('memory.json', {
 			autoload: true,
 			autosave: true,
 			autosaveInterval: 1000,
-			autoloadCallback: this.init
+			autoloadCallback: err => {
+				if (err) {
+					this.log(chalk.red(`Failed to load DB: ${err}`));
+				} else {
+					if (ready) ready();
+				}
+			}
 		});
 	}
 
-	private init = () => {
+	@autobind
+	public log(msg: string) {
+		console.log(`[AiOS]: ${msg}`);
+	}
+
+	@autobind
+	public run() {
 		//#region Init DB
 		this.contexts = getCollection(this.db, 'contexts', {
 			indices: ['key']
@@ -62,7 +89,7 @@ export default class 藍 {
 		// メンションされたとき
 		mainStream.on('mention', data => {
 			if (data.userId == this.account.id) return; // 自分は弾く
-			if (data.text.startsWith('@' + this.account.username)) {
+			if (data.text && data.text.startsWith('@' + this.account.username)) {
 				this.onMention(new MessageLike(this, data, false));
 			}
 		});
@@ -81,11 +108,21 @@ export default class 藍 {
 		//#endregion
 
 		// Install modules
-		this.modules.forEach(m => m.install(this));
+		this.modules.forEach(m => {
+			this.log(`Installing ${chalk.cyan.italic(m.name)}\tmodule...`);
+			const res = m.install();
+			if (res != null) {
+				if (res.onMention) this.onMentionHandlers.push(res.onMention);
+				if (res.onContextReply) this.onContextReplyHandlers[m.name] = res.onContextReply;
+			}
+		});
+
+		this.log(chalk.green.bold('Ai am now running!'));
 	}
 
-	private onMention = (msg: MessageLike) => {
-		console.log(`mention received: ${msg.id}`);
+	@autobind
+	private onMention(msg: MessageLike) {
+		this.log(`mention received: ${msg.id}`);
 
 		const context = !msg.isMessage && msg.replyId == null ? null : this.contexts.findOne(msg.isMessage ? {
 			isMessage: true,
@@ -98,17 +135,17 @@ export default class 藍 {
 		let reaction = 'love';
 
 		if (context != null) {
-			const module = this.modules.find(m => m.name == context.module);
-			const res = module.onReplyThisModule(msg, context.data);
+			const handler = this.onContextReplyHandlers[context.module];
+			const res = handler(msg, context.data);
 
 			if (res != null && typeof res === 'object') {
 				reaction = res.reaction;
 			}
 		} else {
-			let res: ReturnType<IModule['onMention']>;
+			let res: boolean | HandlerResult;
 
-			this.modules.filter(m => m.hasOwnProperty('onMention')).some(m => {
-				res = m.onMention(msg);
+			this.onMentionHandlers.some(handler => {
+				res = handler(msg);
 				return res === true || typeof res === 'object';
 			});
 
@@ -135,18 +172,21 @@ export default class 藍 {
 		}, 1000);
 	}
 
-	public post = async (param: any) => {
+	@autobind
+	public async post(param: any) {
 		const res = await this.api('notes/create', param);
 		return res.createdNote;
 	}
 
-	public sendMessage = (userId: any, param: any) => {
+	@autobind
+	public sendMessage(userId: any, param: any) {
 		return this.api('messaging/messages/create', Object.assign({
 			userId: userId,
 		}, param));
 	}
 
-	public api = (endpoint: string, param?: any) => {
+	@autobind
+	public api(endpoint: string, param?: any) {
 		return request.post(`${config.apiUrl}/${endpoint}`, {
 			json: Object.assign({
 				i: config.i
@@ -154,7 +194,8 @@ export default class 藍 {
 		});
 	};
 
-	public subscribeReply = (module: IModule, key: string, isMessage: boolean, id: string, data?: any) => {
+	@autobind
+	public subscribeReply(module: Module, key: string, isMessage: boolean, id: string, data?: any) {
 		this.contexts.insertOne(isMessage ? {
 			isMessage: true,
 			userId: id,
@@ -170,7 +211,8 @@ export default class 藍 {
 		});
 	}
 
-	public unsubscribeReply = (module: IModule, key: string) => {
+	@autobind
+	public unsubscribeReply(module: Module, key: string) {
 		this.contexts.findAndRemove({
 			key: key,
 			module: module.name

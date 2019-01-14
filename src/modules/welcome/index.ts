@@ -1,20 +1,20 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 
-export default class WelcomeModule implements IModule {
+export default class WelcomeModule extends Module {
 	public readonly name = 'welcome';
 
-	private ai: 藍;
-
-	public install = (ai: 藍) => {
-		this.ai = ai;
-
+	@autobind
+	public install() {
 		const tl = this.ai.connection.useSharedConnection('localTimeline');
 
 		tl.on('note', this.onLocalNote);
+
+		return {};
 	}
 
-	public onLocalNote = (note: any) => {
+	@autobind
+	private onLocalNote(note: any) {
 		if (note.isFirstNote) {
 			setTimeout(() => {
 				this.ai.api('notes/create', {

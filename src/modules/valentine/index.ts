@@ -1,24 +1,24 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import Friend from '../../friend';
 import serifs from '../../serifs';
 
-export default class ValentineModule implements IModule {
+export default class ValentineModule extends Module {
 	public readonly name = 'valentine';
 
-	private ai: 藍;
-
-	public install = (ai: 藍) => {
-		this.ai = ai;
-
+	@autobind
+	public install() {
 		this.crawleValentine();
 		setInterval(this.crawleValentine, 1000 * 60 * 3);
+
+		return {};
 	}
 
 	/**
 	 * チョコ配り
 	 */
-	private crawleValentine = () => {
+	@autobind
+	private crawleValentine() {
 		const now = new Date();
 
 		const isValentine = now.getMonth() == 1 && now.getDate() == 14;

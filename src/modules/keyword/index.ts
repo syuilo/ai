@@ -1,6 +1,6 @@
+import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
-import 藍 from '../../ai';
-import IModule from '../../module';
+import Module from '../../module';
 import config from '../../config';
 import serifs from '../../serifs';
 import getCollection from '../../utils/get-collection';
@@ -13,19 +13,17 @@ function kanaToHira(str: string) {
 	});
 }
 
-export default class KeywordModule implements IModule {
+export default class KeywordModule extends Module {
 	public readonly name = 'keyword';
 
-	private ai: 藍;
 	private tokenizer: any;
 	private learnedKeywords: loki.Collection<{
 		keyword: string;
 		learnedAt: number;
 	}>;
 
-	public install = (ai: 藍) => {
-		this.ai = ai;
-
+	@autobind
+	public install() {
 		//#region Init DB
 		this.learnedKeywords = getCollection(this.ai.db, '_keyword_learnedKeywords', {
 			indices: ['userId']
@@ -36,9 +34,12 @@ export default class KeywordModule implements IModule {
 		this.tokenizer.command = config.mecab;
 
 		setInterval(this.say, 1000 * 60 * 60);
+
+		return {};
 	}
 
-	private say = async () => {
+	@autobind
+	private async say() {
 		const tl = await this.ai.api('notes/local-timeline', {
 			limit: 30
 		});

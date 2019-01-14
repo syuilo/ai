@@ -1,12 +1,11 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
 
-export default class ServerModule implements IModule {
+export default class ServerModule extends Module {
 	public readonly name = 'server';
 
-	private ai: 藍;
 	private connection?: any;
 	private recentStat: any;
 	private warned = false;
@@ -17,10 +16,9 @@ export default class ServerModule implements IModule {
 	 */
 	private statsLogs: any[] = [];
 
-	public install = (ai: 藍) => {
-		if (!config.serverMonitoring) return;
-
-		this.ai = ai;
+	@autobind
+	public install() {
+		if (!config.serverMonitoring) return {};
 
 		this.connection = this.ai.connection.useSharedConnection('serverStats');
 		this.connection.on('stats', this.onStats);
@@ -33,9 +31,12 @@ export default class ServerModule implements IModule {
 		setInterval(() => {
 			this.check();
 		}, 3000);
+
+		return {};
 	}
 
-	private check = () => {
+	@autobind
+	private check() {
 		const average = (arr) => arr.reduce((a, b) => a + b) / arr.length;
 
 		const cpuPercentages = this.statsLogs.map(s => s && s.cpu_usage * 100 || 0);
@@ -47,11 +48,13 @@ export default class ServerModule implements IModule {
 		}
 	}
 
-	private onStats = async (stats: any) => {
+	@autobind
+	private async onStats(stats: any) {
 		this.recentStat = stats.body;
 	}
 
-	private warn = () => {
+	@autobind
+	private warn() {
 		//#region 前に警告したときから一旦落ち着いた状態を経験していなければ警告しない
 		// 常に負荷が高いようなサーバーで無限に警告し続けるのを防ぐため
 		if (this.warned) return;

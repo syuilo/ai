@@ -1,16 +1,22 @@
-import 藍 from '../../ai';
-import IModule from '../../module';
+import autobind from 'autobind-decorator';
+import Module from '../../module';
 import MessageLike from '../../message-like';
 import serifs from '../../serifs';
 import * as seedrandom from 'seedrandom';
 import { blessing, itemPrefixes, items } from './vocabulary';
 
-export default class FortuneModule implements IModule {
+export default class FortuneModule extends Module {
 	public readonly name = 'fortune';
 
-	public install = (ai: 藍) => { }
+	@autobind
+	public install() {
+		return {
+			onMention: this.onMention
+		};
+	}
 
-	public onMention = (msg: MessageLike) => {
+	@autobind
+	private onMention(msg: MessageLike) {
 		if (msg.includes(['占', 'うらな', '運勢', 'おみくじ'])) {
 			const date = new Date();
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}@${msg.userId}`;
