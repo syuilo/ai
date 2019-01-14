@@ -98,7 +98,9 @@ export default {
 			normal: '(じとー…)',
 
 			hate: '…頭大丈夫ですか？'
-		}
+		},
+
+		shutdown: '私まだ眠くないですよ...？',
 	},
 
 	keyword: {

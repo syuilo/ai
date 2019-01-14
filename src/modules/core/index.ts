@@ -37,7 +37,8 @@ export default class CoreModule implements IModule {
 			this.humu(msg) ||
 			this.batou(msg) ||
 			this.ponkotu(msg) ||
-			this.rmrf(msg)
+			this.rmrf(msg) ||
+			this.shutdown(msg)
 		);
 	}
 
@@ -325,6 +326,16 @@ export default class CoreModule implements IModule {
 
 		return {
 			reaction: 'angry'
+		};
+	}
+
+	private shutdown = (msg: MessageLike): boolean | Result => {
+		if (!msg.includes(['shutdown'])) return false;
+
+		msg.reply(serifs.core.shutdown);
+
+		return {
+			reaction: 'confused'
 		};
 	}
 
