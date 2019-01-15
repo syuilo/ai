@@ -49,6 +49,11 @@ export default class 藍 {
 
 	public friends: loki.Collection<FriendDoc>;
 
+	/**
+	 * 藍インスタンスを生成します
+	 * @param account 藍として使うアカウント
+	 * @param modules モジュール。先頭のモジュールほど高優先度
+	 */
 	constructor(account: User, modules: Module[]) {
 		this.account = account;
 		this.modules = modules;
@@ -128,6 +133,10 @@ export default class 藍 {
 		this.log(chalk.green.bold('Ai am now running!'));
 	}
 
+	/**
+	 * ユーザーから話しかけられたとき
+	 * (メンション、リプライ、トークのメッセージ)
+	 */
 	@autobind
 	private async onReceiveMessage(msg: Message): Promise<void> {
 		this.log(chalk.gray(`<<< An message received: ${chalk.underline(msg.id)}`));
@@ -151,6 +160,9 @@ export default class 藍 {
 
 		let reaction = 'love';
 
+		//#region
+		// コンテキストがあればコンテキストフック呼び出し
+		// なければそれぞれのモジュールについてフックが引っかかるまで呼び出し
 		if (context != null) {
 			const handler = this.contextHooks[context.module];
 			const res = handler(msg, context.data);
@@ -170,6 +182,7 @@ export default class 藍 {
 				reaction = res.reaction;
 			}
 		}
+		//#endregion
 
 		await delay(1000);
 
@@ -189,12 +202,18 @@ export default class 藍 {
 		}
 	}
 
+	/**
+	 * 投稿します
+	 */
 	@autobind
 	public async post(param: any) {
 		const res = await this.api('notes/create', param);
 		return res.createdNote;
 	}
 
+	/**
+	 * 指定ユーザーにトークメッセージを送信します
+	 */
 	@autobind
 	public sendMessage(userId: any, param: any) {
 		return this.api('messaging/messages/create', Object.assign({
@@ -202,6 +221,9 @@ export default class 藍 {
 		}, param));
 	}
 
+	/**
+	 * APIを呼び出します
+	 */
 	@autobind
 	public api(endpoint: string, param?: any) {
 		return request.post(`${config.apiUrl}/${endpoint}`, {
@@ -211,6 +233,14 @@ export default class 藍 {
 		});
 	};
 
+	/**
+	 * コンテキストを生成し、ユーザーからの返信を待ち受けます
+	 * @param module 待ち受けるモジュール名
+	 * @param key コンテキストを識別するためのキー
+	 * @param isDm トークメッセージ上のコンテキストかどうか
+	 * @param id トークメッセージ上のコンテキストならばトーク相手のID、そうでないなら待ち受ける投稿のID
+	 * @param data コンテキストに保存するオプションのデータ
+	 */
 	@autobind
 	public subscribeReply(module: Module, key: string, isDm: boolean, id: string, data?: any) {
 		this.contexts.insertOne(isDm ? {
@@ -228,6 +258,11 @@ export default class 藍 {
 		});
 	}
 
+	/**
+	 * 返信の待ち受けを解除します
+	 * @param module 解除するモジュール名
+	 * @param key コンテキストを識別するためのキー
+	 */
 	@autobind
 	public unsubscribeReply(module: Module, key: string) {
 		this.contexts.findAndRemove({
