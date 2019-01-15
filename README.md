@@ -2,7 +2,7 @@
 <p align="center">An Ai for Misskey. <a href="./torisetu.md">About Ai</a></p>
 
 ## これなに
-Misskey用のBotです。
+Misskey用の日本語Botです。
 
 ## インストール
 > Node.js と npm と MeCab (オプション) がインストールされている必要があります。
