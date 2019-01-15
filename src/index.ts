@@ -28,7 +28,7 @@ function log(msg: string): void {
 log(chalk.bold('Ai v1.0'));
 
 promiseRetry(retry => {
-	log(`Account fetching... (${config.host})`);
+	log(`Account fetching... ${chalk.gray(config.host)}`);
 	return request.post(`${config.apiUrl}/i`, {
 		json: {
 			i: config.i
@@ -37,28 +37,27 @@ promiseRetry(retry => {
 }, {
 	retries: 3
 }).then(account => {
-	log(chalk.green(`Account fetched successfully: @${account.username}`));
+	const acct = `@${account.username}`;
+	log(chalk.green(`Account fetched successfully: ${chalk.underline(acct)}`));
 
 	log('Starting AiOS...');
 
-	const ai = new 藍(account, run => {
-		new EmojiModule(ai);
-		new FortuneModule(ai);
-		new GuessingGameModule(ai);
-		new ReversiModule(ai);
-		new TimerModule(ai);
-		new DiceModule(ai);
-		new CoreModule(ai);
-		new PingModule(ai);
-		new WelcomeModule(ai);
-		new ServerModule(ai);
-		new FollowModule(ai);
-		new BirthdayModule(ai);
-		new ValentineModule(ai);
-		if (config.keywordEnabled) new KeywordModule(ai);
-
-		run();
-	});
+	new 藍(account, [
+		new EmojiModule(),
+		new FortuneModule(),
+		new GuessingGameModule(),
+		new ReversiModule(),
+		new TimerModule(),
+		new DiceModule(),
+		new CoreModule(),
+		new PingModule(),
+		new WelcomeModule(),
+		new ServerModule(),
+		new FollowModule(),
+		new BirthdayModule(),
+		new ValentineModule(),
+		new KeywordModule(),
+	]);
 }).catch(e => {
 	log(chalk.red('Failed to fetch the account'));
 });

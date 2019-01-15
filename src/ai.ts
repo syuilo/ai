@@ -49,8 +49,9 @@ export default class 藍 {
 
 	public friends: loki.Collection<FriendDoc>;
 
-	constructor(account: User, ready: (run: Function) => void) {
+	constructor(account: User, modules: Module[]) {
 		this.account = account;
+		this.modules = modules;
 
 		this.log('Lodaing the memory...');
 
@@ -63,7 +64,7 @@ export default class 藍 {
 					this.log(chalk.red(`Failed to load the memory: ${err}`));
 				} else {
 					this.log(chalk.green('The memory loaded successfully'));
-					ready(this.run);
+					this.run();
 				}
 			}
 		});
@@ -116,6 +117,7 @@ export default class 藍 {
 		// Install modules
 		this.modules.forEach(m => {
 			this.log(`Installing ${chalk.cyan.italic(m.name)}\tmodule...`);
+			m.init(this);
 			const res = m.install();
 			if (res != null) {
 				if (res.mentionHook) this.mentionHooks.push(res.mentionHook);

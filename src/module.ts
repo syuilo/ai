@@ -6,9 +6,8 @@ export default abstract class Module {
 
 	protected ai: 藍;
 
-	constructor(ai: 藍) {
+	public init(ai: 藍) {
 		this.ai = ai;
-		this.ai.modules.push(this);
 	}
 
 	public abstract install(): InstallerResult;
