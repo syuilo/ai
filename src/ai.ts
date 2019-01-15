@@ -46,7 +46,7 @@ export default class 藍 {
 
 	public friends: loki.Collection<FriendDoc>;
 
-	constructor(account: User, ready?: Function) {
+	constructor(account: User, ready: (run: Function) => void) {
 		this.account = account;
 
 		this.db = new loki('memory.json', {
@@ -57,7 +57,7 @@ export default class 藍 {
 				if (err) {
 					this.log(chalk.red(`Failed to load DB: ${err}`));
 				} else {
-					if (ready) ready();
+					ready(this.run);
 				}
 			}
 		});
@@ -69,7 +69,7 @@ export default class 藍 {
 	}
 
 	@autobind
-	public run() {
+	private run() {
 		//#region Init DB
 		this.contexts = getCollection(this.db, 'contexts', {
 			indices: ['key']

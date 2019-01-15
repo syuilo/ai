@@ -40,24 +40,24 @@ promiseRetry(retry => {
 
 	log('Starting AiOS...');
 
-	const ai = new 藍(account);
+	const ai = new 藍(account, run => {
+		new EmojiModule(ai);
+		new FortuneModule(ai);
+		new GuessingGameModule(ai);
+		new ReversiModule(ai);
+		new TimerModule(ai);
+		new DiceModule(ai);
+		new CoreModule(ai);
+		new PingModule(ai);
+		new WelcomeModule(ai);
+		new ServerModule(ai);
+		new FollowModule(ai);
+		new BirthdayModule(ai);
+		new ValentineModule(ai);
+		if (config.keywordEnabled) new KeywordModule(ai);
 
-	new EmojiModule(ai);
-	new FortuneModule(ai);
-	new GuessingGameModule(ai);
-	new ReversiModule(ai);
-	new TimerModule(ai);
-	new DiceModule(ai);
-	new CoreModule(ai);
-	new PingModule(ai);
-	new WelcomeModule(ai);
-	new ServerModule(ai);
-	new FollowModule(ai);
-	new BirthdayModule(ai);
-	new ValentineModule(ai);
-	if (config.keywordEnabled) new KeywordModule(ai);
-
-	ai.run();
+		run();
+	});
 }).catch(e => {
 	log(chalk.red('Failed to fetch the account'));
 });
