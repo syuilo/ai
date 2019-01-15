@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import { HandlerResult } from '../../ai';
 import Module from '../../module';
-import MessageLike from '../../message-like';
+import Message from '../../message';
 import serifs, { getSerif } from '../../serifs';
 import getDate from '../../utils/get-date';
 
@@ -21,7 +21,7 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: MessageLike) {
+	private mentionHook(msg: Message) {
 		if (!msg.text) return false;
 
 		return (
@@ -40,13 +40,13 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private setName(msg: MessageLike): boolean  {
+	private setName(msg: Message): boolean  {
 		if (!msg.text) return false;
 		if (!msg.text.includes('って呼んで')) return false;
 		if (msg.text.startsWith('って呼んで')) return false;
 
 		// メッセージのみ
-		if (!msg.isMessage) return true;
+		if (!msg.isDm) return true;
 
 		if (msg.friend.love < 5) {
 			msg.reply(serifs.core.requireMoreLove);
@@ -72,7 +72,7 @@ export default class CoreModule extends Module {
 			msg.reply(serifs.core.setNameOk(name));
 		} else {
 			msg.reply(serifs.core.san).then(reply => {
-				this.subscribeReply(msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id, {
+				this.subscribeReply(msg.userId, msg.isDm, msg.isDm ? msg.userId : reply.id, {
 					name: name
 				});
 			});
@@ -82,7 +82,7 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private greet(msg: MessageLike): boolean {
+	private greet(msg: Message): boolean {
 		if (msg.text == null) return false;
 
 		const incLove = () => {
@@ -151,11 +151,11 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private nadenade(msg: MessageLike): boolean {
+	private nadenade(msg: Message): boolean {
 		if (!msg.includes(['なでなで'])) return false;
 
 		// メッセージのみ
-		if (!msg.isMessage) return true;
+		if (!msg.isDm) return true;
 
 		//#region 1日に1回だけ親愛度を上げる(嫌われてない場合のみ)
 		if (msg.friend.love >= 0) {
@@ -186,11 +186,11 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private kawaii(msg: MessageLike): boolean {
+	private kawaii(msg: Message): boolean {
 		if (!msg.includes(['かわいい', '可愛い'])) return false;
 
 		// メッセージのみ
-		if (!msg.isMessage) return true;
+		if (!msg.isDm) return true;
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.kawaii.love :
@@ -201,11 +201,11 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private suki(msg: MessageLike): boolean {
+	private suki(msg: Message): boolean {
 		if (!msg.or(['好き', 'すき'])) return false;
 
 		// メッセージのみ
-		if (!msg.isMessage) return true;
+		if (!msg.isDm) return true;
 
 		msg.reply(
 			msg.friend.love >= 5 ? (msg.friend.name ? serifs.core.suki.love(msg.friend.name) : serifs.core.suki.normal) :
@@ -216,11 +216,11 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private hug(msg: MessageLike): boolean {
+	private hug(msg: Message): boolean {
 		if (!msg.or(['ぎゅ', 'むぎゅ', /^はぐ(し(て|よ|よう)?)?$/])) return false;
 
 		// メッセージのみ
-		if (!msg.isMessage) return true;
+		if (!msg.isDm) return true;
 
 		//#region 前のハグから1分経ってない場合は返信しない
 		// これは、「ハグ」と言って「ぎゅー」と返信したとき、相手が
@@ -250,11 +250,11 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private humu(msg: MessageLike): boolean {
+	private humu(msg: Message): boolean {
 		if (!msg.includes(['踏んで'])) return false;
 
 		// メッセージのみ
-		if (!msg.isMessage) return true;
+		if (!msg.isDm) return true;
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.humu.love :
@@ -265,11 +265,11 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private batou(msg: MessageLike): boolean {
+	private batou(msg: Message): boolean {
 		if (!msg.includes(['罵倒して', '罵って'])) return false;
 
 		// メッセージのみ
-		if (!msg.isMessage) return true;
+		if (!msg.isDm) return true;
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.batou.love :
@@ -280,7 +280,7 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private ponkotu(msg: MessageLike): boolean | HandlerResult {
+	private ponkotu(msg: Message): boolean | HandlerResult {
 		if (!msg.includes(['ぽんこつ'])) return false;
 
 		msg.friend.decLove();
@@ -291,7 +291,7 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private rmrf(msg: MessageLike): boolean | HandlerResult {
+	private rmrf(msg: Message): boolean | HandlerResult {
 		if (!msg.includes(['rm -rf'])) return false;
 
 		msg.friend.decLove();
@@ -302,7 +302,7 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private shutdown(msg: MessageLike): boolean | HandlerResult {
+	private shutdown(msg: Message): boolean | HandlerResult {
 		if (!msg.includes(['shutdown'])) return false;
 
 		msg.reply(serifs.core.shutdown);
@@ -313,7 +313,7 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private contextHook(msg: MessageLike, data: any) {
+	private contextHook(msg: Message, data: any) {
 		if (msg.text == null) return;
 
 		const done = () => {
@@ -329,7 +329,7 @@ export default class CoreModule extends Module {
 			done();
 		} else {
 			msg.reply(serifs.core.yesOrNo).then(reply => {
-				this.subscribeReply(msg.userId, msg.isMessage, reply.id, data);
+				this.subscribeReply(msg.userId, msg.isDm, reply.id, data);
 			});
 		}
 	}

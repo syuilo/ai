@@ -4,17 +4,19 @@ import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
 import * as request from 'request-promise-native';
 import chalk from 'chalk';
+const delay = require('timeout-as-promise');
+
 import config from './config';
 import Module from './module';
-import MessageLike from './message-like';
+import Message from './message';
 import { FriendDoc } from './friend';
 import { User } from './misskey/user';
 import getCollection from './utils/get-collection';
 import Stream from './stream';
 import log from './log';
 
-type MentionHook = (msg: MessageLike) => boolean | HandlerResult;
-type ContextHook = (msg: MessageLike, data?: any) => void | HandlerResult;
+type MentionHook = (msg: Message) => boolean | HandlerResult;
+type ContextHook = (msg: Message, data?: any) => void | HandlerResult;
 
 export type HandlerResult = {
 	reaction: string;
@@ -37,7 +39,7 @@ export default class 藍 {
 	public db: loki;
 
 	private contexts: loki.Collection<{
-		isMessage: boolean;
+		isDm: boolean;
 		noteId?: string;
 		userId?: string;
 		module: string;
@@ -94,20 +96,20 @@ export default class 藍 {
 		mainStream.on('mention', data => {
 			if (data.userId == this.account.id) return; // 自分は弾く
 			if (data.text && data.text.startsWith('@' + this.account.username)) {
-				this.onMention(new MessageLike(this, data, false));
+				this.onReceiveMessage(new Message(this, data, false));
 			}
 		});
 
 		// 返信されたとき
 		mainStream.on('reply', data => {
 			if (data.userId == this.account.id) return; // 自分は弾く
-			this.onMention(new MessageLike(this, data, false));
+			this.onReceiveMessage(new Message(this, data, false));
 		});
 
 		// メッセージ
 		mainStream.on('messagingMessage', data => {
 			if (data.userId == this.account.id) return; // 自分は弾く
-			this.onMention(new MessageLike(this, data, true));
+			this.onReceiveMessage(new Message(this, data, true));
 		});
 		//#endregion
 
@@ -125,17 +127,17 @@ export default class 藍 {
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private async onReceiveMessage(msg: Message): Promise<void> {
 		this.log(chalk.gray(`<<< An message received: ${chalk.underline(msg.id)}`));
 
-		const isNoContext = !msg.isMessage && msg.replyId == null;
+		const isNoContext = !msg.isDm && msg.replyId == null;
 
 		// Look up the context
-		const context = isNoContext ? null : this.contexts.findOne(msg.isMessage ? {
-			isMessage: true,
+		const context = isNoContext ? null : this.contexts.findOne(msg.isDm ? {
+			isDm: true,
 			userId: msg.userId
 		} : {
-			isMessage: false,
+			isDm: false,
 			noteId: msg.replyId
 		});
 
@@ -161,22 +163,22 @@ export default class 藍 {
 			}
 		}
 
-		setTimeout(() => {
-			if (msg.isMessage) {
-				// 既読にする
-				this.api('messaging/messages/read', {
-					messageId: msg.id,
+		await delay(1000);
+
+		if (msg.isDm) {
+			// 既読にする
+			this.api('messaging/messages/read', {
+				messageId: msg.id,
+			});
+		} else {
+			// リアクションする
+			if (reaction) {
+				this.api('notes/reactions/create', {
+					noteId: msg.id,
+					reaction: reaction
 				});
-			} else {
-				// リアクションする
-				if (reaction) {
-					this.api('notes/reactions/create', {
-						noteId: msg.id,
-						reaction: reaction
-					});
-				}
 			}
-		}, 1000);
+		}
 	}
 
 	@autobind
@@ -202,15 +204,15 @@ export default class 藍 {
 	};
 
 	@autobind
-	public subscribeReply(module: Module, key: string, isMessage: boolean, id: string, data?: any) {
-		this.contexts.insertOne(isMessage ? {
-			isMessage: true,
+	public subscribeReply(module: Module, key: string, isDm: boolean, id: string, data?: any) {
+		this.contexts.insertOne(isDm ? {
+			isDm: true,
 			userId: id,
 			module: module.name,
 			key: key,
 			data: data
 		} : {
-			isMessage: false,
+			isDm: false,
 			noteId: id,
 			module: module.name,
 			key: key,

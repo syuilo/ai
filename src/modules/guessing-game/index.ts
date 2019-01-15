@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
 import Module from '../../module';
-import MessageLike from '../../message-like';
+import Message from '../../message';
 import serifs from '../../serifs';
 import getCollection from '../../utils/get-collection';
 
@@ -32,7 +32,7 @@ export default class GuessingGameModule extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: MessageLike) {
+	private mentionHook(msg: Message) {
 		if (!msg.includes(['数当て', '数あて'])) return false;
 
 		const exist = this.guesses.findOne({
@@ -40,7 +40,7 @@ export default class GuessingGameModule extends Module {
 			isEnded: false
 		});
 
-		if (!msg.isMessage) {
+		if (!msg.isDm) {
 			if (exist != null) {
 				msg.reply(serifs.guessingGame.arleadyStarted);
 			} else {
@@ -62,14 +62,14 @@ export default class GuessingGameModule extends Module {
 		});
 
 		msg.reply(serifs.guessingGame.started).then(reply => {
-			this.subscribeReply(msg.userId, msg.isMessage, msg.isMessage ? msg.userId : reply.id);
+			this.subscribeReply(msg.userId, msg.isDm, msg.isDm ? msg.userId : reply.id);
 		});
 
 		return true;
 	}
 
 	@autobind
-	private contextHook(msg: MessageLike) {
+	private contextHook(msg: Message) {
 		if (msg.text == null) return;
 
 		const exist = this.guesses.findOne({
@@ -90,7 +90,7 @@ export default class GuessingGameModule extends Module {
 
 		if (guess == null) {
 			msg.reply(serifs.guessingGame.nan).then(reply => {
-				this.subscribeReply(msg.userId, msg.isMessage, reply.id);
+				this.subscribeReply(msg.userId, msg.isDm, reply.id);
 			});
 			return;
 		}
@@ -128,7 +128,7 @@ export default class GuessingGameModule extends Module {
 
 		msg.reply(text).then(reply => {
 			if (!end) {
-				this.subscribeReply(msg.userId, msg.isMessage, reply.id);
+				this.subscribeReply(msg.userId, msg.isDm, reply.id);
 			}
 		});
 	}

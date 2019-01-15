@@ -19,8 +19,8 @@ export default abstract class Module {
 	}
 
 	@autobind
-	protected subscribeReply(key: string, isMessage: boolean, id: string, data?: any) {
-		this.ai.subscribeReply(this, key, isMessage, id, data);
+	protected subscribeReply(key: string, isDm: boolean, id: string, data?: any) {
+		this.ai.subscribeReply(this, key, isDm, id, data);
 	}
 
 	@autobind

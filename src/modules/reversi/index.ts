@@ -3,7 +3,7 @@ import autobind from 'autobind-decorator';
 import Module from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
-import MessageLike from '../../message-like';
+import Message from '../../message';
 import Friend from '../../friend';
 import getDate from '../../utils/get-date';
 
@@ -33,7 +33,7 @@ export default class ReversiModule extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: MessageLike) {
+	private mentionHook(msg: Message) {
 		if (msg.includes(['リバーシ', 'オセロ', 'reversi', 'othello'])) {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.reversi.ok);

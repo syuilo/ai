@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Module from '../../module';
-import MessageLike from '../../message-like';
+import Message from '../../message';
 import serifs from '../../serifs';
 import * as seedrandom from 'seedrandom';
 import { blessing, itemPrefixes, items } from './vocabulary';
@@ -16,7 +16,7 @@ export default class FortuneModule extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: MessageLike) {
+	private mentionHook(msg: Message) {
 		if (msg.includes(['占', 'うらな', '運勢', 'おみくじ'])) {
 			const date = new Date();
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}@${msg.userId}`;

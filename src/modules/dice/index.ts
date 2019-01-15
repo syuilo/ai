@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Module from '../../module';
-import MessageLike from '../../message-like';
+import Message from '../../message';
 import serifs from '../../serifs';
 
 export default class DiceModule extends Module {
@@ -14,7 +14,7 @@ export default class DiceModule extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: MessageLike) {
+	private mentionHook(msg: Message) {
 		if (msg.text == null) return false;
 
 		const query = msg.text.match(/([0-9]+)[dD]([0-9]+)/);

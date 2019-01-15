@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Module from '../../module';
-import MessageLike from '../../message-like';
+import Message from '../../message';
 
 export default class PingModule extends Module {
 	public readonly name = 'ping';
@@ -13,7 +13,7 @@ export default class PingModule extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: MessageLike) {
+	private mentionHook(msg: Message) {
 		if (msg.text && msg.text.includes('ping')) {
 			msg.reply('PONG!');
 			return true;

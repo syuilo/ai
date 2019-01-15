@@ -7,10 +7,10 @@ import or from './utils/or';
 import chalk from 'chalk';
 const delay = require('timeout-as-promise');
 
-export default class MessageLike {
+export default class Message {
 	private ai: 藍;
 	private messageOrNote: any;
-	public isMessage: boolean;
+	public isDm: boolean;
 
 	public get id(): string {
 		return this.messageOrNote.id;
@@ -34,10 +34,10 @@ export default class MessageLike {
 
 	public friend: Friend;
 
-	constructor(ai: 藍, messageOrNote: any, isMessage: boolean) {
+	constructor(ai: 藍, messageOrNote: any, isDm: boolean) {
 		this.ai = ai;
 		this.messageOrNote = messageOrNote;
-		this.isMessage = isMessage;
+		this.isDm = isDm;
 
 		this.friend = new Friend(ai, { user: this.user });
 
@@ -57,7 +57,7 @@ export default class MessageLike {
 
 		await delay(2000);
 
-		if (this.isMessage) {
+		if (this.isDm) {
 			return await this.ai.sendMessage(this.messageOrNote.userId, {
 				text: text
 			});
