@@ -130,6 +130,12 @@ export default class 藍 {
 	private async onReceiveMessage(msg: Message): Promise<void> {
 		this.log(chalk.gray(`<<< An message received: ${chalk.underline(msg.id)}`));
 
+		// Ignore message if the user is a bot
+		// To avoid infinity reply loop.
+		if (msg.user.isBot) {
+			return;
+		}
+
 		const isNoContext = !msg.isDm && msg.replyId == null;
 
 		// Look up the context
