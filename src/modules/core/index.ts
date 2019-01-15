@@ -15,13 +15,13 @@ export default class CoreModule extends Module {
 	@autobind
 	public install() {
 		return {
-			onMention: this.onMention,
-			onContextReply: this.onContextReply
+			mentionHook: this.mentionHook,
+			contextHook: this.contextHook
 		};
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private mentionHook(msg: MessageLike) {
 		if (!msg.text) return false;
 
 		return (
@@ -313,7 +313,7 @@ export default class CoreModule extends Module {
 	}
 
 	@autobind
-	private onContextReply(msg: MessageLike, data: any) {
+	private contextHook(msg: MessageLike, data: any) {
 		if (msg.text == null) return;
 
 		const done = () => {

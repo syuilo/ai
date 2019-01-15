@@ -8,12 +8,12 @@ export default class PingModule extends Module {
 	@autobind
 	public install() {
 		return {
-			onMention: this.onMention
+			mentionHook: this.mentionHook
 		};
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private mentionHook(msg: MessageLike) {
 		if (msg.text && msg.text.includes('ping')) {
 			msg.reply('PONG!');
 			return true;

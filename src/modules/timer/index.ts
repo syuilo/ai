@@ -9,12 +9,12 @@ export default class TimerModule extends Module {
 	@autobind
 	public install() {
 		return {
-			onMention: this.onMention
+			mentionHook: this.mentionHook
 		};
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private mentionHook(msg: MessageLike) {
 		const secondsQuery = (msg.text || '').match(/([0-9]+)秒/);
 		const minutesQuery = (msg.text || '').match(/([0-9]+)分/);
 		const hoursQuery = (msg.text || '').match(/([0-9]+)時間/);

@@ -9,12 +9,12 @@ export default class DiceModule extends Module {
 	@autobind
 	public install() {
 		return {
-			onMention: this.onMention
+			mentionHook: this.mentionHook
 		};
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private mentionHook(msg: MessageLike) {
 		if (msg.text == null) return false;
 
 		const query = msg.text.match(/([0-9]+)[dD]([0-9]+)/);

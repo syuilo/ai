@@ -25,13 +25,13 @@ export default class GuessingGameModule extends Module {
 		//#endregion
 
 		return {
-			onMention: this.onMention,
-			onContextReply: this.onContextReply
+			mentionHook: this.mentionHook,
+			contextHook: this.contextHook
 		};
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private mentionHook(msg: MessageLike) {
 		if (msg.includes(['数当て', '数あて'])) {
 			const exist = this.guesses.findOne({
 				userId: msg.userId,
@@ -70,7 +70,7 @@ export default class GuessingGameModule extends Module {
 	}
 
 	@autobind
-	private onContextReply(msg: MessageLike) {
+	private contextHook(msg: MessageLike) {
 		if (msg.text == null) return;
 
 		const exist = this.guesses.findOne({

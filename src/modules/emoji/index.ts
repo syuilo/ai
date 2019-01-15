@@ -132,12 +132,12 @@ export default class EmojiModule extends Module {
 	@autobind
 	public install() {
 		return {
-			onMention: this.onMention
+			mentionHook: this.mentionHook
 		};
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private mentionHook(msg: MessageLike) {
 		if (msg.includes(['顔文字', '絵文字', 'emoji', '福笑い'])) {
 			const hand = hands[Math.floor(Math.random() * hands.length)];
 			const face = faces[Math.floor(Math.random() * faces.length)];

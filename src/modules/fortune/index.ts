@@ -11,12 +11,12 @@ export default class FortuneModule extends Module {
 	@autobind
 	public install() {
 		return {
-			onMention: this.onMention
+			mentionHook: this.mentionHook
 		};
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private mentionHook(msg: MessageLike) {
 		if (msg.includes(['占', 'うらな', '運勢', 'おみくじ'])) {
 			const date = new Date();
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}@${msg.userId}`;

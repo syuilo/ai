@@ -28,12 +28,12 @@ export default class ReversiModule extends Module {
 		this.reversiConnection.on('matched', msg => this.onReversiGameStart(msg));
 
 		return {
-			onMention: this.onMention
+			mentionHook: this.mentionHook
 		};
 	}
 
 	@autobind
-	private onMention(msg: MessageLike) {
+	private mentionHook(msg: MessageLike) {
 		if (msg.includes(['リバーシ', 'オセロ', 'reversi', 'othello'])) {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.reversi.ok);

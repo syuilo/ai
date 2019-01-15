@@ -12,16 +12,16 @@ import { User } from './misskey/user';
 import getCollection from './utils/get-collection';
 import Stream from './stream';
 
-type OnMentionHandler = (msg: MessageLike) => boolean | HandlerResult;
-type OnContextReplyHandler = (msg: MessageLike, data?: any) => void | HandlerResult;
+type MentionHook = (msg: MessageLike) => boolean | HandlerResult;
+type ContextHook = (msg: MessageLike, data?: any) => void | HandlerResult;
 
 export type HandlerResult = {
 	reaction: string;
 };
 
 export type InstallerResult = {
-	onMention?: OnMentionHandler;
-	onContextReply?: OnContextReplyHandler;
+	mentionHook?: MentionHook;
+	contextHook?: ContextHook;
 };
 
 /**
@@ -31,8 +31,8 @@ export default class 藍 {
 	public account: User;
 	public connection: Stream;
 	public modules: Module[] = [];
-	private onMentionHandlers: OnMentionHandler[] = [];
-	private onContextReplyHandlers: { [moduleName: string]: OnContextReplyHandler } = {};
+	private mentionHooks: MentionHook[] = [];
+	private contextHooks: { [moduleName: string]: ContextHook } = {};
 	public db: loki;
 
 	private contexts: loki.Collection<{
@@ -112,8 +112,8 @@ export default class 藍 {
 			this.log(`Installing ${chalk.cyan.italic(m.name)}\tmodule...`);
 			const res = m.install();
 			if (res != null) {
-				if (res.onMention) this.onMentionHandlers.push(res.onMention);
-				if (res.onContextReply) this.onContextReplyHandlers[m.name] = res.onContextReply;
+				if (res.mentionHook) this.mentionHooks.push(res.mentionHook);
+				if (res.contextHook) this.contextHooks[m.name] = res.contextHook;
 			}
 		});
 
@@ -135,7 +135,7 @@ export default class 藍 {
 		let reaction = 'love';
 
 		if (context != null) {
-			const handler = this.onContextReplyHandlers[context.module];
+			const handler = this.contextHooks[context.module];
 			const res = handler(msg, context.data);
 
 			if (res != null && typeof res === 'object') {
@@ -144,7 +144,7 @@ export default class 藍 {
 		} else {
 			let res: boolean | HandlerResult;
 
-			this.onMentionHandlers.some(handler => {
+			this.mentionHooks.some(handler => {
 				res = handler(msg);
 				return res === true || typeof res === 'object';
 			});
