@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="512"
+   height="512"
+   viewBox="0 0 135.46666 135.46667"
+   version="1.1"
+   id="svg4617"
+   inkscape:version="0.92.1 r15371"
+   sodipodi:docname="ai.svg"
+   inkscape:export-filename="C:\Users\syuilo\Pictures\emojis\ai_badge.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+  <defs
+     id="defs4611">
+    <inkscape:path-effect
+       effect="bounding_box"
+       id="path-effect4520"
+       is_visible="true"
+       linkedpath=""
+       visualbounds="false" />
+    <inkscape:path-effect
+       effect="attach_path"
+       id="path-effect4518" />
+    <inkscape:path-effect
+       effect="perspective-envelope"
+       up_left_point="50.800021,-1.3377784e-005"
+       up_right_point="84.666702,-1.3377784e-005"
+       down_left_point="50.800021,67.733358"
+       down_right_point="84.666702,67.733358"
+       id="path-effect4516"
+       is_visible="true"
+       deform_type="perspective"
+       horizontal_mirror="false"
+       vertical_mirror="false"
+       overflow_perspective="false" />
+    <inkscape:path-effect
+       effect="transform_2pts"
+       start="50.800021,33.866667"
+       end="67.73336,-1.3377784e-005"
+       id="path-effect4514"
+       is_visible="true"
+       first_knot="1"
+       last_knot="4"
+       helper_size="3"
+       stretch="1"
+       offset="0"
+       elastic="false"
+       from_original_width="false"
+       flip_vertical="false"
+       flip_horizontal="false"
+       lock_lenght="false"
+       lock_angle="false" />
+    <inkscape:path-effect
+       effect="envelope"
+       id="path-effect4512"
+       is_visible="true"
+       yy="true"
+       xx="true"
+       bendpath1="M 50.800021,-1.3377784e-5 H 84.666702"
+       bendpath2="M 84.666702,-1.3377784e-5 V 67.733358"
+       bendpath3="M 50.800021,67.733358 H 84.666702"
+       bendpath4="M 50.800021,-1.3377784e-5 V 67.733358" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="255.07408"
+     inkscape:cy="226.00235"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer4"
+     showgrid="true"
+     units="px"
+     showguides="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="-8"
+     inkscape:window-y="1072"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid5173"
+       spacingx="4.2333333"
+       spacingy="4.2333333"
+       empspacing="4" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata4614">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="レイヤー 5">
+    <path
+       style="fill:#1d2935;fill-opacity:1;stroke:none;stroke-width:0.24901959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 31.87451,135.46666 H 0 L 47.811764,39.843136 95.623531,135.46666 H 63.749019 l -15.937255,-31.8745 z"
+       id="path4542"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#1d2935;fill-opacity:1;stroke:none;stroke-width:0.24901959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 67.733333,1.0666666e-6 51.796078,31.87451 67.733333,63.749019 83.670588,31.87451 Z"
+       id="path4544"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#1d2935;fill-opacity:1;stroke:none;stroke-width:0.24901959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 135.46667,135.46667 H 103.59216 L 71.717648,71.717649 87.654906,39.843139 Z"
+       id="path4546"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

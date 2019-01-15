@@ -1,5 +1,7 @@
-# 藍
+<div style="text-align: center;">
+<h1><img src="./ai.svg" alt="藍" height="200"></h1>
 Misskeyのための日本語AI。[藍について](./torisetu.md)
+</div>
 
 ## インストール
 > Node.js と npm と MeCab (オプション) がインストールされている必要があります。
