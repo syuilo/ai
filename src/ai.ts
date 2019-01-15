@@ -128,7 +128,10 @@ export default class 藍 {
 	private onMention(msg: MessageLike) {
 		this.log(chalk.gray(`<<< An message received: ${chalk.underline(msg.id)}`));
 
-		const context = !msg.isMessage && msg.replyId == null ? null : this.contexts.findOne(msg.isMessage ? {
+		const isNoContext = !msg.isMessage && msg.replyId == null;
+
+		// Look up the context
+		const context = isNoContext ? null : this.contexts.findOne(msg.isMessage ? {
 			isMessage: true,
 			userId: msg.userId
 		} : {
