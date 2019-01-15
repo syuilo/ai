@@ -11,6 +11,7 @@ import { FriendDoc } from './friend';
 import { User } from './misskey/user';
 import getCollection from './utils/get-collection';
 import Stream from './stream';
+import log from './log';
 
 type MentionHook = (msg: MessageLike) => boolean | HandlerResult;
 type ContextHook = (msg: MessageLike, data?: any) => void | HandlerResult;
@@ -49,14 +50,17 @@ export default class 藍 {
 	constructor(account: User, ready: (run: Function) => void) {
 		this.account = account;
 
+		this.log('Lodaing the memory...');
+
 		this.db = new loki('memory.json', {
 			autoload: true,
 			autosave: true,
 			autosaveInterval: 1000,
 			autoloadCallback: err => {
 				if (err) {
-					this.log(chalk.red(`Failed to load DB: ${err}`));
+					this.log(chalk.red(`Failed to load the memory: ${err}`));
 				} else {
+					this.log(chalk.green('The memory loaded successfully'));
 					ready(this.run);
 				}
 			}
@@ -65,7 +69,7 @@ export default class 藍 {
 
 	@autobind
 	public log(msg: string) {
-		console.log(`[AiOS]: ${msg}`);
+		log(chalk`[{magenta AiOS}]: ${msg}`);
 	}
 
 	@autobind
@@ -122,7 +126,7 @@ export default class 藍 {
 
 	@autobind
 	private onMention(msg: MessageLike) {
-		this.log(`mention received: ${msg.id}`);
+		this.log(chalk.gray(`<<< An message received: ${chalk.underline(msg.id)}`));
 
 		const context = !msg.isMessage && msg.replyId == null ? null : this.contexts.findOne(msg.isMessage ? {
 			isMessage: true,

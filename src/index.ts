@@ -1,5 +1,6 @@
 import 藍 from './ai';
 import config from './config';
+import _log from './log';
 
 import CoreModule from './modules/core';
 import BirthdayModule from './modules/birthday';
@@ -21,13 +22,13 @@ import * as request from 'request-promise-native';
 const promiseRetry = require('promise-retry');
 
 function log(msg: string): void {
-	console.log(`[Boot]: ${msg}`);
+	_log(`[Boot]: ${msg}`);
 }
 
 log(chalk.bold('Ai v1.0'));
 
 promiseRetry(retry => {
-	log(`Account fetching... >>> ${config.host}`);
+	log(`Account fetching... (${config.host})`);
 	return request.post(`${config.apiUrl}/i`, {
 		json: {
 			i: config.i

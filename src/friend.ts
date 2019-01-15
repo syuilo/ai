@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 import 藍 from './ai';
 import IModule from './module';
 import getDate from './utils/get-date';
@@ -52,12 +53,14 @@ export default class Friend {
 		}
 	}
 
-	public updateUser = (user: User) => {
+	@autobind
+	public updateUser(user: User) {
 		this.doc.user = user;
 		this.save();
 	}
 
-	public getPerModulesData = (module: IModule) => {
+	@autobind
+	public getPerModulesData(module: IModule) {
 		if (this.doc.perModulesData == null) {
 			this.doc.perModulesData = {};
 			this.doc.perModulesData[module.name] = {};
@@ -70,7 +73,8 @@ export default class Friend {
 		return this.doc.perModulesData[module.name];
 	}
 
-	public setPerModulesData = (module: IModule, data: any) => {
+	@autobind
+	public setPerModulesData(module: IModule, data: any) {
 		if (this.doc.perModulesData == null) {
 			this.doc.perModulesData = {};
 		}
@@ -80,7 +84,8 @@ export default class Friend {
 		this.save();
 	}
 
-	public incLove = () => {
+	@autobind
+	public incLove() {
 		const today = getDate();
 
 		if (this.doc.lastLoveIncrementedAt != today) {
@@ -101,7 +106,8 @@ export default class Friend {
 		this.save();
 	}
 
-	public decLove = () => {
+	@autobind
+	public decLove() {
 		if (this.doc.love == null) this.doc.love = 0;
 		this.doc.love--;
 
@@ -116,12 +122,14 @@ export default class Friend {
 		this.save();
 	}
 
-	public updateName = (name: string) => {
+	@autobind
+	public updateName(name: string) {
 		this.doc.name = name;
 		this.save();
 	}
 
-	public save = () => {
+	@autobind
+	public save() {
 		this.ai.friends.update(this.doc);
 	}
 }

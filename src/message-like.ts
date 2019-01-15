@@ -1,8 +1,10 @@
+import autobind from 'autobind-decorator';
 import 藍 from './ai';
 import Friend from './friend';
 import { User } from './misskey/user';
 import includes from './utils/includes';
 import or from './utils/or';
+import chalk from 'chalk';
 const delay = require('timeout-as-promise');
 
 export default class MessageLike {
@@ -47,10 +49,11 @@ export default class MessageLike {
 		});
 	}
 
-	public reply = async (text: string, cw?: string) => {
+	@autobind
+	public async reply(text: string, cw?: string) {
 		if (text == null) return;
 
-		this.ai.log(`sending reply of ${this.id} ...`);
+		this.ai.log(`>>> Sending reply to ${chalk.underline(this.id)}`);
 
 		await delay(2000);
 
@@ -67,11 +70,13 @@ export default class MessageLike {
 		}
 	}
 
-	public includes = (words: string[]): boolean => {
+	@autobind
+	public includes(words: string[]): boolean {
 		return includes(this.text, words);
 	}
 
-	public or = (words: (string | RegExp)[]): boolean => {
+	@autobind
+	public or(words: (string | RegExp)[]): boolean {
 		return or(this.text, words);
 	}
 }
