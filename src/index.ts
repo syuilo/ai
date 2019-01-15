@@ -1,6 +1,6 @@
 import 藍 from './ai';
 import config from './config';
-import _log from './log';
+import _log from './utils/log';
 
 import CoreModule from './modules/core';
 import BirthdayModule from './modules/birthday';

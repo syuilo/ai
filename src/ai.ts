@@ -13,7 +13,7 @@ import { FriendDoc } from './friend';
 import { User } from './misskey/user';
 import getCollection from './utils/get-collection';
 import Stream from './stream';
-import log from './log';
+import log from './utils/log';
 
 type MentionHook = (msg: Message) => boolean | HandlerResult;
 type ContextHook = (msg: Message, data?: any) => void | HandlerResult;
