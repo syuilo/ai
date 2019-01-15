@@ -1,7 +1,8 @@
-<div style="text-align: center;">
-<h1><img src="./ai.svg" alt="藍" height="200"></h1>
-Misskeyのための日本語AI。[藍について](./torisetu.md)
-</div>
+<h1><p align="center"><img src="./ai.svg" alt="藍" height="200"></p></h1>
+<p align="center">An Ai for Misskey. <a href="./torisetu.md">About Ai</a></p>
+
+## これなに
+Misskey用のBotです。
 
 ## インストール
 > Node.js と npm と MeCab (オプション) がインストールされている必要があります。
