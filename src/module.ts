@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import 藍, { InstallerResult } from './ai';
 
 export default abstract class Module {
-	public abstract name: string;
+	public abstract readonly name: string;
 
 	protected ai: 藍;
 
