@@ -42,7 +42,7 @@ export default class GuessingGameModule extends Module {
 
 		if (!msg.isDm) {
 			if (exist != null) {
-				msg.reply(serifs.guessingGame.arleadyStarted);
+				msg.reply(serifs.guessingGame.alreadyStarted);
 			} else {
 				msg.reply(serifs.guessingGame.plzDm);
 			}
