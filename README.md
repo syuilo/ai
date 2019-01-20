@@ -23,3 +23,6 @@ Misskey用の日本語Botです。
 
 ## ライセンス
 MIT
+
+## Awards
+<img src="./WorksOnMyMachine.png" alt="Works on my machine" height="120">
