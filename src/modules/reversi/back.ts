@@ -64,7 +64,7 @@ class Session {
 	}
 
 	private get url(): string {
-		return `${config.host}/reversi/${this.game.id}`;
+		return `${config.host}/games/reversi/${this.game.id}`;
 	}
 
 	constructor() {
