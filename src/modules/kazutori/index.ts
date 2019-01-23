@@ -144,19 +144,24 @@ export default class extends Module {
 		}
 
 		function acct(user: User): string {
-			return user.host ? `@${user.username}@${user.host}` : `@${user.username}`;
+			return user.host
+				? `@${user.username}@${user.host}`
+				: `@${user.username}`;
 		}
 
 		let results: string[] = [];
-
 		let winner: User = null;
 
 		for (let i = 100; i >= 0; i--) {
-			const users = game.votes.filter(x => x.number == i).map(x => x.user);
+			const users = game.votes
+				.filter(x => x.number == i)
+				.map(x => x.user);
+
 			if (users.length == 1) {
 				if (winner == null) {
 					winner = users[0];
-					results.push(`${i == 100 ? '💯' : '🎉'} **${i}**: ${acct(users[0])}`);
+					const icon = i == 100 ? '💯' : '🎉';
+					results.push(`${icon} **${i}**: (((${acct(users[0])})))`);
 				} else {
 					results.push(`➖ ${i}: ${acct(users[0])}`);
 				}
