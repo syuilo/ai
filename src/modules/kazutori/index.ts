@@ -156,7 +156,7 @@ export default class extends Module {
 			if (users.length == 1) {
 				if (winner == null) {
 					winner = users[0];
-					results.push(`${i == 100 ? '💯' : '🎉'} ${i}: ${acct(users[0])}`);
+					results.push(`${i == 100 ? '💯' : '🎉'} **${i}**: ${acct(users[0])}`);
 				} else {
 					results.push(`➖ ${i}: ${acct(users[0])}`);
 				}
