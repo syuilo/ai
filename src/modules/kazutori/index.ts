@@ -69,6 +69,8 @@ export default class extends Module {
 
 		this.subscribeReply(null, false, post.id);
 
+		this.log('New kazutori game started');
+
 		return true;
 	}
 
@@ -128,6 +130,8 @@ export default class extends Module {
 	private finish(game: Game) {
 		game.isEnded = true;
 		this.games.update(game);
+
+		this.log('Kazutori game finished');
 
 		// お流れ
 		if (game.votes.length <= 1) {
