@@ -85,7 +85,7 @@ export default class extends Module {
 		// 既に数字を取っていたら
 		if (game.votes.some(x => x.user.id == msg.userId)) return;
 
-		const match = msg.text.match(/[0-9]+/);
+		const match = msg.extractedText.match(/[0-9]+/);
 		if (match == null) return;
 
 		const num = parseInt(match[0], 10);

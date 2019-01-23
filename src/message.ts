@@ -28,6 +28,12 @@ export default class Message {
 		return this.messageOrNote.text;
 	}
 
+	public get extractedText(): string {
+		return this.text
+			.replace(new RegExp(`^@${this.ai.account.username}(@.+?)?\s?`, 'i'), '')
+			.trim();
+	}
+
 	public get replyId(): string {
 		return this.messageOrNote.replyId;
 	}

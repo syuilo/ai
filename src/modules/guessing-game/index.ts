@@ -86,7 +86,7 @@ export default class extends Module {
 			return;
 		}
 
-		const guess = msg.text.toLowerCase().replace(this.ai.account.username.toLowerCase(), '').match(/[0-9]+/);
+		const guess = msg.extractedText.match(/[0-9]+/);
 
 		if (guess == null) {
 			msg.reply(serifs.guessingGame.nan).then(reply => {
