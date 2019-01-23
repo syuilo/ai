@@ -7,7 +7,7 @@ import Message from '../../message';
 import Friend from '../../friend';
 import getDate from '../../utils/get-date';
 
-export default class ReversiModule extends Module {
+export default class extends Module {
 	public readonly name = 'reversi';
 
 	/**

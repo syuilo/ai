@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Module from '../../module';
 
-export default class WelcomeModule extends Module {
+export default class extends Module {
 	public readonly name = 'welcome';
 
 	@autobind

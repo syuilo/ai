@@ -3,7 +3,7 @@ import Module from '../../module';
 import serifs from '../../serifs';
 import config from '../../config';
 
-export default class ServerModule extends Module {
+export default class extends Module {
 	public readonly name = 'server';
 
 	private connection?: any;

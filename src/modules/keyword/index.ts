@@ -13,7 +13,7 @@ function kanaToHira(str: string) {
 	});
 }
 
-export default class KeywordModule extends Module {
+export default class extends Module {
 	public readonly name = 'keyword';
 
 	private tokenizer: any;

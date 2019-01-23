@@ -3,7 +3,7 @@ import Module from '../../module';
 import Message from '../../message';
 import serifs from '../../serifs';
 
-export default class TimerModule extends Module {
+export default class extends Module {
 	public readonly name = 'timer';
 
 	@autobind

@@ -3,7 +3,7 @@ import Module from '../../module';
 import Friend from '../../friend';
 import serifs from '../../serifs';
 
-export default class ValentineModule extends Module {
+export default class extends Module {
 	public readonly name = 'valentine';
 
 	@autobind

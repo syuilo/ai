@@ -7,7 +7,7 @@ function zeroPadding(num: number, length: number): string {
 	return ('0000000000' + num).slice(-length);
 }
 
-export default class BirthdayModule extends Module {
+export default class extends Module {
 	public readonly name = 'birthday';
 
 	@autobind

@@ -126,7 +126,7 @@ const faces = [
 	'👽'
 ]
 
-export default class EmojiModule extends Module {
+export default class extends Module {
 	public readonly name = 'emoji';
 
 	@autobind

@@ -9,7 +9,7 @@ const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
 
 const invalidChars = ['@', '#', '*', ':', '(', '[', ' ', '　'];
 
-export default class CoreModule extends Module {
+export default class extends Module {
 	public readonly name = 'core';
 
 	@autobind

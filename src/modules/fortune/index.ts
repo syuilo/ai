@@ -5,7 +5,7 @@ import serifs from '../../serifs';
 import * as seedrandom from 'seedrandom';
 import { blessing, itemPrefixes, items } from './vocabulary';
 
-export default class FortuneModule extends Module {
+export default class extends Module {
 	public readonly name = 'fortune';
 
 	@autobind

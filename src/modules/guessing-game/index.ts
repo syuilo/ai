@@ -5,7 +5,7 @@ import Message from '../../message';
 import serifs from '../../serifs';
 import getCollection from '../../utils/get-collection';
 
-export default class GuessingGameModule extends Module {
+export default class extends Module {
 	public readonly name = 'guessingGame';
 
 	private guesses: loki.Collection<{
