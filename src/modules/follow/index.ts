@@ -13,7 +13,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: Message) {
+	private async mentionHook(msg: Message) {
 		if (msg.text && msg.includes(['フォロー', 'フォロバ', 'follow me'])) {
 			if (!msg.user.isFollowing) {
 				this.ai.api('following/create', {

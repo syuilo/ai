@@ -15,8 +15,8 @@ import getCollection from './utils/get-collection';
 import Stream from './stream';
 import log from './utils/log';
 
-type MentionHook = (msg: Message) => boolean | HandlerResult;
-type ContextHook = (msg: Message, data?: any) => void | HandlerResult;
+type MentionHook = (msg: Message) => Promise<boolean | HandlerResult>;
+type ContextHook = (msg: Message, data?: any) => Promise<void | HandlerResult>;
 
 export type HandlerResult = {
 	reaction: string;
@@ -165,7 +165,7 @@ export default class 藍 {
 		// なければそれぞれのモジュールについてフックが引っかかるまで呼び出し
 		if (context != null) {
 			const handler = this.contextHooks[context.module];
-			const res = handler(msg, context.data);
+			const res = await handler(msg, context.data);
 
 			if (res != null && typeof res === 'object') {
 				reaction = res.reaction;
@@ -173,10 +173,10 @@ export default class 藍 {
 		} else {
 			let res: boolean | HandlerResult;
 
-			this.mentionHooks.some(handler => {
-				res = handler(msg);
-				return res === true || typeof res === 'object';
-			});
+			for (const handler of this.mentionHooks) {
+				res = await handler(msg);
+				if (res === true || typeof res === 'object') break;
+			}
 
 			if (res != null && typeof res === 'object') {
 				reaction = res.reaction;

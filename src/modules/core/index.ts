@@ -21,7 +21,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: Message) {
+	private async mentionHook(msg: Message) {
 		if (!msg.text) return false;
 
 		return (
@@ -313,7 +313,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private contextHook(msg: Message, data: any) {
+	private async contextHook(msg: Message, data: any) {
 		if (msg.text == null) return;
 
 		const done = () => {

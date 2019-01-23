@@ -33,7 +33,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: Message) {
+	private async mentionHook(msg: Message) {
 		if (msg.includes(['リバーシ', 'オセロ', 'reversi', 'othello'])) {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.reversi.ok);

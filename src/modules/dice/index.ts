@@ -14,7 +14,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: Message) {
+	private async mentionHook(msg: Message) {
 		if (msg.text == null) return false;
 
 		const query = msg.text.match(/([0-9]+)[dD]([0-9]+)/);

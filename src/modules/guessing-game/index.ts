@@ -32,7 +32,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private mentionHook(msg: Message) {
+	private async mentionHook(msg: Message) {
 		if (!msg.includes(['数当て', '数あて'])) return false;
 
 		const exist = this.guesses.findOne({
@@ -69,7 +69,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private contextHook(msg: Message) {
+	private async contextHook(msg: Message) {
 		if (msg.text == null) return;
 
 		const exist = this.guesses.findOne({
