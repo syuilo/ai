@@ -9,6 +9,7 @@ import PingModule from './modules/ping';
 import EmojiModule from './modules/emoji';
 import FortuneModule from './modules/fortune';
 import GuessingGameModule from './modules/guessing-game';
+import KazutoriModule from './modules/kazutori';
 import KeywordModule from './modules/keyword';
 import WelcomeModule from './modules/welcome';
 import TimerModule from './modules/timer';
@@ -46,6 +47,7 @@ promiseRetry(retry => {
 		new EmojiModule(),
 		new FortuneModule(),
 		new GuessingGameModule(),
+		new KazutoriModule(),
 		new ReversiModule(),
 		new TimerModule(),
 		new DiceModule(),

@@ -99,16 +99,21 @@ export default class 藍 {
 		const mainStream = this.connection.useSharedConnection('main');
 
 		// メンションされたとき
-		mainStream.on('mention', data => {
+		mainStream.on('mention', async data => {
 			if (data.userId == this.account.id) return; // 自分は弾く
 			if (data.text && data.text.startsWith('@' + this.account.username)) {
+				// Misskeyのバグで投稿が非公開扱いになる
+				if (data.text == null) data = await this.api('notes/show', { noteId: data.id });
 				this.onReceiveMessage(new Message(this, data, false));
 			}
 		});
 
 		// 返信されたとき
-		mainStream.on('reply', data => {
+		mainStream.on('reply', async data => {
 			if (data.userId == this.account.id) return; // 自分は弾く
+			if (data.text && data.text.startsWith('@' + this.account.username)) return;
+			// Misskeyのバグで投稿が非公開扱いになる
+			if (data.text == null) data = await this.api('notes/show', { noteId: data.id });
 			this.onReceiveMessage(new Message(this, data, false));
 		});
 

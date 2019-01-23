@@ -50,7 +50,7 @@ export default class Message {
 	}
 
 	@autobind
-	public async reply(text: string, cw?: string) {
+	public async reply(text: string, cw?: string, renote?: string) {
 		if (text == null) return;
 
 		this.ai.log(`>>> Sending reply to ${chalk.underline(this.id)}`);
@@ -65,7 +65,8 @@ export default class Message {
 			return await this.ai.post({
 				replyId: this.messageOrNote.id,
 				text: text,
-				cw: cw
+				cw: cw,
+				renoteId: renote
 			});
 		}
 	}
