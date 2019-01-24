@@ -116,6 +116,18 @@ export default class 藍 {
 			this.onReceiveMessage(new Message(this, data, false));
 		});
 
+		// Renoteされたとき
+		mainStream.on('renote', async data => {
+			if (data.userId == this.account.id) return; // 自分は弾く
+			if (data.text == null && (data.files || []).length == 0) return;
+
+			// リアクションする
+			this.api('notes/reactions/create', {
+				noteId: data.id,
+				reaction: 'love'
+			});
+		});
+
 		// メッセージ
 		mainStream.on('messagingMessage', data => {
 			if (data.userId == this.account.id) return; // 自分は弾く
