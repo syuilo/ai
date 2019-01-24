@@ -3,7 +3,6 @@ import * as loki from 'lokijs';
 import Module from '../../module';
 import config from '../../config';
 import serifs from '../../serifs';
-import getCollection from '../../utils/get-collection';
 const MeCab = require('mecab-async');
 
 function kanaToHira(str: string) {
@@ -26,11 +25,9 @@ export default class extends Module {
 	public install() {
 		if (!config.keywordEnabled) return {};
 
-		//#region Init DB
-		this.learnedKeywords = getCollection(this.ai.db, '_keyword_learnedKeywords', {
+		this.learnedKeywords = this.ai.getCollection('_keyword_learnedKeywords', {
 			indices: ['userId']
 		});
-		//#endregion
 
 		this.tokenizer = new MeCab();
 		this.tokenizer.command = config.mecab;

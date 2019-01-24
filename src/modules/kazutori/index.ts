@@ -3,7 +3,6 @@ import * as loki from 'lokijs';
 import Module from '../../module';
 import Message from '../../message';
 import serifs from '../../serifs';
-import getCollection from '../../utils/get-collection';
 import { User } from '../../misskey/user';
 
 type Game = {
@@ -23,7 +22,7 @@ export default class extends Module {
 
 	@autobind
 	public install() {
-		this.games = getCollection(this.ai.db, 'kazutori');
+		this.games = this.ai.getCollection('kazutori');
 
 		this.crawleGameEnd();
 		setInterval(this.crawleGameEnd, 1000);

@@ -3,7 +3,6 @@ import * as loki from 'lokijs';
 import Module from '../../module';
 import Message from '../../message';
 import serifs from '../../serifs';
-import getCollection from '../../utils/get-collection';
 
 export default class extends Module {
 	public readonly name = 'guessingGame';
@@ -19,11 +18,9 @@ export default class extends Module {
 
 	@autobind
 	public install() {
-		//#region Init DB
-		this.guesses = getCollection(this.ai.db, 'guessingGame', {
+		this.guesses = this.ai.getCollection('guessingGame', {
 			indices: ['userId']
 		});
-		//#endregion
 
 		return {
 			mentionHook: this.mentionHook,

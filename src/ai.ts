@@ -11,7 +11,6 @@ import Module from './module';
 import Message from './message';
 import { FriendDoc } from './friend';
 import { User } from './misskey/user';
-import getCollection from './utils/get-collection';
 import Stream from './stream';
 import log from './utils/log';
 
@@ -83,11 +82,11 @@ export default class 藍 {
 	@autobind
 	private run() {
 		//#region Init DB
-		this.contexts = getCollection(this.db, 'contexts', {
+		this.contexts = this.getCollection('contexts', {
 			indices: ['key']
 		});
 
-		this.friends = getCollection(this.db, 'friends', {
+		this.friends = this.getCollection('friends', {
 			indices: ['userId']
 		});
 		//#endregion
@@ -205,6 +204,22 @@ export default class 藍 {
 				});
 			}
 		}
+	}
+
+	/**
+	 * データベースのコレクションを取得します
+	 */
+	@autobind
+	public getCollection(name: string, opts?: any): loki.Collection {
+		let collection: loki.Collection;
+
+		collection = this.db.getCollection(name);
+
+		if (collection == null) {
+			collection = this.db.addCollection(name, opts);
+		}
+
+		return collection;
 	}
 
 	/**
