@@ -176,7 +176,7 @@ export default class extends Module {
 		this.ai.post({
 			text: text,
 			cw: serifs.kazutori.finish,
-			renote: game.postId
+			renoteId: game.postId
 		});
 
 		this.unsubscribeReply(null);
