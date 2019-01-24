@@ -14,7 +14,7 @@ export default abstract class Module {
 
 	@autobind
 	protected log(msg: string) {
-		this.ai.log(`[module ${this.name}]: ${msg}`);
+		this.ai.log(`[${this.name}]: ${msg}`);
 	}
 
 	@autobind
