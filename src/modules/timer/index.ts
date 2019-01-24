@@ -45,9 +45,7 @@ export default class extends Module {
 
 			setTimeout(() => {
 				const name = msg.friend.name;
-				this.ai.sendMessage(msg.userId, {
-					text: serifs.timer.notify(str, name)
-				});
+				msg.reply(serifs.timer.notify(str, name));
 			}, time);
 
 			return true;
