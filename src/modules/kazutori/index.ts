@@ -3,7 +3,12 @@ import * as loki from 'lokijs';
 import Module from '../../module';
 import Message from '../../message';
 import serifs from '../../serifs';
-import { User } from '../../misskey/user';
+
+type User = {
+	id: string;
+	username: string;
+	host: string;
+};
 
 type Game = {
 	votes: {
@@ -97,8 +102,13 @@ export default class extends Module {
 
 		this.log(`Voted ${num} by ${msg.user.id}`);
 
+		// 投票
 		game.votes.push({
-			user: msg.user,
+			user: {
+				id: msg.user.id,
+				username: msg.user.username,
+				host: msg.user.host
+			},
 			number: num
 		});
 
