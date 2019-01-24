@@ -21,6 +21,9 @@ Misskey用の日本語Botです。
 ```
 `npm install` して `npm run build` して `node built` すれば起動できます
 
+## 記憶
+藍は記憶の保持にインメモリデータベースを使用しており、藍のインストールディレクトリに `memory.json` という名前で永続化されます。
+
 ## ライセンス
 MIT
 
