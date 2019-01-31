@@ -33,6 +33,7 @@ export default class extends Module {
 			this.hug(msg) ||
 			this.humu(msg) ||
 			this.batou(msg) ||
+			this.itai(msg) ||
 			this.ponkotu(msg) ||
 			this.rmrf(msg) ||
 			this.shutdown(msg)
@@ -275,6 +276,18 @@ export default class extends Module {
 			msg.friend.love >= 5 ? serifs.core.batou.love :
 			msg.friend.love <= -5 ? serifs.core.batou.hate :
 			serifs.core.batou.normal);
+
+		return true;
+	}
+
+	@autobind
+	private itai(msg: Message): boolean {
+		if (!msg.or(['痛い', 'いたい'])) return false;
+
+		// メッセージのみ
+		if (!msg.isDm) return true;
+
+		msg.reply(serifs.core.itai(msg.friend.name));
 
 		return true;
 	}
