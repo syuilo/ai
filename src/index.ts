@@ -1,3 +1,5 @@
+// AiOS bootstrapper
+
 import 藍 from './ai';
 import config from './config';
 import _log from './utils/log';
@@ -30,6 +32,8 @@ log(chalk.bold('Ai v1.0'));
 
 promiseRetry(retry => {
 	log(`Account fetching... ${chalk.gray(config.host)}`);
+
+	// アカウントをフェッチ
 	return request.post(`${config.apiUrl}/i`, {
 		json: {
 			i: config.i
@@ -43,6 +47,7 @@ promiseRetry(retry => {
 
 	log('Starting AiOS...');
 
+	// 藍起動
 	new 藍(account, [
 		new EmojiModule(),
 		new FortuneModule(),
