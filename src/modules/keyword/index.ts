@@ -43,7 +43,10 @@ export default class extends Module {
 			limit: 30
 		});
 
-		const interestedNotes = tl.filter(note => note.userId !== this.ai.account.id && note.text != null);
+		const interestedNotes = tl.filter(note =>
+			note.userId !== this.ai.account.id &&
+			note.text != null &&
+			note.cw == null);
 
 		let keywords: string[][] = [];
 
