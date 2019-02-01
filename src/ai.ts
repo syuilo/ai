@@ -4,18 +4,20 @@ import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
 import * as request from 'request-promise-native';
 import chalk from 'chalk';
+import * as uuid from 'uuid/v4';
 const delay = require('timeout-as-promise');
 
 import config from './config';
 import Module from './module';
 import Message from './message';
-import { FriendDoc } from './friend';
+import Friend, { FriendDoc } from './friend';
 import { User } from './misskey/user';
 import Stream from './stream';
 import log from './utils/log';
 
 type MentionHook = (msg: Message) => Promise<boolean | HandlerResult>;
 type ContextHook = (msg: Message, data?: any) => Promise<void | HandlerResult>;
+type TimeoutCallback = (data?: any) => void;
 
 export type HandlerResult = {
 	reaction: string;
@@ -24,6 +26,7 @@ export type HandlerResult = {
 export type InstallerResult = {
 	mentionHook?: MentionHook;
 	contextHook?: ContextHook;
+	timeoutCallback?: TimeoutCallback;
 };
 
 /**
@@ -35,6 +38,7 @@ export default class 藍 {
 	public modules: Module[] = [];
 	private mentionHooks: MentionHook[] = [];
 	private contextHooks: { [moduleName: string]: ContextHook } = {};
+	private timeoutCallbacks: { [moduleName: string]: TimeoutCallback } = {};
 	public db: loki;
 
 	private contexts: loki.Collection<{
@@ -43,6 +47,14 @@ export default class 藍 {
 		userId?: string;
 		module: string;
 		key: string;
+		data?: any;
+	}>;
+
+	private timers: loki.Collection<{
+		id: string;
+		module: string;
+		insertedAt: number;
+		delay: number;
 		data?: any;
 	}>;
 
@@ -84,6 +96,10 @@ export default class 藍 {
 		//#region Init DB
 		this.contexts = this.getCollection('contexts', {
 			indices: ['key']
+		});
+
+		this.timers = this.getCollection('timers', {
+			indices: ['module']
 		});
 
 		this.friends = this.getCollection('friends', {
@@ -143,8 +159,13 @@ export default class 藍 {
 			if (res != null) {
 				if (res.mentionHook) this.mentionHooks.push(res.mentionHook);
 				if (res.contextHook) this.contextHooks[m.name] = res.contextHook;
+				if (res.timeoutCallback) this.timeoutCallbacks[m.name] = res.timeoutCallback;
 			}
 		});
+
+		// タイマー監視
+		this.crawleTimer();
+		setInterval(this.crawleTimer, 1000);
 
 		this.log(chalk.green.bold('Ai am now running!'));
 	}
@@ -218,6 +239,19 @@ export default class 藍 {
 		}
 	}
 
+	@autobind
+	private crawleTimer() {
+		const timers = this.timers.find();
+		for (const timer of timers) {
+			// タイマーが時間切れかどうか
+			if (Date.now() - (timer.insertedAt + timer.delay) >= 0) {
+				this.log(`Timer expired: ${timer.module} ${timer.id}`);
+				this.timers.remove(timer);
+				this.timeoutCallbacks[timer.module](timer.data);
+			}
+		}
+	}
+
 	/**
 	 * データベースのコレクションを取得します
 	 */
@@ -232,6 +266,19 @@ export default class 藍 {
 		}
 
 		return collection;
+	}
+
+	@autobind
+	public lookupFriend(userId: User['id']): Friend {
+		const doc = this.friends.findOne({
+			userId: userId
+		});
+
+		if (doc == null) return null;
+
+		const friend = new Friend(this, { doc: doc });
+
+		return friend;
 	}
 
 	/**
@@ -301,5 +348,26 @@ export default class 藍 {
 			key: key,
 			module: module.name
 		});
+	}
+
+	/**
+	 * 指定したミリ秒経過後に、そのモジュールのタイムアウトコールバックを呼び出します。
+	 * このタイマーは記憶に永続化されるので、途中でプロセスを再起動しても有効です。
+	 * @param module モジュール名
+	 * @param delay ミリ秒
+	 * @param data オプションのデータ
+	 */
+	@autobind
+	public setTimeoutWithPersistence(module: Module, delay: number, data?: any) {
+		const id = uuid();
+		this.timers.insertOne({
+			id: id,
+			module: module.name,
+			insertedAt: Date.now(),
+			delay: delay,
+			data: data
+		});
+
+		this.log(`Timer persisted: ${module.name} ${id} ${delay}ms`);
 	}
 }

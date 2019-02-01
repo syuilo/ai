@@ -37,4 +37,15 @@ export default abstract class Module {
 	protected unsubscribeReply(key: string) {
 		this.ai.unsubscribeReply(this, key);
 	}
+
+	/**
+	 * 指定したミリ秒経過後に、タイムアウトコールバックを呼び出します。
+	 * このタイマーは記憶に永続化されるので、途中でプロセスを再起動しても有効です。
+	 * @param delay ミリ秒
+	 * @param data オプションのデータ
+	 */
+	@autobind
+	public setTimeoutWithPersistence(delay: number, data?: any) {
+		this.ai.setTimeoutWithPersistence(this, delay, data);
+	}
 }

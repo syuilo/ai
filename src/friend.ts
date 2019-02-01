@@ -12,6 +12,7 @@ export type FriendDoc = {
 	lastLoveIncrementedAt?: string;
 	todayLoveIncrements?: number;
 	perModulesData?: any;
+	married?: boolean;
 };
 
 export default class Friend {
@@ -27,6 +28,10 @@ export default class Friend {
 
 	public get love() {
 		return this.doc.love || 0;
+	}
+
+	public get married() {
+		return this.doc.married;
 	}
 
 	public doc: FriendDoc;

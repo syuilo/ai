@@ -11,6 +11,7 @@
     "@types/node": "10.0.5",
     "@types/promise-retry": "1.1.2",
     "@types/seedrandom": "2.4.27",
+    "@types/uuid": "3.4.4",
     "@types/ws": "6.0.1",
     "autobind-decorator": "2.1.0",
     "chalk": "2.4.2",
@@ -25,6 +26,7 @@
     "timeout-as-promise": "1.0.0",
     "ts-node": "6.0.3",
     "typescript": "2.8.3",
+    "uuid": "3.3.2",
     "ws": "6.0.0"
   }
 }
