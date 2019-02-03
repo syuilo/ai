@@ -24,6 +24,11 @@ import chalk from 'chalk';
 import * as request from 'request-promise-native';
 const promiseRetry = require('promise-retry');
 
+console.log('   __    ____  _____  ___ ');
+console.log('  /__\\  (_  _)(  _  )/ __)');
+console.log(' /(__)\\  _)(_  )(_)( \\__ \\');
+console.log('(__)(__)(____)(_____)(___/\n');
+
 function log(msg: string): void {
 	_log(`[Boot]: ${msg}`);
 }
