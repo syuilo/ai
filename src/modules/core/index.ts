@@ -34,6 +34,7 @@ export default class extends Module {
 			this.humu(msg) ||
 			this.batou(msg) ||
 			this.itai(msg) ||
+			this.ote(msg) ||
 			this.ponkotu(msg) ||
 			this.rmrf(msg) ||
 			this.shutdown(msg)
@@ -288,6 +289,18 @@ export default class extends Module {
 		if (!msg.isDm) return true;
 
 		msg.reply(serifs.core.itai(msg.friend.name));
+
+		return true;
+	}
+
+	@autobind
+	private ote(msg: Message): boolean {
+		if (!msg.or(['お手'])) return false;
+
+		// メッセージのみ
+		if (!msg.isDm) return true;
+
+		msg.reply(serifs.core.ote);
 
 		return true;
 	}
