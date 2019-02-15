@@ -142,9 +142,9 @@ export default class extends Module {
 
 		if (msg.includes(['ただいま'])) {
 			msg.reply(
-				msg.friend.love >= 7
-					? serifs.core.okaeri.love(msg.friend.name)
-					: serifs.core.okaeri.normal(msg.friend.name));
+				msg.friend.love >= 15 ? serifs.core.okaeri.love2(msg.friend.name) :
+				msg.friend.love >= 7 ? serifs.core.okaeri.love(msg.friend.name) :
+				serifs.core.okaeri.normal(msg.friend.name));
 			incLove();
 			return true;
 		}
