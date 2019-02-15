@@ -126,8 +126,8 @@ export default class extends Module {
 
 		if (game == null) return;
 
-		// ゲーム開始から3分以上経過していたら
-		if (Date.now() - game.startedAt >= 1000 * 60 * 3) {
+		// ゲーム開始から5分以上経過していたら
+		if (Date.now() - game.startedAt >= 1000 * 60 * 5) {
 			this.finish(game);
 		}
 	}
