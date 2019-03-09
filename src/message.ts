@@ -5,6 +5,7 @@ import { User } from './misskey/user';
 import includes from './utils/includes';
 import or from './utils/or';
 import chalk from 'chalk';
+import config from './config';
 const delay = require('timeout-as-promise');
 
 export default class Message {
@@ -29,8 +30,10 @@ export default class Message {
 	}
 
 	public get extractedText(): string {
+		const host = new URL(config.host).host.replace(/\./g, '\\.');
 		return this.text
-			.replace(new RegExp(`^@${this.ai.account.username}(@.+?)?\s?`, 'i'), '')
+			.replace(new RegExp(`^@${this.ai.account.username}@${host}\\s`, 'i'), '')
+			.replace(new RegExp(`^@${this.ai.account.username}\\s`, 'i'), '')
 			.trim();
 	}
 
