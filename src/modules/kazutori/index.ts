@@ -80,25 +80,35 @@ export default class extends Module {
 
 	@autobind
 	private async contextHook(msg: Message) {
-		if (msg.text == null) return;
+		if (msg.text == null) return {
+			reaction: 'hmm'
+		};
 
 		const game = this.games.findOne({
 			isEnded: false
 		});
 
 		// 既に数字を取っていたら
-		if (game.votes.some(x => x.user.id == msg.userId)) return;
+		if (game.votes.some(x => x.user.id == msg.userId)) return {
+			reaction: 'confused'
+		};
 
 		const match = msg.extractedText.match(/[0-9]+/);
-		if (match == null) return;
+		if (match == null) return {
+			reaction: 'hmm'
+		};
 
 		const num = parseInt(match[0], 10);
 
 		// 整数じゃない
-		if (!Number.isInteger(num)) return;
+		if (!Number.isInteger(num)) return {
+			reaction: 'hmm'
+		};
 
 		// 範囲外
-		if (num < 0 || num > 100) return;
+		if (num < 0 || num > 100) return {
+			reaction: 'confused'
+		};
 
 		this.log(`Voted ${num} by ${msg.user.id}`);
 
@@ -113,6 +123,10 @@ export default class extends Module {
 		});
 
 		this.games.update(game);
+
+		return {
+			reaction: 'love'
+		};
 	}
 
 	/**
