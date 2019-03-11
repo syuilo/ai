@@ -55,7 +55,7 @@ export default {
 
 			love2: ['わわっ… 恥ずかしいです', 'あうぅ… 恥ずかしいです…'],
 
-			love3: ['んぅ… ありがとうございます♪', 'わっ、なんだか落ち着きますね♪', 'くぅんっ… 安心します…'],
+			love3: ['んぅ… ありがとうございます♪', 'わっ、なんだか落ち着きますね♪', 'くぅんっ… 安心します…', '眠くなってきました…'],
 
 			hate1: '…っ！ やめてほしいです...',
 
@@ -67,9 +67,9 @@ export default {
 		},
 
 		kawaii: {
-			normal: 'ありがとうございます♪',
+			normal: ['ありがとうございます♪', '照れちゃいます...'],
 
-			love: '嬉しいです♪',
+			love: ['嬉しいです♪', '照れちゃいます...'],
 
 			hate: '…ありがとうございます'
 		},
@@ -77,7 +77,7 @@ export default {
 		suki: {
 			normal: 'えっ… ありがとうございます…♪',
 
-			love: name => `私もその… ${name}のこと好きですよ♪`,
+			love: name => `私もその… ${name}のこと好きですよ！`,
 
 			hate: null
 		},
@@ -311,10 +311,10 @@ export default {
 	},
 };
 
-export function getSerif(serif: string | string[]): string {
-	if (Array.isArray(serif)) {
-		return serif[Math.floor(Math.random() * serif.length)];
+export function getSerif(variant: string | string[]): string {
+	if (Array.isArray(variant)) {
+		return variant[Math.floor(Math.random() * variant.length)];
 	} else {
-		return serif;
+		return variant;
 	}
 }

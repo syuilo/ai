@@ -194,10 +194,10 @@ export default class extends Module {
 		// メッセージのみ
 		if (!msg.isDm) return true;
 
-		msg.reply(
+		msg.reply(getSerif(
 			msg.friend.love >= 5 ? serifs.core.kawaii.love :
 			msg.friend.love <= -3 ? serifs.core.kawaii.hate :
-			serifs.core.kawaii.normal);
+			serifs.core.kawaii.normal));
 
 		return true;
 	}
