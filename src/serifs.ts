@@ -24,6 +24,8 @@ export default {
 
 		goodNight: name => name ? `おやすみなさい、${name}！` : 'おやすみなさい！',
 
+		omedeto: name => name ? `ありがとうございます、${name}♪` : 'ありがとうございます♪',
+
 		okaeri: {
 			love: name => name ? [
 				`おかえりなさい、${name}♪`,

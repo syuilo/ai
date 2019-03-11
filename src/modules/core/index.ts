@@ -27,6 +27,7 @@ export default class extends Module {
 		return (
 			this.setName(msg) ||
 			this.greet(msg) ||
+			this.omedeto(msg) ||
 			this.nadenade(msg) ||
 			this.kawaii(msg) ||
 			this.suki(msg) ||
@@ -150,6 +151,15 @@ export default class extends Module {
 		}
 
 		return false;
+	}
+
+	@autobind
+	private omedeto(msg: Message): boolean {
+		if (!msg.includes(['おめでと'])) return false;
+
+		msg.reply(serifs.core.omedeto(msg.friend.name));
+
+		return true;
 	}
 
 	@autobind
