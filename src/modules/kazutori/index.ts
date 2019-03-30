@@ -125,7 +125,7 @@ export default class extends Module {
 		this.games.update(game);
 
 		return {
-			reaction: 'love'
+			reaction: 'like'
 		};
 	}
 
