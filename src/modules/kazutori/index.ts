@@ -20,6 +20,8 @@ type Game = {
 	postId: string;
 };
 
+const limitMinutes = 10;
+
 export default class extends Module {
 	public readonly name = 'kazutori';
 
@@ -61,7 +63,7 @@ export default class extends Module {
 		}
 
 		const post = await this.ai.post({
-			text: serifs.kazutori.intro
+			text: serifs.kazutori.intro(limitMinutes)
 		});
 
 		this.games.insertOne({
@@ -140,8 +142,8 @@ export default class extends Module {
 
 		if (game == null) return;
 
-		// ゲーム開始から5分以上経過していたら
-		if (Date.now() - game.startedAt >= 1000 * 60 * 5) {
+		// 制限時間が経過していたら
+		if (Date.now() - game.startedAt >= 1000 * 60 * limitMinutes) {
 			this.finish(game);
 		}
 	}
