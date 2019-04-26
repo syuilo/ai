@@ -107,10 +107,10 @@ class Session {
 		});
 
 		// リバーシエンジン初期化
-		this.o = new Reversi(this.game.settings.map, {
-			isLlotheo: this.game.settings.isLlotheo,
-			canPutEverywhere: this.game.settings.canPutEverywhere,
-			loopedBoard: this.game.settings.loopedBoard
+		this.o = new Reversi(this.game.map, {
+			isLlotheo: this.game.isLlotheo,
+			canPutEverywhere: this.game.canPutEverywhere,
+			loopedBoard: this.game.loopedBoard
 		});
 
 		//#region 各マスの価値を計算しておく
@@ -280,7 +280,7 @@ class Session {
 		});
 
 		// ロセオならスコアを反転
-		if (this.game.settings.isLlotheo) score = -score;
+		if (this.game.isLlotheo) score = -score;
 
 		// 接待ならスコアを反転
 		if (this.isSettai) score = -score;
@@ -333,7 +333,7 @@ class Session {
 
 				let score;
 
-				if (this.game.settings.isLlotheo) {
+				if (this.game.isLlotheo) {
 					// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
 					score = this.o.winner ? base - (this.o.blackCount * 100) : base - (this.o.whiteCount * 100);
 				} else {
