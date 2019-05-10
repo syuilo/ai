@@ -85,7 +85,7 @@ const cellVariants = {
 } };
 
 const imageSize = 2048; // px
-const margin = 256;
+const margin = 192;
 const mazeAreaSize = imageSize - (margin * 2);
 
 const themes = [{
@@ -198,7 +198,7 @@ export default class extends Module {
 	private genMize(seed) {
 		const rand = gen.create(seed);
 
-		const mazeSize = 10 + rand(21);
+		const mazeSize = 11 + rand(21);
 
 		// maze (filled by 'empty')
 		const maze: CellType[][] = new Array(mazeSize);
