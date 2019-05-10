@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as gen from 'random-seed';
 const p = require('pureimage');
+import * as Line from 'pureimage/src/Line.js';
 
 import { CellType } from './maze';
 import { themes } from './themes';
@@ -29,25 +30,25 @@ export function renderMaze(seed, maze: CellType[][], stream: fs.WriteStream): Pr
 	// Draw
 	function drawCell(ctx, x, y, size, left, right, top, bottom, mark) {
 		const wallThickness = size / 8;
-		const wallMargin = size / 4;
+		const margin = size / 5;
 		const markerMargin = size / 3;
 
 		ctx.fillStyle = colors.road;
 		if (left) {
 			ctx.beginPath();
-			ctx.fillRect(x, y + wallMargin, size - wallMargin, size - (wallMargin * 2));
+			ctx.fillRect(x, y + margin, size - margin, size - (margin * 2));
 		}
 		if (right) {
 			ctx.beginPath();
-			ctx.fillRect(x + wallMargin, y + wallMargin, size - wallMargin, size - (wallMargin * 2));
+			ctx.fillRect(x + margin, y + margin, size - margin, size - (margin * 2));
 		}
 		if (top) {
 			ctx.beginPath();
-			ctx.fillRect(x + wallMargin, y, size - (wallMargin * 2), size - wallMargin);
+			ctx.fillRect(x + margin, y, size - (margin * 2), size - margin);
 		}
 		if (bottom) {
 			ctx.beginPath();
-			ctx.fillRect(x + wallMargin, y + wallMargin, size - (wallMargin * 2), size - wallMargin);
+			ctx.fillRect(x + margin, y + margin, size - (margin * 2), size - margin);
 		}
 
 		if (mark) {
@@ -56,131 +57,153 @@ export function renderMaze(seed, maze: CellType[][], stream: fs.WriteStream): Pr
 			ctx.fillRect(x + markerMargin, y + markerMargin, size - (markerMargin * 2), size - (markerMargin * 2));
 		}
 
-		const wallLeftTopX = x + wallMargin - (wallThickness / 2);
-		const wallLeftTopY = y + wallMargin - (wallThickness / 2);
-		const wallRightTopX = x + size - wallMargin - (wallThickness / 2);
-		const wallRightTopY = y + wallMargin - (wallThickness / 2);
-		const wallLeftBottomX = x + wallMargin - (wallThickness / 2);
-		const wallLeftBottomY = y + size - wallMargin - (wallThickness / 2);
-		const wallRightBottomX = x + size - wallMargin - (wallThickness / 2);
-		const wallRightBottomY = y + size - wallMargin - (wallThickness / 2);
+		function line(ax, ay, bx, by) {
+			return new Line(x + ax, y + ay, x + bx, y + by);
+		}
 
-		ctx.fillStyle = colors.wall;
+		ctx.strokeStyle = colors.wall;
+		ctx.lineWidth = wallThickness;
+		ctx.lineCap = 'square';
 		if (left && right && top && bottom) {
 			ctx.beginPath();
 			if (rand(2) === 0) {
-				ctx.fillRect(x + wallMargin - (wallThickness / 2), y, wallThickness, size);
-				ctx.fillRect(x + size - wallMargin - (wallThickness / 2), y, wallThickness, size);
-				ctx.fillRect(x, y + wallMargin - (wallThickness / 2), wallMargin, wallThickness);
-				ctx.fillRect(x + size - wallMargin, y + wallMargin - (wallThickness / 2), wallMargin, wallThickness);
-				ctx.fillRect(x, y + size - wallMargin - (wallThickness / 2), wallMargin, wallThickness);
-				ctx.fillRect(x + size - wallMargin, y + size - wallMargin - (wallThickness / 2), wallMargin, wallThickness);
+				ctx.drawLine(line(0, margin, size, margin)); // ─ 上
+				ctx.drawLine(line(0, size - margin, size, size - margin)); // ─ 下
+				ctx.drawLine(line(margin, 0, margin, margin)); // │ 左上
+				ctx.drawLine(line(size - margin, 0, size - margin, margin)); // │ 右上
+				ctx.drawLine(line(margin, size - margin, margin, size)); // │ 左下
+				ctx.drawLine(line(size - margin, size - margin, size - margin, size)); // │ 右下
 			} else {
-				ctx.fillRect(x, y + wallMargin - (wallThickness / 2), size, wallThickness);
-				ctx.fillRect(x, y + size - wallMargin - (wallThickness / 2), size, wallThickness);
-				ctx.fillRect(wallLeftTopX, y, wallThickness, wallMargin - (wallThickness / 2));
-				ctx.fillRect(wallRightTopX, y, wallThickness, wallMargin - (wallThickness / 2));
-				ctx.fillRect(wallLeftTopX, wallLeftBottomY, wallThickness, wallMargin + (wallThickness / 2));
-				ctx.fillRect(wallRightTopX, wallRightBottomY, wallThickness, wallMargin + (wallThickness / 2));
+				ctx.drawLine(line(margin, 0, margin, size)); // │ 左
+				ctx.drawLine(line(size - margin, 0, size - margin, size)); // │ 右
+				ctx.drawLine(line(0, margin, margin, margin)); // ─ 左上
+				ctx.drawLine(line(size - margin, margin, size, margin)); // ─ 右上
+				ctx.drawLine(line(0, size - margin, margin, size - margin)); // ─ 左下
+				ctx.drawLine(line(size - margin, size - margin, size, size - margin)); // ─ 右下
 			}
 			return;
 		}
 
-		if (!left && right && !top && bottom) {
-			ctx.beginPath();
-			ctx.fillRect(wallLeftTopX, wallLeftTopY, size - wallMargin + (wallThickness / 2), wallThickness);
-			ctx.fillRect(wallLeftTopX, wallLeftTopY, wallThickness, size - wallMargin + (wallThickness / 2));
+		// ─
+		if (left && right && !top && !bottom) {
+			ctx.drawLine(line(0, margin, size, margin)); // ─ 上
+			ctx.drawLine(line(0, size - margin, size, size - margin)); // ─ 下
+			return;
 		}
 
-		if (right && bottom) {
-			ctx.fillRect(wallRightBottomX, wallRightBottomY, wallMargin + (wallThickness / 2), wallThickness);
-			ctx.fillRect(wallRightBottomX, wallRightBottomY, wallThickness, wallMargin + (wallThickness / 2));
+		// │
+		if (!left && !right && top && bottom) {
+			ctx.drawLine(line(margin, 0, margin, size)); // │ 左
+			ctx.drawLine(line(size - margin, 0, size - margin, size)); // │ 右
+			return;
 		}
 
-		if (left && !right && !top && bottom) {
-			ctx.beginPath();
-			ctx.fillRect(x, y + wallMargin - (wallThickness / 2), size - wallMargin + (wallThickness / 2), wallThickness);
-			ctx.fillRect(wallRightTopX, y + wallMargin - (wallThickness / 2), wallThickness, size - wallMargin + (wallThickness / 2));
-		}
-
-		if (left && bottom) {
-			ctx.fillRect(x, wallLeftBottomY, wallMargin - (wallThickness / 2), wallThickness);
-			ctx.fillRect(wallLeftBottomX, wallLeftBottomY, wallThickness, wallMargin + (wallThickness / 2));
-		}
-
-		if (!left && right && top && !bottom) {
-			ctx.beginPath();
-			ctx.fillRect(wallLeftBottomX, y, wallThickness, size - wallMargin + (wallThickness / 2));
-			ctx.fillRect(wallLeftBottomX, wallLeftBottomY, size - wallMargin + (wallThickness / 2), wallThickness);
-		}
-
-		if (right && top) {
-			ctx.fillRect(wallRightTopX, y, wallThickness, wallMargin - (wallThickness / 2));
-			ctx.fillRect(wallRightTopX, wallRightTopY, size - wallMargin - (wallThickness * 2), wallThickness);
-		}
-
-		if (left && !right && top && !bottom) {
-			ctx.beginPath();
-			ctx.fillRect(x, wallLeftBottomY, size - wallMargin - (wallThickness / 2), wallThickness);
-			ctx.fillRect(wallRightTopX, y, wallThickness, size - wallMargin + (wallThickness / 2));
-		}
-
-		if (left && top) {
-			ctx.fillRect(wallLeftTopX, y, wallThickness, wallMargin + (wallThickness / 2));
-			ctx.fillRect(x, wallLeftTopY, wallMargin - (wallThickness / 2), wallThickness);
-		}
-
+		// 左行き止まり
 		if (!left && right && !top && !bottom) {
-			ctx.beginPath();
-			ctx.fillRect(wallLeftTopX, wallLeftTopY, size - wallMargin + (wallThickness / 2), wallThickness);
-			ctx.fillRect(wallLeftBottomX, wallLeftBottomY, size - wallMargin + (wallThickness / 2), wallThickness);
-			ctx.fillRect(wallLeftTopX, wallLeftTopY, wallThickness, size - wallMargin - (wallThickness * 2));
+			ctx.drawLine(line(margin, margin, size, margin)); // ─ 上
+			ctx.drawLine(line(margin, margin, margin, size - margin)); // │ 左
+			ctx.drawLine(line(margin, size - margin, size, size - margin)); // ─ 下
 			return;
 		}
 
+		// 右行き止まり
 		if (left && !right && !top && !bottom) {
-			ctx.beginPath();
-			ctx.fillRect(x, wallLeftTopY, size - wallMargin + (wallThickness / 2), wallThickness);
-			ctx.fillRect(x, wallLeftBottomY, size - wallMargin + (wallThickness / 2), wallThickness);
-			ctx.fillRect(wallRightTopX, wallRightTopY, wallThickness, size - wallMargin - (wallThickness * 2));
+			ctx.drawLine(line(0, margin, size - margin, margin)); // ─ 上
+			ctx.drawLine(line(size - margin, margin, size - margin, size - margin)); // │ 右
+			ctx.drawLine(line(0, size - margin, size - margin, size - margin)); // ─ 下
 			return;
 		}
 
+		// 上行き止まり
 		if (!left && !right && !top && bottom) {
-			ctx.beginPath();
-			ctx.fillRect(wallLeftTopX, wallLeftTopY, wallThickness, size - wallMargin + (wallThickness / 2));
-			ctx.fillRect(wallRightTopX, wallRightTopY, wallThickness, size - wallMargin + (wallThickness / 2));
-			ctx.fillRect(wallLeftTopX, wallLeftTopY, size - wallMargin - (wallThickness * 2), wallThickness);
+			ctx.drawLine(line(margin, margin, size - margin, margin)); // ─ 上
+			ctx.drawLine(line(margin, margin, margin, size)); // │ 左
+			ctx.drawLine(line(size - margin, margin, size - margin, size)); // │ 右
 			return;
 		}
 
+		// 下行き止まり
 		if (!left && !right && top && !bottom) {
-			ctx.beginPath();
-			ctx.fillRect(wallLeftTopX, y, wallThickness, size - wallMargin + (wallThickness / 2));
-			ctx.fillRect(wallRightTopX, y, wallThickness, size - wallMargin + (wallThickness / 2));
-			ctx.fillRect(wallLeftBottomX, wallLeftBottomY, size - wallMargin - (wallThickness * 2), wallThickness);
+			ctx.drawLine(line(margin, size - margin, size - margin, size - margin)); // ─ 下
+			ctx.drawLine(line(margin, 0, margin, size - margin)); // │ 左
+			ctx.drawLine(line(size - margin, 0, size - margin, size - margin)); // │ 右
 			return;
 		}
 
-		if (top && bottom) {
-			if (!left) {
-				ctx.beginPath();
-				ctx.fillRect(x + wallMargin - (wallThickness / 2), y, wallThickness, size);
-			}
-			if (!right) {
-				ctx.beginPath();
-				ctx.fillRect(x + size - wallMargin - (wallThickness / 2), y, wallThickness, size);
-			}
+		// ┌
+		if (!left && !top && right && bottom) {
+			ctx.drawLine(line(margin, margin, size, margin)); // ─ 上
+			ctx.drawLine(line(margin, margin, margin, size)); // │ 左
+			ctx.drawLine(line(size - margin, size - margin, size, size - margin)); // ─ 下
+			ctx.drawLine(line(size - margin, size - margin, size - margin, size)); // │ 右
+			return;
 		}
-		if (left && right) {
-			if (!top) {
-				ctx.beginPath();
-				ctx.fillRect(x, y + wallMargin - (wallThickness / 2), size, wallThickness);
-			}
-			if (!bottom) {
-				ctx.beginPath();
-				ctx.fillRect(x, y + size - wallMargin - (wallThickness / 2), size, wallThickness);
-			}
+
+		// ┐
+		if (left && !right && !top && bottom) {
+			ctx.drawLine(line(0, margin, size - margin, margin)); // ─ 上
+			ctx.drawLine(line(size - margin, margin, size - margin, size)); // │ 右
+			ctx.drawLine(line(0, size - margin, margin, size - margin)); // ─ 下
+			ctx.drawLine(line(margin, size - margin, margin, size)); // │ 左
+			return;
+		}
+
+		// └
+		if (!left && right && top && !bottom) {
+			ctx.drawLine(line(margin, 0, margin, size - margin)); // │ 左
+			ctx.drawLine(line(margin, size - margin, size, size - margin)); // ─ 下
+			ctx.drawLine(line(size - margin, 0, size - margin, margin)); // │ 右
+			ctx.drawLine(line(size - margin, margin, size, margin)); // ─ 上
+			return;
+		}
+
+		// ┘
+		if (left && !right && top && !bottom) {
+			ctx.drawLine(line(margin, 0, margin, margin)); // │ 左
+			ctx.drawLine(line(0, margin, margin, margin)); // ─ 上
+			ctx.drawLine(line(size - margin, 0, size - margin, size - margin)); // │ 右
+			ctx.drawLine(line(0, size - margin, size - margin, size - margin)); // ─ 下
+			return;
+		}
+
+		// ├
+		if (!left && right && top && bottom) {
+			ctx.drawLine(line(margin, 0, margin, size)); // │ 左
+			ctx.drawLine(line(size - margin, 0, size - margin, margin)); // │ 右
+			ctx.drawLine(line(size - margin, margin, size, margin)); // ─ 上
+			ctx.drawLine(line(size - margin, size - margin, size, size - margin)); // ─ 下
+			ctx.drawLine(line(size - margin, size - margin, size - margin, size)); // │ 右
+			return;
+		}
+
+		// ┤
+		if (left && !right && top && bottom) {
+			ctx.drawLine(line(size - margin, 0, size - margin, size)); // │ 右
+			ctx.drawLine(line(margin, 0, margin, margin)); // │ 左
+			ctx.drawLine(line(0, margin, margin, margin)); // ─ 上
+			ctx.drawLine(line(0, size - margin, margin, size - margin)); // ─ 下
+			ctx.drawLine(line(margin, size - margin, margin, size)); // │ 左
+			return;
+		}
+
+		// ┬
+		if (left && right && !top && bottom) {
+			ctx.drawLine(line(0, margin, size, margin)); // ─ 上
+			ctx.drawLine(line(0, size - margin, margin, size - margin)); // ─ 下
+			ctx.drawLine(line(margin, size - margin, margin, size)); // │ 左
+			ctx.drawLine(line(size - margin, size - margin, size, size - margin)); // ─ 下
+			ctx.drawLine(line(size - margin, size - margin, size - margin, size)); // │ 右
+			return;
+		}
+
+		// ┴
+		if (left && right && top && !bottom) {
+			ctx.drawLine(line(0, size - margin, size, size - margin)); // ─ 下
+			ctx.drawLine(line(margin, 0, margin, margin)); // │ 左
+			ctx.drawLine(line(0, margin, margin, margin)); // ─ 上
+			ctx.drawLine(line(size - margin, 0, size - margin, margin)); // │ 右
+			ctx.drawLine(line(size - margin, margin, size, margin)); // ─ 上
+			return;
 		}
 	}
 
