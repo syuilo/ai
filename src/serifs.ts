@@ -313,7 +313,7 @@ export default {
 	},
 
 	maze: {
-		post: 'この回路、解読してみてください！ #AiMaze'
+		post: '今日の迷路です！ #AiMaze'
 	},
 };
 
