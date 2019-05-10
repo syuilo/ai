@@ -1,7 +1,3 @@
-/**
- * Random avatar generator
- */
-
 import * as fs from 'fs';
 import autobind from 'autobind-decorator';
 import Module from '../../module';
