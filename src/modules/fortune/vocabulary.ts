@@ -35,7 +35,7 @@ export const itemPrefixes = [
 	'Microsoft製',
 	'Apple製',
 	'人類の技術を結集して作った',
-	'2018年製',
+	'2018年製', // TODO ランダム
 	'500kgくらいある',
 	'高級',
 	'腐った',

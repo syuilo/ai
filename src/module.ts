@@ -5,9 +5,21 @@ export default abstract class Module {
 	public abstract readonly name: string;
 
 	protected ai: 藍;
+	private doc: any;
 
 	public init(ai: 藍) {
 		this.ai = ai;
+
+		this.doc = this.ai.moduleData.findOne({
+			module: this.name
+		});
+
+		if (this.doc == null) {
+			this.doc = this.ai.moduleData.insertOne({
+				module: this.name,
+				data: {}
+			});
+		}
 	}
 
 	public abstract install(): InstallerResult;
@@ -47,5 +59,16 @@ export default abstract class Module {
 	@autobind
 	public setTimeoutWithPersistence(delay: number, data?: any) {
 		this.ai.setTimeoutWithPersistence(this, delay, data);
+	}
+
+	@autobind
+	protected getData() {
+		return this.doc.data;
+	}
+
+	@autobind
+	protected setData(data: any) {
+		this.doc.data = data;
+		this.ai.moduleData.update(this.doc);
 	}
 }

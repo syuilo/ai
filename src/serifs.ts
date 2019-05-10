@@ -311,6 +311,10 @@ export default {
 	server: {
 		cpu: 'サーバーの負荷が高そうです。大丈夫でしょうか...？'
 	},
+
+	maze: {
+		post: 'この回路、解読してみてください！ #AiMaze'
+	},
 };
 
 export function getSerif(variant: string | string[]): string {
