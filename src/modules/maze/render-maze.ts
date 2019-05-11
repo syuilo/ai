@@ -57,152 +57,153 @@ export function renderMaze(seed, maze: CellType[][], stream: fs.WriteStream): Pr
 			ctx.fillRect(x + markerMargin, y + markerMargin, size - (markerMargin * 2), size - (markerMargin * 2));
 		}
 
-		function line(ax, ay, bx, by) {
-			return new Line(x + ax, y + ay, x + bx, y + by);
-		}
-
 		ctx.strokeStyle = colors.wall;
 		ctx.lineWidth = wallThickness;
 		ctx.lineCap = 'square';
+
+		function line(ax, ay, bx, by) {
+			ctx.drawLine(new Line(x + ax, y + ay, x + bx, y + by));
+		}
+
 		if (left && right && top && bottom) {
 			ctx.beginPath();
 			if (rand(2) === 0) {
-				ctx.drawLine(line(0, margin, size, margin)); // ─ 上
-				ctx.drawLine(line(0, size - margin, size, size - margin)); // ─ 下
-				ctx.drawLine(line(margin, 0, margin, margin)); // │ 左上
-				ctx.drawLine(line(size - margin, 0, size - margin, margin)); // │ 右上
-				ctx.drawLine(line(margin, size - margin, margin, size)); // │ 左下
-				ctx.drawLine(line(size - margin, size - margin, size - margin, size)); // │ 右下
+				line(0, margin, size, margin); // ─ 上
+				line(0, size - margin, size, size - margin); // ─ 下
+				line(margin, 0, margin, margin); // │ 左上
+				line(size - margin, 0, size - margin, margin); // │ 右上
+				line(margin, size - margin, margin, size); // │ 左下
+				line(size - margin, size - margin, size - margin, size); // │ 右下
 			} else {
-				ctx.drawLine(line(margin, 0, margin, size)); // │ 左
-				ctx.drawLine(line(size - margin, 0, size - margin, size)); // │ 右
-				ctx.drawLine(line(0, margin, margin, margin)); // ─ 左上
-				ctx.drawLine(line(size - margin, margin, size, margin)); // ─ 右上
-				ctx.drawLine(line(0, size - margin, margin, size - margin)); // ─ 左下
-				ctx.drawLine(line(size - margin, size - margin, size, size - margin)); // ─ 右下
+				line(margin, 0, margin, size); // │ 左
+				line(size - margin, 0, size - margin, size); // │ 右
+				line(0, margin, margin, margin); // ─ 左上
+				line(size - margin, margin, size, margin); // ─ 右上
+				line(0, size - margin, margin, size - margin); // ─ 左下
+				line(size - margin, size - margin, size, size - margin); // ─ 右下
 			}
 			return;
 		}
 
 		// ─
 		if (left && right && !top && !bottom) {
-			ctx.drawLine(line(0, margin, size, margin)); // ─ 上
-			ctx.drawLine(line(0, size - margin, size, size - margin)); // ─ 下
+			line(0, margin, size, margin); // ─ 上
+			line(0, size - margin, size, size - margin); // ─ 下
 			return;
 		}
 
 		// │
 		if (!left && !right && top && bottom) {
-			ctx.drawLine(line(margin, 0, margin, size)); // │ 左
-			ctx.drawLine(line(size - margin, 0, size - margin, size)); // │ 右
+			line(margin, 0, margin, size); // │ 左
+			line(size - margin, 0, size - margin, size); // │ 右
 			return;
 		}
 
 		// 左行き止まり
 		if (!left && right && !top && !bottom) {
-			ctx.drawLine(line(margin, margin, size, margin)); // ─ 上
-			ctx.drawLine(line(margin, margin, margin, size - margin)); // │ 左
-			ctx.drawLine(line(margin, size - margin, size, size - margin)); // ─ 下
+			line(margin, margin, size, margin); // ─ 上
+			line(margin, margin, margin, size - margin); // │ 左
+			line(margin, size - margin, size, size - margin); // ─ 下
 			return;
 		}
 
 		// 右行き止まり
 		if (left && !right && !top && !bottom) {
-			ctx.drawLine(line(0, margin, size - margin, margin)); // ─ 上
-			ctx.drawLine(line(size - margin, margin, size - margin, size - margin)); // │ 右
-			ctx.drawLine(line(0, size - margin, size - margin, size - margin)); // ─ 下
+			line(0, margin, size - margin, margin); // ─ 上
+			line(size - margin, margin, size - margin, size - margin); // │ 右
+			line(0, size - margin, size - margin, size - margin); // ─ 下
 			return;
 		}
 
 		// 上行き止まり
 		if (!left && !right && !top && bottom) {
-			ctx.drawLine(line(margin, margin, size - margin, margin)); // ─ 上
-			ctx.drawLine(line(margin, margin, margin, size)); // │ 左
-			ctx.drawLine(line(size - margin, margin, size - margin, size)); // │ 右
+			line(margin, margin, size - margin, margin); // ─ 上
+			line(margin, margin, margin, size); // │ 左
+			line(size - margin, margin, size - margin, size); // │ 右
 			return;
 		}
 
 		// 下行き止まり
 		if (!left && !right && top && !bottom) {
-			ctx.drawLine(line(margin, size - margin, size - margin, size - margin)); // ─ 下
-			ctx.drawLine(line(margin, 0, margin, size - margin)); // │ 左
-			ctx.drawLine(line(size - margin, 0, size - margin, size - margin)); // │ 右
+			line(margin, size - margin, size - margin, size - margin); // ─ 下
+			line(margin, 0, margin, size - margin); // │ 左
+			line(size - margin, 0, size - margin, size - margin); // │ 右
 			return;
 		}
 
 		// ┌
 		if (!left && !top && right && bottom) {
-			ctx.drawLine(line(margin, margin, size, margin)); // ─ 上
-			ctx.drawLine(line(margin, margin, margin, size)); // │ 左
-			ctx.drawLine(line(size - margin, size - margin, size, size - margin)); // ─ 下
-			ctx.drawLine(line(size - margin, size - margin, size - margin, size)); // │ 右
+			line(margin, margin, size, margin); // ─ 上
+			line(margin, margin, margin, size); // │ 左
+			line(size - margin, size - margin, size, size - margin); // ─ 下
+			line(size - margin, size - margin, size - margin, size); // │ 右
 			return;
 		}
 
 		// ┐
 		if (left && !right && !top && bottom) {
-			ctx.drawLine(line(0, margin, size - margin, margin)); // ─ 上
-			ctx.drawLine(line(size - margin, margin, size - margin, size)); // │ 右
-			ctx.drawLine(line(0, size - margin, margin, size - margin)); // ─ 下
-			ctx.drawLine(line(margin, size - margin, margin, size)); // │ 左
+			line(0, margin, size - margin, margin); // ─ 上
+			line(size - margin, margin, size - margin, size); // │ 右
+			line(0, size - margin, margin, size - margin); // ─ 下
+			line(margin, size - margin, margin, size); // │ 左
 			return;
 		}
 
 		// └
 		if (!left && right && top && !bottom) {
-			ctx.drawLine(line(margin, 0, margin, size - margin)); // │ 左
-			ctx.drawLine(line(margin, size - margin, size, size - margin)); // ─ 下
-			ctx.drawLine(line(size - margin, 0, size - margin, margin)); // │ 右
-			ctx.drawLine(line(size - margin, margin, size, margin)); // ─ 上
+			line(margin, 0, margin, size - margin); // │ 左
+			line(margin, size - margin, size, size - margin); // ─ 下
+			line(size - margin, 0, size - margin, margin); // │ 右
+			line(size - margin, margin, size, margin); // ─ 上
 			return;
 		}
 
 		// ┘
 		if (left && !right && top && !bottom) {
-			ctx.drawLine(line(margin, 0, margin, margin)); // │ 左
-			ctx.drawLine(line(0, margin, margin, margin)); // ─ 上
-			ctx.drawLine(line(size - margin, 0, size - margin, size - margin)); // │ 右
-			ctx.drawLine(line(0, size - margin, size - margin, size - margin)); // ─ 下
+			line(margin, 0, margin, margin); // │ 左
+			line(0, margin, margin, margin); // ─ 上
+			line(size - margin, 0, size - margin, size - margin); // │ 右
+			line(0, size - margin, size - margin, size - margin); // ─ 下
 			return;
 		}
 
 		// ├
 		if (!left && right && top && bottom) {
-			ctx.drawLine(line(margin, 0, margin, size)); // │ 左
-			ctx.drawLine(line(size - margin, 0, size - margin, margin)); // │ 右
-			ctx.drawLine(line(size - margin, margin, size, margin)); // ─ 上
-			ctx.drawLine(line(size - margin, size - margin, size, size - margin)); // ─ 下
-			ctx.drawLine(line(size - margin, size - margin, size - margin, size)); // │ 右
+			line(margin, 0, margin, size); // │ 左
+			line(size - margin, 0, size - margin, margin); // │ 右
+			line(size - margin, margin, size, margin); // ─ 上
+			line(size - margin, size - margin, size, size - margin); // ─ 下
+			line(size - margin, size - margin, size - margin, size); // │ 右
 			return;
 		}
 
 		// ┤
 		if (left && !right && top && bottom) {
-			ctx.drawLine(line(size - margin, 0, size - margin, size)); // │ 右
-			ctx.drawLine(line(margin, 0, margin, margin)); // │ 左
-			ctx.drawLine(line(0, margin, margin, margin)); // ─ 上
-			ctx.drawLine(line(0, size - margin, margin, size - margin)); // ─ 下
-			ctx.drawLine(line(margin, size - margin, margin, size)); // │ 左
+			line(size - margin, 0, size - margin, size); // │ 右
+			line(margin, 0, margin, margin); // │ 左
+			line(0, margin, margin, margin); // ─ 上
+			line(0, size - margin, margin, size - margin); // ─ 下
+			line(margin, size - margin, margin, size); // │ 左
 			return;
 		}
 
 		// ┬
 		if (left && right && !top && bottom) {
-			ctx.drawLine(line(0, margin, size, margin)); // ─ 上
-			ctx.drawLine(line(0, size - margin, margin, size - margin)); // ─ 下
-			ctx.drawLine(line(margin, size - margin, margin, size)); // │ 左
-			ctx.drawLine(line(size - margin, size - margin, size, size - margin)); // ─ 下
-			ctx.drawLine(line(size - margin, size - margin, size - margin, size)); // │ 右
+			line(0, margin, size, margin); // ─ 上
+			line(0, size - margin, margin, size - margin); // ─ 下
+			line(margin, size - margin, margin, size); // │ 左
+			line(size - margin, size - margin, size, size - margin); // ─ 下
+			line(size - margin, size - margin, size - margin, size); // │ 右
 			return;
 		}
 
 		// ┴
 		if (left && right && top && !bottom) {
-			ctx.drawLine(line(0, size - margin, size, size - margin)); // ─ 下
-			ctx.drawLine(line(margin, 0, margin, margin)); // │ 左
-			ctx.drawLine(line(0, margin, margin, margin)); // ─ 上
-			ctx.drawLine(line(size - margin, 0, size - margin, margin)); // │ 右
-			ctx.drawLine(line(size - margin, margin, size, margin)); // ─ 上
+			line(0, size - margin, size, size - margin); // ─ 下
+			line(margin, 0, margin, margin); // │ 左
+			line(0, margin, margin, margin); // ─ 上
+			line(size - margin, 0, size - margin, margin); // │ 右
+			line(size - margin, margin, size, margin); // ─ 上
 			return;
 		}
 	}
