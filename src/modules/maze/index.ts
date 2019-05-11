@@ -5,6 +5,7 @@ import serifs from '../../serifs';
 import * as tmp from 'tmp';
 import { genMaze } from './gen-maze';
 import { renderMaze } from './render-maze';
+import Message from '../../message';
 
 export default class extends Module {
 	public readonly name = 'maze';
@@ -14,7 +15,9 @@ export default class extends Module {
 		this.post();
 		setInterval(this.post, 1000 * 60 * 3);
 
-		return {};
+		return {
+			mentionHook: this.mentionHook
+		};
 	}
 
 	@autobind
@@ -27,17 +30,8 @@ export default class extends Module {
 		data.lastPosted = date;
 		this.setData(data);
 
-		const seed = date;
-
-		this.log('Maze generating...');
-		const maze = genMaze(seed);
-
-		this.log('Maze rendering...');
-		const [temp] = await this.createTemp();
-		await renderMaze(seed, maze, fs.createWriteStream(temp));
-
-		this.log('Image uploading...');
-		const file = await this.ai.upload(fs.createReadStream(temp));
+		this.log('Time to maze');
+		const file = await this.genMazeFile(date);
 
 		this.log('Posting...');
 		this.ai.post({
@@ -54,5 +48,37 @@ export default class extends Module {
 				res([path, cleanup]);
 			});
 		});
+	}
+
+	@autobind
+	private async genMazeFile(seed): Promise<any> {
+		this.log('Maze generating...');
+		const maze = genMaze(seed);
+
+		this.log('Maze rendering...');
+		const [temp] = await this.createTemp();
+		await renderMaze(seed, maze, fs.createWriteStream(temp));
+
+		this.log('Image uploading...');
+		const file = await this.ai.upload(fs.createReadStream(temp));
+
+		return file;
+	}
+
+	@autobind
+	private async mentionHook(msg: Message) {
+		if (msg.includes(['迷路'])) {
+			this.log('Maze requested');
+			setTimeout(async () => {
+				const file = await this.genMazeFile(Date.now());
+				this.log('Replying...');
+				msg.replyWithFile(serifs.maze.foryou, file);
+			}, 3000);
+			return {
+				reaction: 'like'
+			};
+		} else {
+			return false;
+		}
 	}
 }

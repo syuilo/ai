@@ -6,8 +6,8 @@ import * as Line from 'pureimage/src/Line.js';
 import { CellType } from './maze';
 import { themes } from './themes';
 
-const imageSize = 2048; // px
-const margin = 192;
+const imageSize = 1024; // px
+const margin = 96;
 const mazeAreaSize = imageSize - (margin * 2);
 
 export function renderMaze(seed, maze: CellType[][], stream: fs.WriteStream): Promise<void> {

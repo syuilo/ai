@@ -313,7 +313,8 @@ export default {
 	},
 
 	maze: {
-		post: '今日の迷路です！ #AiMaze'
+		post: '今日の迷路です！ #AiMaze',
+		foryou: '描きました！'
 	},
 };
 

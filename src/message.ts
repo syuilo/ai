@@ -81,6 +81,30 @@ export default class Message {
 	}
 
 	@autobind
+	public async replyWithFile(text: string, file: any, cw?: string, renote?: string) {
+		if (text == null) return;
+
+		this.ai.log(`>>> Sending reply to ${chalk.underline(this.id)}`);
+
+		await delay(2000);
+
+		if (this.isDm) {
+			return await this.ai.sendMessage(this.messageOrNote.userId, {
+				text: text,
+				fileId: file.id
+			});
+		} else {
+			return await this.ai.post({
+				replyId: this.messageOrNote.id,
+				text: text,
+				fileIds: [file.id],
+				cw: cw,
+				renoteId: renote
+			});
+		}
+	}
+
+	@autobind
 	public includes(words: string[]): boolean {
 		return includes(this.text, words);
 	}
