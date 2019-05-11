@@ -83,9 +83,9 @@ export function genMaze(seed, complexity?) {
 	let mazeSize;
 	if (complexity) {
 		if (complexity === 'veryEasy') mazeSize = 3 + rand(3);
-		if (complexity === 'easy') mazeSize = 10 + rand(12);
-		if (complexity === 'hard') mazeSize = 20 + rand(15);
-		if (complexity === 'veryHard') mazeSize = 35 + rand(15);
+		if (complexity === 'easy') mazeSize = 8 + rand(8);
+		if (complexity === 'hard') mazeSize = 22 + rand(13);
+		if (complexity === 'veryHard') mazeSize = 40 + rand(20);
 		if (complexity === 'ai') mazeSize = 100;
 	} else {
 		mazeSize = 11 + rand(21);
