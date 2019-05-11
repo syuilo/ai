@@ -94,6 +94,8 @@ export function genMaze(seed, complexity?) {
 	const donut = rand(3) === 0;
 	const donutWidth = mazeSize / 3;
 
+	const straightMode = rand(10) === 0;
+
 	// maze (filled by 'empty')
 	const maze: CellType[][] = new Array(mazeSize);
 	for (let i = 0; i < mazeSize; i++) {
@@ -130,7 +132,7 @@ export function genMaze(seed, complexity?) {
 		return false;
 	}
 
-	function diggFrom(x: number, y: number) {
+	function diggFrom(x: number, y: number, prevDir?: Dir) {
 		const isUpDiggable    = checkDiggable(x, y, 'top');
 		const isRightDiggable = checkDiggable(x, y, 'right');
 		const isDownDiggable  = checkDiggable(x, y, 'bottom');
@@ -144,28 +146,37 @@ export function genMaze(seed, complexity?) {
 		if (isDownDiggable) dirs.push('bottom');
 		if (isLeftDiggable) dirs.push('left');
 
-		const dir = dirs[rand(dirs.length)];
+		let dir: Dir;
+		if (straightMode) {
+			if (dirs.includes(prevDir)) {
+				dir = prevDir;
+			} else {
+				dir = dirs[rand(dirs.length)];
+			}
+		} else {
+			dir = dirs[rand(dirs.length)];
+		}
 
 		maze[x][y] = cellVariants[maze[x][y]].digg[dir];
 
 		if (dir === 'top') {
 			maze[x][y - 1] = maze[x][y - 1] === 'empty' ? 'bottom' : 'cross';
-			diggFrom(x, y - 1);
+			diggFrom(x, y - 1, dir);
 			return;
 		}
 		if (dir === 'right') {
 			maze[x + 1][y] = maze[x + 1][y] === 'empty' ? 'left' : 'cross';
-			diggFrom(x + 1, y);
+			diggFrom(x + 1, y, dir);
 			return;
 		}
 		if (dir === 'bottom') {
 			maze[x][y + 1] = maze[x][y + 1] === 'empty' ? 'top' : 'cross';
-			diggFrom(x, y + 1);
+			diggFrom(x, y + 1, dir);
 			return;
 		}
 		if (dir === 'left') {
 			maze[x - 1][y] = maze[x - 1][y] === 'empty' ? 'right' : 'cross';
-			diggFrom(x - 1, y);
+			diggFrom(x - 1, y, dir);
 			return;
 		}
 	}
