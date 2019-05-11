@@ -94,7 +94,8 @@ export function genMaze(seed, complexity?) {
 	const donut = rand(3) === 0;
 	const donutWidth = mazeSize / 3;
 
-	const straightMode = rand(10) === 0;
+	const straightMode = rand(3) === 0;
+	const straightness = 5 + rand(10);
 
 	// maze (filled by 'empty')
 	const maze: CellType[][] = new Array(mazeSize);
@@ -147,7 +148,7 @@ export function genMaze(seed, complexity?) {
 		if (isLeftDiggable) dirs.push('left');
 
 		let dir: Dir;
-		if (straightMode) {
+		if (straightMode && rand(straightness) !== 0) {
 			if (dirs.includes(prevDir)) {
 				dir = prevDir;
 			} else {
