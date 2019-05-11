@@ -51,9 +51,9 @@ export default class extends Module {
 	}
 
 	@autobind
-	private async genMazeFile(seed): Promise<any> {
+	private async genMazeFile(seed, size?): Promise<any> {
 		this.log('Maze generating...');
-		const maze = genMaze(seed);
+		const maze = genMaze(seed, size);
 
 		this.log('Maze rendering...');
 		const [temp] = await this.createTemp();
@@ -68,9 +68,13 @@ export default class extends Module {
 	@autobind
 	private async mentionHook(msg: Message) {
 		if (msg.includes(['迷路'])) {
+			let size = null;
+			if (msg.includes(['簡単', 'かんたん', '易しい', 'やさしい', '小さい', 'ちいさい'])) size = 'easy';
+			if (msg.includes(['難しい', 'むずかしい', '複雑な', '大きい', 'おおきい'])) size = 'hard';
+			if (msg.includes(['死', '鬼', '地獄'])) size = 'veryHard';
 			this.log('Maze requested');
 			setTimeout(async () => {
-				const file = await this.genMazeFile(Date.now());
+				const file = await this.genMazeFile(Date.now(), size);
 				this.log('Replying...');
 				msg.replyWithFile(serifs.maze.foryou, file);
 			}, 3000);

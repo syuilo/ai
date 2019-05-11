@@ -77,10 +77,18 @@ const cellVariants = {
 
 type Dir = 'left' | 'right' | 'top' | 'bottom';
 
-export function genMaze(seed) {
+export function genMaze(seed, complexity?) {
 	const rand = gen.create(seed);
 
-	const mazeSize = 11 + rand(21);
+	let mazeSize;
+	if (complexity) {
+		if (complexity === 'easy') mazeSize = 10 + rand(12);
+		if (complexity === 'hard') mazeSize = 20 + rand(15);
+		if (complexity === 'veryHard') mazeSize = 35 + rand(15);
+	} else {
+		mazeSize = 11 + rand(21);
+	}
+
 	const donut = rand(3) === 0;
 	const donutWidth = mazeSize / 3;
 
