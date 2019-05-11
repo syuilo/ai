@@ -92,7 +92,7 @@ export function genMaze(seed, complexity?) {
 	}
 
 	const donut = rand(3) === 0;
-	const donutWidth = mazeSize / 3;
+	const donutWidth = 1 + Math.floor(mazeSize / 8) + rand(Math.floor(mazeSize / 4));
 
 	const straightMode = rand(3) === 0;
 	const straightness = 5 + rand(10);
@@ -106,7 +106,7 @@ export function genMaze(seed, complexity?) {
 	if (donut) {
 		for (let y = 0; y < mazeSize; y++) {
 			for (let x = 0; x < mazeSize; x++) {
-				if (x >= donutWidth && x < mazeSize - donutWidth && y >= donutWidth && y < mazeSize - donutWidth) {
+				if (x > donutWidth && x < (mazeSize - 1) - donutWidth && y > donutWidth && y < (mazeSize - 1) - donutWidth) {
 					maze[x][y] = 'void';
 				}
 			}
