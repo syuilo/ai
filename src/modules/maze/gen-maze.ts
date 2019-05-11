@@ -2,6 +2,10 @@ import * as gen from 'random-seed';
 import { CellType } from './maze';
 
 const cellVariants = {
+	void: {
+		digg: { left: null, right: null, top: null, bottom: null },
+		cross: { left: false, right: false, top: false, bottom: false },
+	},
 	empty: {
 		digg: { left: 'left', right: 'right', top: 'top', bottom: 'bottom' },
 		cross: { left: false, right: false, top: false, bottom: false },
@@ -77,6 +81,8 @@ export function genMaze(seed) {
 	const rand = gen.create(seed);
 
 	const mazeSize = 11 + rand(21);
+	const donut = rand(3) === 0;
+	const donutWidth = mazeSize / 3;
 
 	// maze (filled by 'empty')
 	const maze: CellType[][] = new Array(mazeSize);
@@ -84,10 +90,15 @@ export function genMaze(seed) {
 		maze[i] = new Array(mazeSize).fill('empty');
 	}
 
-	const origin = {
-		x: rand(mazeSize),
-		y: rand(mazeSize),
-	};
+	if (donut) {
+		for (let y = 0; y < mazeSize; y++) {
+			for (let x = 0; x < mazeSize; x++) {
+				if (x >= donutWidth && x < mazeSize - donutWidth && y >= donutWidth && y < mazeSize - donutWidth) {
+					maze[x][y] = 'void';
+				}
+			}
+		}
+	}
 
 	function checkDiggable(x: number, y: number, dir: Dir) {
 		if (cellVariants[maze[x][y]].digg[dir] === null) return false;
@@ -102,6 +113,7 @@ export function genMaze(seed) {
 		if (newPos.x < 0 || newPos.y < 0 || newPos.x >= mazeSize || newPos.y >= mazeSize) return false;
 
 		const cell = maze[newPos.x][newPos.y];
+		if (cell === 'void') return false;
 		if (cell === 'empty') return true;
 		if (cellVariants[cell].cross[dir] && checkDiggable(newPos.x, newPos.y, dir)) return true;
 
@@ -148,7 +160,20 @@ export function genMaze(seed) {
 		}
 	}
 
-	diggFrom(origin.x, origin.y);
+	//#region start digg
+	const nonVoidCells = [];
+
+	for (let y = 0; y < mazeSize; y++) {
+		for (let x = 0; x < mazeSize; x++) {
+			const cell = maze[x][y];
+			if (cell !== 'void') nonVoidCells.push([x, y]);
+		}
+	}
+
+	const origin = nonVoidCells[rand(nonVoidCells.length)];
+
+	diggFrom(origin[0], origin[1]);
+	//#endregion
 
 	let hasEmptyCell = true;
 	while (hasEmptyCell) {
@@ -157,7 +182,7 @@ export function genMaze(seed) {
 		for (let y = 0; y < mazeSize; y++) {
 			for (let x = 0; x < mazeSize; x++) {
 				const cell = maze[x][y];
-				if (cell !== 'empty' && cell !== 'cross') nonEmptyCells.push([x, y]);
+				if (cell !== 'empty' && cell !== 'void' && cell !== 'cross') nonEmptyCells.push([x, y]);
 			}
 		}
 

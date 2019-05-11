@@ -29,8 +29,8 @@ export function renderMaze(seed, maze: CellType[][], stream: fs.WriteStream): Pr
 
 	// Draw
 	function drawCell(ctx, x, y, size, left, right, top, bottom, mark) {
-		const wallThickness = size / 8;
-		const margin = size / 5;
+		const wallThickness = size / 6;
+		const margin = size / 6;
 		const markerMargin = size / 3;
 
 		ctx.fillStyle = colors.road;
