@@ -291,12 +291,15 @@ export default class 藍 {
 	 * ファイルをドライブにアップロードします
 	 */
 	@autobind
-	public async upload(readStream: fs.ReadStream) {
+	public async upload(file: Buffer | fs.ReadStream, meta: any) {
 		const res = await request.post({
 			url: `${config.apiUrl}/drive/files/create`,
 			formData: {
 				i: config.i,
-				file: readStream
+				file: {
+					value: file,
+					options: meta
+				}
 			},
 			json: true
 		});

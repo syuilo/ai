@@ -41,26 +41,18 @@ export default class extends Module {
 	}
 
 	@autobind
-	private createTemp(): Promise<[string, any]> {
-		return new Promise<[string, any]>((res, rej) => {
-			tmp.file((e, path, fd, cleanup) => {
-				if (e) return rej(e);
-				res([path, cleanup]);
-			});
-		});
-	}
-
-	@autobind
 	private async genMazeFile(seed, size?): Promise<any> {
 		this.log('Maze generating...');
 		const maze = genMaze(seed, size);
 
 		this.log('Maze rendering...');
-		const [temp] = await this.createTemp();
-		await renderMaze(seed, maze, fs.createWriteStream(temp));
+		const data = renderMaze(seed, maze);
 
 		this.log('Image uploading...');
-		const file = await this.ai.upload(fs.createReadStream(temp));
+		const file = await this.ai.upload(data, {
+			filename: 'maze.png',
+			contentType: 'image/png'
+		});
 
 		return file;
 	}

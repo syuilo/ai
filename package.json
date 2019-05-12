@@ -17,12 +17,12 @@
     "@types/uuid": "3.4.4",
     "@types/ws": "6.0.1",
     "autobind-decorator": "2.4.0",
+    "canvas": "2.5.0",
     "chalk": "2.4.2",
     "lokijs": "1.5.6",
     "mecab-async": "0.1.2",
     "misskey-reversi": "0.0.5",
     "promise-retry": "1.1.1",
-    "pureimage": "0.1.6",
     "random-seed": "0.3.0",
     "reconnecting-websocket": "4.1.10",
     "request": "2.88.0",
@@ -31,7 +31,7 @@
     "timeout-as-promise": "1.0.0",
     "tmp": "0.1.0",
     "ts-node": "8.0.3",
-    "typescript": "2.8.3",
+    "typescript": "3.4.5",
     "uuid": "3.3.2",
     "ws": "6.2.1"
   }

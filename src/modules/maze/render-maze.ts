@@ -1,23 +1,22 @@
-import * as fs from 'fs';
 import * as gen from 'random-seed';
-const p = require('pureimage');
-import * as Line from 'pureimage/src/Line.js';
+import { createCanvas } from 'canvas';
 
 import { CellType } from './maze';
 import { themes } from './themes';
 
-const imageSize = 1024; // px
-const margin = 96;
+const imageSize = 4096; // px
+const margin = 96 * 4;
 const mazeAreaSize = imageSize - (margin * 2);
 
-export function renderMaze(seed, maze: CellType[][], stream: fs.WriteStream): Promise<void> {
+export function renderMaze(seed, maze: CellType[][]) {
 	const rand = gen.create(seed);
 	const mazeSize = maze.length;
 
 	const colors = themes[rand(themes.length)];
 
-	const canvas = p.make(imageSize, imageSize);
+	const canvas = createCanvas(imageSize, imageSize);
 	const ctx = canvas.getContext('2d');
+	ctx.antialias = 'none';
 
 	ctx.fillStyle = colors.bg1;
 	ctx.beginPath();
@@ -62,7 +61,10 @@ export function renderMaze(seed, maze: CellType[][], stream: fs.WriteStream): Pr
 		ctx.lineCap = 'square';
 
 		function line(ax, ay, bx, by) {
-			ctx.drawLine(new Line(x + ax, y + ay, x + bx, y + by));
+			ctx.beginPath();
+			ctx.lineTo(x + ax, y + ay);
+			ctx.lineTo(x + bx, y + by);
+			ctx.stroke();
 		}
 
 		if (left && right && top && bottom) {
@@ -237,5 +239,5 @@ export function renderMaze(seed, maze: CellType[][], stream: fs.WriteStream): Pr
 		}
 	}
 
-	return p.encodePNGToStream(canvas, stream);
+	return canvas.toBuffer();
 }
