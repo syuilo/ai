@@ -1,8 +1,6 @@
-import * as fs from 'fs';
 import autobind from 'autobind-decorator';
 import Module from '../../module';
 import serifs from '../../serifs';
-import * as tmp from 'tmp';
 import { genMaze } from './gen-maze';
 import { renderMaze } from './render-maze';
 import Message from '../../message';
