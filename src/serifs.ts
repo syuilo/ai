@@ -316,6 +316,11 @@ export default {
 		post: '今日の迷路です！ #AiMaze',
 		foryou: '描きました！'
 	},
+
+	chart: {
+		post: 'インスタンスの投稿数です！',
+		foryou: '描きました！'
+	},
 };
 
 export function getSerif(variant: string | string[]): string {
