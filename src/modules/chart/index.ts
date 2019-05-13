@@ -3,6 +3,7 @@ import Module from '../../module';
 import serifs from '../../serifs';
 import Message from '../../message';
 import { renderChart } from './render-chart';
+import { items } from '../fortune/vocabulary';
 
 export default class extends Module {
 	public readonly name = 'chart';
@@ -90,6 +91,32 @@ export default class extends Module {
 					data: data.local.diffs.renote
 				}]
 			};
+		} else {
+			const suffixes = ['の売り上げ', 'の消費', 'の生産'];
+
+			const limit = 30;
+			const diffRange = 150;
+			const datasetCount = 1 + Math.floor(Math.random() * 3);
+
+			let datasets = [];
+
+			for (let d = 0; d < datasetCount; d++) {
+				let values = [Math.random() * 1000];
+
+				for (let i = 1; i < limit; i++) {
+					const prev = values[i - 1];
+					values.push(prev + ((Math.random() * (diffRange * 2)) - diffRange));
+				}
+
+				datasets.push({
+					data: values
+				});
+			}
+
+			chart = {
+				title: items[Math.floor(Math.random() * items.length)] + suffixes[Math.floor(Math.random() * suffixes.length)],
+				datasets: datasets
+			};
 		}
 
 		this.log('Chart rendering...');
@@ -112,8 +139,9 @@ export default class extends Module {
 			this.log('Chart requested');
 		}
 
-		let type = 'userNotes';
+		let type = 'random';
 		if (msg.includes(['フォロワー'])) type = 'followers';
+		if (msg.includes(['投稿'])) type = 'userNotes';
 
 		const file = await this.genChart(type, {
 			user: msg.user
