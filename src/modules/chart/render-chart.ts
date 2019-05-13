@@ -46,6 +46,14 @@ export function renderChart(chart: Chart) {
 	ctx.beginPath();
 	ctx.fillRect(0, 0, width, height);
 
+	// Draw title
+	if (chart.title) {
+		ctx.font = '35px CustomFont';
+		const t = ctx.measureText(chart.title);
+		ctx.fillStyle = colors.text;
+		ctx.fillText(chart.title, (width / 2) - (t.width / 2), 128);
+	}
+
 	const xAxisCount = chart.datasets[0].data.length;
 	const serieses = chart.datasets.length;
 
@@ -153,6 +161,8 @@ export function renderChart(chart: Chart) {
 // https://github.com/apexcharts/apexcharts.js/blob/master/src/modules/Scales.js
 // This routine creates the Y axis values for a graph.
 function niceScale(lowerBound: number, upperBound: number, ticks: number): number[] {
+	if (lowerBound === 0 && upperBound === 0) return [0];
+
 	// Calculate Min amd Max graphical labels and graph
 	// increments.  The number of ticks defaults to
 	// 10 which is the SUGGESTED value.  Any tick value

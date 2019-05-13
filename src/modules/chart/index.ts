@@ -47,7 +47,7 @@ export default class extends Module {
 			const data = await this.ai.api('charts/user/notes', {
 				span: 'day',
 				limit: 30,
-				userId: params.userId
+				userId: params.user.id
 			});
 
 			chart = {
@@ -57,6 +57,21 @@ export default class extends Module {
 					data: data.diffs.reply
 				}, {
 					data: data.diffs.renote
+				}]
+			};
+		} else if (type === 'followers') {
+			const data = await this.ai.api('charts/user/following', {
+				span: 'day',
+				limit: 30,
+				userId: params.user.id
+			});
+
+			chart = {
+				title: `@${params.user.username}さんのフォロワー数`,
+				datasets: [{
+					data: data.local.followers.total
+				}, {
+					data: data.remote.followers.total
 				}]
 			};
 		} else if (type === 'notes') {
@@ -90,18 +105,24 @@ export default class extends Module {
 
 	@autobind
 	private async mentionHook(msg: Message) {
-		if (msg.includes(['チャート'])) {
-			this.log('Chart requested');
-			const file = await this.genChart('userNotes', {
-				userId: msg.userId
-			});
-			this.log('Replying...');
-			msg.replyWithFile(serifs.chart.foryou, file);
-			return {
-				reaction: 'like'
-			};
-		} else {
+		if (!msg.includes(['チャート'])) {
 			return false;
+		} else {
+			this.log('Chart requested');
 		}
+
+		let type = 'userNotes';
+		if (msg.includes(['フォロワー'])) type = 'followers';
+
+		const file = await this.genChart(type, {
+			user: msg.user
+		});
+
+		this.log('Replying...');
+		msg.replyWithFile(serifs.chart.foryou, file);
+
+		return {
+			reaction: 'like'
+		};
 	}
 }
