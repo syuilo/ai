@@ -51,6 +51,7 @@ export default class extends Module {
 			});
 
 			chart = {
+				title: `@${params.user.username}さんの投稿数`,
 				datasets: [{
 					data: data.diffs.normal
 				}, {

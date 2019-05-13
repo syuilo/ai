@@ -3,11 +3,7 @@ import { createCanvas, registerFont } from 'canvas';
 const width = 1024 + 256;
 const height = 512 + 256;
 const margin = 128;
-
-const chartAreaX = margin;
-const chartAreaY = margin;
-const chartAreaWidth = width - (margin * 2);
-const chartAreaHeight = height - (margin * 2);
+const titleTextSize = 35;
 
 const lineWidth = 16;
 const yAxisThickness = 2;
@@ -46,12 +42,20 @@ export function renderChart(chart: Chart) {
 	ctx.beginPath();
 	ctx.fillRect(0, 0, width, height);
 
+	let chartAreaX = margin;
+	let chartAreaY = margin;
+	let chartAreaWidth = width - (margin * 2);
+	let chartAreaHeight = height - (margin * 2);
+
 	// Draw title
 	if (chart.title) {
-		ctx.font = '35px CustomFont';
+		ctx.font = `${titleTextSize}px CustomFont`;
 		const t = ctx.measureText(chart.title);
 		ctx.fillStyle = colors.text;
 		ctx.fillText(chart.title, (width / 2) - (t.width / 2), 128);
+
+		chartAreaY += titleTextSize;
+		chartAreaHeight -= titleTextSize;
 	}
 
 	const xAxisCount = chart.datasets[0].data.length;
