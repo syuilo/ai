@@ -4,12 +4,15 @@ import serifs from '../../serifs';
 import Message from '../../message';
 import { renderChart } from './render-chart';
 import { items } from '../fortune/vocabulary';
+import config from '../../config';
 
 export default class extends Module {
 	public readonly name = 'chart';
 
 	@autobind
 	public install() {
+		if (config.chartEnabled === false) return {};
+
 		this.post();
 		setInterval(this.post, 1000 * 60 * 3);
 
