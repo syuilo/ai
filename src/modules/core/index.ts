@@ -27,6 +27,7 @@ export default class extends Module {
 		return (
 			this.setName(msg) ||
 			this.greet(msg) ||
+			this.erait(msg) ||
 			this.omedeto(msg) ||
 			this.nadenade(msg) ||
 			this.kawaii(msg) ||
@@ -151,6 +152,15 @@ export default class extends Module {
 		}
 
 		return false;
+	}
+
+	@autobind
+	private erait(msg: Message): boolean {
+		if (!msg.includes(['褒めて'])) return false;
+
+		msg.reply(getSerif(serifs.core.erait(msg.friend.name)));
+
+		return true;
 	}
 
 	@autobind
