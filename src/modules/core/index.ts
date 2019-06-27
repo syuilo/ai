@@ -156,9 +156,15 @@ export default class extends Module {
 
 	@autobind
 	private erait(msg: Message): boolean {
+		const match = msg.extractedText.match(/(.+?)たから褒めて/);
+		if (match) {
+			msg.reply(getSerif(serifs.core.erait.specify(match[1], msg.friend.name)));
+			return true;
+		}
+
 		if (!msg.includes(['褒めて'])) return false;
 
-		msg.reply(getSerif(serifs.core.erait(msg.friend.name)));
+		msg.reply(getSerif(serifs.core.erait.general(msg.friend.name)));
 
 		return true;
 	}

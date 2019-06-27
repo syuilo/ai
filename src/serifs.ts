@@ -26,13 +26,23 @@ export default {
 
 		omedeto: name => name ? `ありがとうございます、${name}♪` : 'ありがとうございます♪',
 
-		erait: name => name ? [
-			`${name}、今日もえらいです！`,
-			`${name}、今日もえらいですよ～♪`
-		] : [
-			`今日もえらいです！`,
-			`今日もえらいですよ～♪`
-		],
+		erait: {
+			general: name => name ? [
+				`${name}、今日もえらいです！`,
+				`${name}、今日もえらいですよ～♪`
+			] : [
+				`今日もえらいです！`,
+				`今日もえらいですよ～♪`
+			],
+
+			specify: (thing, name) => name ? [
+				`${name}、${thing}てえらいです！`,
+				`${name}、${thing}てえらいですよ～♪`
+			] : [
+				`${thing}てえらいです！`,
+				`${thing}てえらいですよ～♪`
+			],
+		},
 
 		okaeri: {
 			love: name => name ? [
