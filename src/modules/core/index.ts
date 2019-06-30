@@ -162,7 +162,7 @@ export default class extends Module {
 			return true;
 		}
 
-		if (!msg.includes(['褒めて'])) return false;
+		if (!msg.includes(['褒めて', 'ほめて'])) return false;
 
 		msg.reply(getSerif(serifs.core.erait.general(msg.friend.name)));
 
