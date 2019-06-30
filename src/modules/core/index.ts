@@ -164,7 +164,7 @@ export default class extends Module {
 
 		const match2 = msg.extractedText.match(/(.+?)るから(褒|ほ)めて/);
 		if (match2) {
-			msg.reply(getSerif(serifs.core.erait.specify(match[1], msg.friend.name)));
+			msg.reply(getSerif(serifs.core.erait.specify(match2[1], msg.friend.name)));
 			return true;
 		}
 
