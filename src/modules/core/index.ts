@@ -168,6 +168,12 @@ export default class extends Module {
 			return true;
 		}
 
+		const match3 = msg.extractedText.match(/(.+?)だから(褒|ほ)めて/);
+		if (match3) {
+			msg.reply(getSerif(serifs.core.erait.specify(match3[1], msg.friend.name)));
+			return true;
+		}
+
 		if (!msg.includes(['褒めて', 'ほめて'])) return false;
 
 		msg.reply(getSerif(serifs.core.erait.general(msg.friend.name)));
@@ -315,7 +321,7 @@ export default class extends Module {
 
 	@autobind
 	private itai(msg: Message): boolean {
-		if (!msg.or(['痛い', 'いたい'])) return false;
+		if (!msg.or(['痛い', 'いたい']) && !msg.extractedText.endsWith('痛い')) return false;
 
 		// メッセージのみ
 		if (!msg.isDm) return true;

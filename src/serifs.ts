@@ -42,6 +42,14 @@ export default {
 				`${thing}てえらいです！`,
 				`${thing}てえらいですよ～♪`
 			],
+
+			specify2: (thing, name) => name ? [
+				`${name}、${thing}でえらいです！`,
+				`${name}、${thing}でえらいですよ～♪`
+			] : [
+				`${thing}でえらいです！`,
+				`${thing}でえらいですよ～♪`
+			],
 		},
 
 		okaeri: {
