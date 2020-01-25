@@ -50,7 +50,7 @@ export default class extends Module {
 
 	@autobind
 	private async onStats(stats: any) {
-		this.recentStat = stats.body;
+		this.recentStat = stats;
 	}
 
 	@autobind
