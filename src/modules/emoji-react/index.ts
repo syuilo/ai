@@ -20,7 +20,9 @@ export default class extends Module {
 
 	@autobind
 	private async onNote(note: Note) {
+		if (note.reply != null) return;
 		if (note.text == null) return;
+		if (note.text.includes('@')) return; // (自分または他人問わず)メンションっぽかったらreject
 
 		const customEmojis = note.text.match(/:([^\n:]+?):/g);
 		if (customEmojis) {
@@ -45,10 +47,18 @@ export default class extends Module {
 
 			this.log(`Emoji detected - ${emojis[0]}`);
 
+			let reaction = emojis[0];
+
+			switch (reaction) {
+				case '✊': reaction = '🖐'; break;
+				case '✌': reaction = '✊'; break;
+				case '🖐': reaction = '✌'; break;
+			}
+
 			setTimeout(() => {
 				this.ai.api('notes/reactions/create', {
 					noteId: note.id,
-					reaction: emojis[0]
+					reaction: reaction
 				});
 			}, 2000);
 			return;
