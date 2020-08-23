@@ -4,6 +4,7 @@ const emojiRegex = require('emoji-regex');
 import { Note } from '../../misskey/note';
 import Module from '../../module';
 import Stream from '../../stream';
+import includes from '../../utils/includes';
 
 export default class extends Module {
 	public readonly name = 'emoji-react';
@@ -24,6 +25,15 @@ export default class extends Module {
 		if (note.text == null) return;
 		if (note.text.includes('@')) return; // (自分または他人問わず)メンションっぽかったらreject
 
+		const react = (reaction: string) => {
+			setTimeout(() => {
+				this.ai.api('notes/reactions/create', {
+					noteId: note.id,
+					reaction: reaction
+				});
+			}, 2000);
+		};
+
 		const customEmojis = note.text.match(/:([^\n:]+?):/g);
 		if (customEmojis) {
 			// カスタム絵文字が複数種類ある場合はキャンセル
@@ -31,13 +41,7 @@ export default class extends Module {
 
 			this.log(`Custom emoji detected - ${customEmojis[0]}`);
 
-			setTimeout(() => {
-				this.ai.api('notes/reactions/create', {
-					noteId: note.id,
-					reaction: customEmojis[0]
-				});
-			}, 2000);
-			return;
+			return react(customEmojis[0]);
 		}
 
 		const emojis = note.text.match(emojiRegex());
@@ -55,13 +59,11 @@ export default class extends Module {
 				case '🖐': reaction = '✌'; break;
 			}
 
-			setTimeout(() => {
-				this.ai.api('notes/reactions/create', {
-					noteId: note.id,
-					reaction: reaction
-				});
-			}, 2000);
-			return;
+			return react(reaction);
 		}
+
+		if (includes(note.text, ['ぴざ'])) return react('🍕');
+		if (includes(note.text, ['ぷりん'])) return react('🍮');
+		if (includes(note.text, ['寿司', 'sushi']) || note.text === 'すし') return react('🍣');
 	}
 }
