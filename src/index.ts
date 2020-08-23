@@ -1,5 +1,9 @@
 // AiOS bootstrapper
 
+import * as chalk from 'chalk';
+import * as request from 'request-promise-native';
+const promiseRetry = require('promise-retry');
+
 import 藍 from './ai';
 import config from './config';
 import _log from './utils/log';
@@ -21,10 +25,6 @@ import FollowModule from './modules/follow';
 import ValentineModule from './modules/valentine';
 import MazeModule from './modules/maze';
 import ChartModule from './modules/chart';
-
-import chalk from 'chalk';
-import * as request from 'request-promise-native';
-const promiseRetry = require('promise-retry');
 
 console.log('   __    ____  _____  ___ ');
 console.log('  /__\\  (_  _)(  _  )/ __)');

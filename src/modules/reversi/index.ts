@@ -129,7 +129,7 @@ export default class extends Module {
 			}
 		});
 
-		ai.on('message', msg => {
+		ai.on('message', (msg: Record<string, any>) => {
 			if (msg.type == 'put') {
 				gw.send('set', {
 					pos: msg.pos

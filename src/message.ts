@@ -1,12 +1,13 @@
 import autobind from 'autobind-decorator';
+import * as chalk from 'chalk';
+const delay = require('timeout-as-promise');
+
 import 藍 from './ai';
 import Friend from './friend';
 import { User } from './misskey/user';
 import includes from './utils/includes';
 import or from './utils/or';
-import chalk from 'chalk';
 import config from './config';
-const delay = require('timeout-as-promise');
 
 export default class Message {
 	private ai: 藍;
