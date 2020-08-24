@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-const emojiRegex = require('emoji-regex');
+import { parse } from 'twemoji-parser';
 
 import { Note } from '../../misskey/note';
 import Module from '../../module';
@@ -44,8 +44,8 @@ export default class extends Module {
 			return react(customEmojis[0]);
 		}
 
-		const emojis = note.text.match(emojiRegex());
-		if (emojis) {
+		const emojis = parse(note.text).map(x => x.text);
+		if (emojis.length > 0) {
 			// 絵文字が複数種類ある場合はキャンセル
 			if (!emojis.every((val, i, arr) => val === arr[0])) return;
 
