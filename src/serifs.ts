@@ -145,6 +145,14 @@ export default {
 		},
 
 		shutdown: '私まだ眠くないですよ...？',
+
+		transferNeedDm: 'わかりました、それはチャットで話しませんか？',
+
+		transferCode: code => `わかりました。\n合言葉は「${code}」です！`,
+
+		transferFailed: 'うーん、合言葉が間違ってませんか...？',
+
+		transferDone: name => name ? `はっ...！ おかえりなさい、${name}！` : `はっ...！ おかえりなさい！`,
 	},
 
 	keyword: {

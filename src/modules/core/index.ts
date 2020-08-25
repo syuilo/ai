@@ -25,6 +25,8 @@ export default class extends Module {
 		if (!msg.text) return false;
 
 		return (
+			this.transferBegin(msg) ||
+			this.transferEnd(msg) ||
 			this.setName(msg) ||
 			this.greet(msg) ||
 			this.erait(msg) ||
@@ -41,6 +43,42 @@ export default class extends Module {
 			this.rmrf(msg) ||
 			this.shutdown(msg)
 		);
+	}
+
+	@autobind
+	private transferBegin(msg: Message): boolean  {
+		if (!msg.text) return false;
+		if (!msg.includes(['引継', '引き継ぎ', '引越', '引っ越し'])) return false;
+
+		// メッセージのみ
+		if (!msg.isDm) {
+			msg.reply(serifs.core.transferNeedDm);
+			return true;
+		}
+
+		const code = msg.friend.generateTransferCode();
+
+		msg.reply(serifs.core.transferCode(code));
+
+		return true;
+	}
+
+	@autobind
+	private transferEnd(msg: Message): boolean  {
+		if (!msg.text) return false;
+		if (!msg.text.startsWith('「') || !msg.text.endsWith('」')) return false;
+
+		const code = msg.text.substring(1, msg.text.length - 1);
+
+		const succ = msg.friend.transferMemory(code);
+
+		if (succ) {
+			msg.reply(serifs.core.transferDone(msg.friend.name));
+		} else {
+			msg.reply(serifs.core.transferFailed);
+		}
+
+		return true;
 	}
 
 	@autobind

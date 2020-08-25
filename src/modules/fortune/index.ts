@@ -3,7 +3,7 @@ import Module from '../../module';
 import Message from '../../message';
 import serifs from '../../serifs';
 import * as seedrandom from 'seedrandom';
-import { blessing, itemPrefixes, items, and } from './vocabulary';
+import { blessing, itemPrefixes, items, and } from '../../vocabulary';
 
 export default class extends Module {
 	public readonly name = 'fortune';
