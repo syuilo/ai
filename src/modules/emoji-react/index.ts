@@ -31,7 +31,7 @@ export default class extends Module {
 					noteId: note.id,
 					reaction: reaction
 				});
-			}, 2000);
+			}, 1000);
 		};
 
 		const customEmojis = note.text.match(/:([^\n:]+?):/g);
