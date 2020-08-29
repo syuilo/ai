@@ -355,6 +355,11 @@ export default {
 		post: 'インスタンスの投稿数です！',
 		foryou: '描きました！'
 	},
+
+	sleepReport: {
+		report: hours => `んぅ、${hours}時間くらい寝ちゃってたみたいです`,
+		reportUtatane: 'ん... うたた寝しちゃってました',
+	},
 };
 
 export function getSerif(variant: string | string[]): string {
