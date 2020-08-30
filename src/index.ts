@@ -9,6 +9,7 @@ import config from './config';
 import _log from './utils/log';
 
 import CoreModule from './modules/core';
+import TalkModule from './modules/talk';
 import BirthdayModule from './modules/birthday';
 import ReversiModule from './modules/reversi';
 import PingModule from './modules/ping';
@@ -58,6 +59,7 @@ promiseRetry(retry => {
 
 	// 藍起動
 	new 藍(account, [
+		new CoreModule(),
 		new EmojiModule(),
 		new EmojiReactModule(),
 		new FortuneModule(),
@@ -66,7 +68,7 @@ promiseRetry(retry => {
 		new ReversiModule(),
 		new TimerModule(),
 		new DiceModule(),
-		new CoreModule(),
+		new TalkModule(),
 		new PingModule(),
 		new WelcomeModule(),
 		new ServerModule(),
