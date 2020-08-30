@@ -14,6 +14,11 @@ export default function(text: string, words: (string | RegExp)[]): boolean {
 		function denoise(text: string): string {
 			text = text.trim();
 
+			if (text.startsWith('@')) {
+				text = text.replace(/^@[a-zA-Z0-1\-_]+/, '');
+				text = text.trim();
+			}
+
 			function fn() {
 				text = text.replace(/[！!]+$/, '');
 				text = text.replace(/っ+$/, '');

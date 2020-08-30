@@ -25,7 +25,8 @@ export default class extends Module {
 		return (
 			this.transferBegin(msg) ||
 			this.transferEnd(msg) ||
-			this.setName(msg)
+			this.setName(msg) ||
+			this.modules(msg)
 		);
 	}
 
@@ -103,6 +104,24 @@ export default class extends Module {
 				});
 			});
 		}
+
+		return true;
+	}
+
+	@autobind
+	private modules(msg: Message): boolean  {
+		if (!msg.text) return false;
+		if (!msg.or(['modules'])) return false;
+
+		let text = '```\n';
+
+		for (const m of this.ai.modules) {
+			text += `${m.name}\n`;
+		}
+
+		text += '```';
+
+		msg.reply(text);
 
 		return true;
 	}
