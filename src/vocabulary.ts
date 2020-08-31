@@ -1,16 +1,4 @@
-export const blessing = [
-	'藍吉',
-	'ギガ吉',
-	'メガ吉',
-	'超吉',
-	'大大吉',
-	'大吉',
-	'吉',
-	'中吉',
-	'小吉',
-	'凶',
-	'大凶',
-];
+import * as seedrandom from 'seedrandom';
 
 export const itemPrefixes = [
 	'プラチナ製',
@@ -231,3 +219,21 @@ export const and = [
 	'が上に乗った',
 	'のそばにある',
 ];
+
+export function genItem(seedOrRng = null) {
+	const rng = seedOrRng
+		? typeof seedOrRng === 'function'
+			? seedOrRng
+			: seedrandom(seedOrRng)
+		: Math.random;
+
+	let item = '';
+	if (Math.floor(rng() * 5) !== 0) item += itemPrefixes[Math.floor(rng() * itemPrefixes.length)];
+	item += items[Math.floor(rng() * items.length)];
+	if (Math.floor(rng() * 3) === 0) {
+		item += and[Math.floor(rng() * and.length)];
+		if (Math.floor(rng() * 5) !== 0) item += itemPrefixes[Math.floor(rng() * itemPrefixes.length)];
+		item += items[Math.floor(rng() * items.length)];
+	}
+	return item;
+}

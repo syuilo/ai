@@ -3,7 +3,7 @@ import 藍 from './ai';
 import IModule from './module';
 import getDate from './utils/get-date';
 import { User } from './misskey/user';
-import { itemPrefixes, items, and } from './vocabulary';
+import { genItem } from './vocabulary';
 
 export type FriendDoc = {
 	userId: string;
@@ -142,12 +142,7 @@ export default class Friend {
 
 	@autobind
 	public generateTransferCode(): string {
-		let code = '';
-		code += itemPrefixes[Math.floor(Math.random() * itemPrefixes.length)];
-		code += items[Math.floor(Math.random() * items.length)];
-		code += and[Math.floor(Math.random() * and.length)];
-		code += itemPrefixes[Math.floor(Math.random() * itemPrefixes.length)];
-		code += items[Math.floor(Math.random() * items.length)];
+		const code = genItem();
 
 		this.doc.transferCode = code;
 		this.save();

@@ -3,7 +3,21 @@ import Module from '../../module';
 import Message from '../../message';
 import serifs from '../../serifs';
 import * as seedrandom from 'seedrandom';
-import { blessing, itemPrefixes, items, and } from '../../vocabulary';
+import { genItem } from '../../vocabulary';
+
+export const blessing = [
+	'藍吉',
+	'ギガ吉',
+	'メガ吉',
+	'超吉',
+	'大大吉',
+	'大吉',
+	'吉',
+	'中吉',
+	'小吉',
+	'凶',
+	'大凶',
+];
 
 export default class extends Module {
 	public readonly name = 'fortune';
@@ -22,14 +36,7 @@ export default class extends Module {
 			const seed = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}@${msg.userId}`;
 			const rng = seedrandom(seed);
 			const omikuji = blessing[Math.floor(rng() * blessing.length)];
-			let item = '';
-			if (Math.floor(rng() * 5) !== 0) item += itemPrefixes[Math.floor(rng() * itemPrefixes.length)];
-			item += items[Math.floor(rng() * items.length)];
-			if (Math.floor(rng() * 3) === 0) {
-				item += and[Math.floor(rng() * and.length)];
-				if (Math.floor(rng() * 5) !== 0) item += itemPrefixes[Math.floor(rng() * itemPrefixes.length)];
-				item += items[Math.floor(rng() * items.length)];
-			}
+			const item = genItem(rng);
 			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${item}`, serifs.fortune.cw(msg.friend.name));
 			return true;
 		} else {
