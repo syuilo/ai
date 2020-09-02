@@ -195,8 +195,11 @@ export default class extends Module {
 			}
 		}
 
+		const winnerFriend = winner ? this.ai.lookupFriend(winner.id) : null;
+		const name = winnerFriend ? winnerFriend.name : null;
+
 		const text = results.join('\n') + '\n\n' + (winner
-			? serifs.kazutori.finishWithWinner(acct(winner))
+			? serifs.kazutori.finishWithWinner(acct(winner), name)
 			: serifs.kazutori.finishWithNoWinner);
 
 		this.ai.post({

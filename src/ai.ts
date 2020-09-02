@@ -296,7 +296,7 @@ export default class 藍 {
 	}
 
 	@autobind
-	public lookupFriend(userId: User['id']): Friend {
+	public lookupFriend(userId: User['id']): Friend | null {
 		const doc = this.friends.findOne({
 			userId: userId
 		});
