@@ -1,5 +1,5 @@
 {
-	"_v": "1.1",
+	"_v": "1.1.1",
   "main": "./built/index.js",
   "scripts": {
     "start": "node ./built",
