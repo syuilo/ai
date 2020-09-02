@@ -13,7 +13,7 @@ export default class extends Module {
 		tries: number[];
 		isEnded: boolean;
 		startedAt: number;
-		endedAt: number;
+		endedAt: number | null;
 	}>;
 
 	@autobind
@@ -73,6 +73,12 @@ export default class extends Module {
 			userId: msg.userId,
 			isEnded: false
 		});
+
+		 // 処理の流れ上、実際にnullになることは無さそうだけど一応
+		if (exist == null) {
+			this.unsubscribeReply(msg.userId);
+			return;
+		}
 
 		if (msg.text.includes('やめ')) {
 			msg.reply(serifs.guessingGame.cancel);

@@ -40,7 +40,7 @@ export default function(text: string, words: (string | RegExp)[]): boolean {
 			}
 
 			let textBefore = text;
-			let textAfter = null;
+			let textAfter: string | null = null;
 
 			while (textBefore != textAfter) {
 				textBefore = text;

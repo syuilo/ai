@@ -149,7 +149,7 @@ export function genMaze(seed, complexity?) {
 
 		let dir: Dir;
 		if (straightMode && rand(straightness) !== 0) {
-			if (dirs.includes(prevDir)) {
+			if (prevDir != null && dirs.includes(prevDir)) {
 				dir = prevDir;
 			} else {
 				dir = dirs[rand(dirs.length)];
@@ -158,7 +158,7 @@ export function genMaze(seed, complexity?) {
 			dir = dirs[rand(dirs.length)];
 		}
 
-		maze[x][y] = cellVariants[maze[x][y]].digg[dir];
+		maze[x][y] = cellVariants[maze[x][y]].digg[dir]!;
 
 		if (dir === 'top') {
 			maze[x][y - 1] = maze[x][y - 1] === 'empty' ? 'bottom' : 'cross';
@@ -183,7 +183,7 @@ export function genMaze(seed, complexity?) {
 	}
 
 	//#region start digg
-	const nonVoidCells = [];
+	const nonVoidCells: [number, number][] = [];
 
 	for (let y = 0; y < mazeSize; y++) {
 		for (let x = 0; x < mazeSize; x++) {
@@ -199,7 +199,7 @@ export function genMaze(seed, complexity?) {
 
 	let hasEmptyCell = true;
 	while (hasEmptyCell) {
-		const nonEmptyCells = [];
+		const nonEmptyCells: [number, number][] = [];
 
 		for (let y = 0; y < mazeSize; y++) {
 			for (let x = 0; x < mazeSize; x++) {

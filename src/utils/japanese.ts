@@ -56,7 +56,7 @@ export function zenkakuToHankaku(str: string): string {
 
 	return str
 		.replace(reg, match =>
-			kanaMap.find(x => x[0] == match)[1]
+			kanaMap.find(x => x[0] == match)![1]
 		)
 		.replace(/゛/g, 'ﾞ')
 		.replace(/゜/g, 'ﾟ');
@@ -72,7 +72,7 @@ export function hankakuToZenkaku(str: string): string {
 
 	return str
 		.replace(reg, match =>
-			kanaMap.find(x => x[1] == match)[0]
+			kanaMap.find(x => x[1] == match)![0]
 		)
 		.replace(/ﾞ/g, '゛')
 		.replace(/ﾟ/g, '゜');

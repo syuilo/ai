@@ -209,7 +209,7 @@ class Session {
 	 */
 	private onEnded = async (msg: any) =>  {
 		// ストリームから切断
-		process.send({
+		process.send!({
 			type: 'ended'
 		});
 
@@ -406,7 +406,7 @@ class Session {
 		console.timeEnd('think');
 
 		setTimeout(() => {
-			process.send({
+			process.send!({
 				type: 'put',
 				pos
 			});

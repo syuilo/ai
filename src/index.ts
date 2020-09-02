@@ -7,6 +7,7 @@ const promiseRetry = require('promise-retry');
 import 藍 from './ai';
 import config from './config';
 import _log from './utils/log';
+const pkg = require('../package.json');
 
 import CoreModule from './modules/core';
 import TalkModule from './modules/talk';
@@ -39,7 +40,7 @@ function log(msg: string): void {
 	_log(`[Boot]: ${msg}`);
 }
 
-log(chalk.bold('Ai v1.0'));
+log(chalk.bold(`Ai v${pkg._v}`));
 
 promiseRetry(retry => {
 	log(`Account fetching... ${chalk.gray(config.host)}`);

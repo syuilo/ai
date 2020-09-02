@@ -51,7 +51,9 @@ export default class extends Module {
 		if (recentGame) {
 			// 現在アクティブなゲームがある場合
 			if (!recentGame.isEnded) {
-				msg.reply(serifs.kazutori.alreadyStarted, null, recentGame.postId);
+				msg.reply(serifs.kazutori.alreadyStarted, {
+					renote: recentGame.postId
+				});
 				return true;
 			}
 
@@ -89,6 +91,9 @@ export default class extends Module {
 		const game = this.games.findOne({
 			isEnded: false
 		});
+
+		// 処理の流れ上、実際にnullになることは無さそうだけど一応
+		if (game == null) return;
 
 		// 既に数字を取っていたら
 		if (game.votes.some(x => x.user.id == msg.userId)) return {
@@ -175,7 +180,7 @@ export default class extends Module {
 		}
 
 		let results: string[] = [];
-		let winner: User = null;
+		let winner: User | null = null;
 
 		for (let i = 100; i >= 0; i--) {
 			const users = game.votes

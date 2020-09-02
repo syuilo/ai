@@ -96,7 +96,7 @@ export function renderChart(chart: Chart) {
 		ctx.fillText(step.toString(), chartAreaX, chartAreaY + y - 8);
 	}
 
-	const newDatasets = [];
+	const newDatasets: any[] = [];
 
 	for (let series = 0; series < serieses; series++) {
 		newDatasets.push({
@@ -127,7 +127,7 @@ export function renderChart(chart: Chart) {
 	ctx.lineCap = 'round';
 
 	for (let xAxis = 0; xAxis < xAxisCount; xAxis++) {
-		const xAxisPerTypeHeights = [];
+		const xAxisPerTypeHeights: number[] = [];
 
 		for (let series = 0; series < serieses; series++) {
 			const v = newDatasets[series].data[xAxis];
@@ -175,7 +175,7 @@ function niceScale(lowerBound: number, upperBound: number, ticks: number): numbe
 	//
 	// Output will be an array of the Y axis values that
 	// encompass the Y values.
-	const steps = [];
+	const steps: number[] = [];
 
 	// Determine Range
 	const range = upperBound - lowerBound;

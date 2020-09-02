@@ -101,7 +101,7 @@ export default class extends Module {
 			const diffRange = 150;
 			const datasetCount = 1 + Math.floor(Math.random() * 3);
 
-			let datasets = [];
+			let datasets: any[] = [];
 
 			for (let d = 0; d < datasetCount; d++) {
 				let values = [Math.random() * 1000];
@@ -151,7 +151,7 @@ export default class extends Module {
 		});
 
 		this.log('Replying...');
-		msg.replyWithFile(serifs.chart.foryou, file);
+		msg.reply(serifs.chart.foryou, { file });
 
 		return {
 			reaction: 'like'

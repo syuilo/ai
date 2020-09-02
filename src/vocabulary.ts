@@ -221,11 +221,11 @@ export const and = [
 	'のそばにある',
 ];
 
-export function genItem(seedOrRng = null) {
+export function genItem(seedOrRng?: (() => number) | string | number) {
 	const rng = seedOrRng
 		? typeof seedOrRng === 'function'
 			? seedOrRng
-			: seedrandom(seedOrRng)
+			: seedrandom(seedOrRng.toString())
 		: Math.random;
 
 	let item = '';

@@ -37,7 +37,9 @@ export default class extends Module {
 			const rng = seedrandom(seed);
 			const omikuji = blessing[Math.floor(rng() * blessing.length)];
 			const item = genItem(rng);
-			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${item}`, serifs.fortune.cw(msg.friend.name));
+			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${item}`, {
+				cw: serifs.fortune.cw(msg.friend.name)
+			});
 			return true;
 		} else {
 			return false;

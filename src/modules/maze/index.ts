@@ -58,7 +58,7 @@ export default class extends Module {
 	@autobind
 	private async mentionHook(msg: Message) {
 		if (msg.includes(['迷路'])) {
-			let size = null;
+			let size: string | null = null;
 			if (msg.includes(['接待'])) size = 'veryEasy';
 			if (msg.includes(['簡単', 'かんたん', '易しい', 'やさしい', '小さい', 'ちいさい'])) size = 'easy';
 			if (msg.includes(['難しい', 'むずかしい', '複雑な', '大きい', 'おおきい'])) size = 'hard';
@@ -68,7 +68,7 @@ export default class extends Module {
 			setTimeout(async () => {
 				const file = await this.genMazeFile(Date.now(), size);
 				this.log('Replying...');
-				msg.replyWithFile(serifs.maze.foryou, file);
+				msg.reply(serifs.maze.foryou, { file });
 			}, 3000);
 			return {
 				reaction: 'like'

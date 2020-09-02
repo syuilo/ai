@@ -71,11 +71,11 @@ export default class Stream extends EventEmitter {
 		this.emit('_connected_');
 
 		// バッファーを処理
-		const _buffer = [].concat(this.buffer); // Shallow copy
+		const _buffer = [...this.buffer]; // Shallow copy
 		this.buffer = []; // Clear buffer
-		_buffer.forEach(data => {
+		for (const data of _buffer) {
 			this.send(data); // Resend each buffered messages
-		});
+		}
 
 		// チャンネル再接続
 		if (isReconnect) {
@@ -107,7 +107,7 @@ export default class Stream extends EventEmitter {
 		if (type == 'channel') {
 			const id = body.id;
 
-			let connections: Connection[];
+			let connections: (Connection | undefined)[];
 
 			connections = this.sharedConnections.filter(c => c.id === id);
 
@@ -115,10 +115,10 @@ export default class Stream extends EventEmitter {
 				connections = [this.nonSharedConnections.find(c => c.id === id)];
 			}
 
-			connections.filter(c => c != null).forEach(c => {
-				c.emit(body.type, body.body);
-				c.emit('*', { type: body.type, body: body.body });
-			});
+			for (const c of connections.filter(c => c != null)) {
+				c!.emit(body.type, body.body);
+				c!.emit('*', { type: body.type, body: body.body });
+			}
 		} else {
 			this.emit(type, body);
 			this.emit('*', { type, body });

@@ -43,7 +43,7 @@ export default class extends Module {
 
 		msg.reply(serifs.timer.set);
 
-		const str = `${hours ? hoursQuery[0] : ''}${minutes ? minutesQuery[0] : ''}${seconds ? secondsQuery[0] : ''}`;
+		const str = `${hours ? hoursQuery![0] : ''}${minutes ? minutesQuery![0] : ''}${seconds ? secondsQuery![0] : ''}`;
 
 		// タイマーセット
 		this.setTimeoutWithPersistence(time, {
@@ -59,6 +59,7 @@ export default class extends Module {
 	@autobind
 	private timeoutCallback(data) {
 		const friend = this.ai.lookupFriend(data.userId);
+		if (friend == null) return; // 処理の流れ上、実際にnullになることは無さそうだけど一応
 		const text = serifs.timer.notify(data.time, friend.name);
 		if (data.isDm) {
 			this.ai.sendMessage(friend.userId, {

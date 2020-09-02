@@ -5,7 +5,7 @@
 		"noImplicitReturns": true,
 		"noImplicitThis": true,
 		"noFallthroughCasesInSwitch": true,
-		"strictNullChecks": false,
+		"strictNullChecks": true,
 		"experimentalDecorators": true,
 		"sourceMap": false,
 		"target": "es2017",

@@ -8,7 +8,7 @@ import { genItem } from './vocabulary';
 export type FriendDoc = {
 	userId: string;
 	user: User;
-	name?: string;
+	name?: string | null;
 	love?: number;
 	lastLoveIncrementedAt?: string;
 	todayLoveIncrements?: number;
@@ -42,21 +42,30 @@ export default class Friend {
 		this.ai = ai;
 
 		if (opts.user) {
-			this.doc = this.ai.friends.findOne({
+			const exist = this.ai.friends.findOne({
 				userId: opts.user.id
 			});
 
-			if (this.doc == null) {
-				this.doc = this.ai.friends.insertOne({
+			if (exist == null) {
+				const inserted = this.ai.friends.insertOne({
 					userId: opts.user.id,
 					user: opts.user
 				});
+
+				if (inserted == null) {
+					throw new Error('Failed to insert friend doc');
+				}
+
+				this.doc = inserted;
 			} else {
+				this.doc = exist;
 				this.doc.user = opts.user;
 				this.save();
 			}
-		} else {
+		} else if (opts.doc) {
 			this.doc = opts.doc;
+		} else {
+			throw new Error('No friend info specified');
 		}
 	}
 
@@ -100,7 +109,7 @@ export default class Friend {
 		}
 
 		// 1日に上げられる親愛度は最大3
-		if (this.doc.lastLoveIncrementedAt == today && this.doc.todayLoveIncrements >= 3) return;
+		if (this.doc.lastLoveIncrementedAt == today && (this.doc.todayLoveIncrements || 0) >= 3) return;
 
 		if (this.doc.love == null) this.doc.love = 0;
 		this.doc.love++;
