@@ -81,6 +81,7 @@ export const itemPrefixes = [
 	'禁断の',
 	'ホログラフィックな',
 	'油圧式',
+	'辛そうで辛くない少し辛い',
 ];
 
 export const items = [
