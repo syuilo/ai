@@ -9,7 +9,7 @@ export default class extends Module {
 	@autobind
 	public install() {
 		setInterval(() => {
-			if (Math.random() < 0.05) {
+			if (Math.random() < 0.04) {
 				this.post();
 			}
 		}, 1000 * 60 * 10);
