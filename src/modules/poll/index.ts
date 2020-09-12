@@ -43,19 +43,31 @@ export default class extends Module {
 			['高値で取引されそうなもの', 'みなさんは、どれがいちばん高値で取引されると思いますか？'],
 			['地球周回軌道上にありそうなもの', 'みなさんは、どれが地球周回軌道上を漂っていそうだと思いますか？'],
 			['プレゼントしたいもの', 'みなさんは、私にプレゼントしてくれるとしたらどれにしますか？'],
+			['プレゼントされたいもの', 'みなさんは、プレゼントでもらうとしたらどれにしますか？'],
+			['私が持ってそうなもの', 'みなさんは、私が持ってそうなものはどれだと思いますか？'],
+			['そして輝くウルトラ', 'そして輝くウルトラ'],
 		];
 
 		const poll = polls[Math.floor(Math.random() * polls.length)];
 
+		const choices = poll[0] === 'そして輝くウルトラ' ? [
+			'そう',
+			'どちらかというとそう',
+			'どちらでもない',
+			'どちらかというとそうではない',
+			'そうではない',
+			'わからない・回答しない',
+		] : [
+			genItem(),
+			genItem(),
+			genItem(),
+			genItem(),
+		];
+
 		const note = await this.ai.post({
 			text: poll[1],
 			poll: {
-				choices: [
-					genItem(),
-					genItem(),
-					genItem(),
-					genItem(),
-				],
+				choices,
 				expiredAfter: duration,
 				multiple: false,
 			}
