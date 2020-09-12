@@ -4,6 +4,7 @@ import Module from '../../module';
 import serifs from '../../serifs';
 import { genItem } from '../../vocabulary';
 import config from '../../config';
+import { Note } from '../../misskey/note';
 
 export default class extends Module {
 	public readonly name = 'poll';
@@ -27,11 +28,21 @@ export default class extends Module {
 		const duration = 1000 * 60 * 30;
 
 		const polls = [ // TODO: Extract serif
-			['いちばん珍しそうなもの', 'みなさんは、どれがいちばん珍しいと思いますか？ ヽ(・∀・)'],
-			['いちばん美味しそうなもの', 'みなさんは、どれがいちばん美味しいと思いますか？ ヽ(・∀・)'],
-			['いちばん重そうなもの', 'みなさんは、どれがいちばん重いと思いますか？ ヽ(・∀・)'],
-			['いちばん欲しいもの', 'みなさんは、どれがいちばん欲しいですか？ ヽ(・∀・)'],
-			['無人島に持っていきたいもの', 'みなさんは、無人島にひとつ持っていけるとしたらどれにしますか？ ヽ(・∀・)'],
+			['珍しそうなもの', 'みなさんは、どれがいちばん珍しいと思いますか？'],
+			['美味しそうなもの', 'みなさんは、どれがいちばん美味しいと思いますか？'],
+			['重そうなもの', 'みなさんは、どれがいちばん重いと思いますか？'],
+			['欲しいもの', 'みなさんは、どれがいちばん欲しいですか？'],
+			['無人島に持っていきたいもの', 'みなさんは、無人島にひとつ持っていけるとしたらどれにしますか？'],
+			['家に飾りたいもの', 'みなさんは、家に飾るとしたらどれにしますか？'],
+			['売れそうなもの', 'みなさんは、どれがいちばん売れそうだと思いますか？'],
+			['降ってきてほしいもの', 'みなさんは、どれが空から降ってきてほしいですか？'],
+			['携帯したいもの', 'みなさんは、どれを携帯したいですか？'],
+			['商品化したいもの', 'みなさんは、商品化するとしたらどれにしますか？'],
+			['発掘されそうなもの', 'みなさんは、遺跡から発掘されそうなものはどれだと思いますか？'],
+			['良い香りがしそうなもの', 'みなさんは、どれがいちばんいい香りがすると思いますか？'],
+			['高値で取引されそうなもの', 'みなさんは、どれがいちばん高値で取引されると思いますか？'],
+			['地球周回軌道上にありそうなもの', 'みなさんは、どれが地球周回軌道上を漂っていそうだと思いますか？'],
+			['プレゼントしたいもの', 'みなさんは、私にプレゼントしてくれるとしたらどれにしますか？'],
 		];
 
 		const poll = polls[Math.floor(Math.random() * polls.length)];
@@ -72,9 +83,9 @@ export default class extends Module {
 
 	@autobind
 	private async timeoutCallback({ title, noteId }) {
-		const note = await this.ai.api('notes/show', { noteId });
+		const note: Note = await this.ai.api('notes/show', { noteId });
 
-		const choices = note.poll.choices;
+		const choices = note.poll!.choices;
 
 		let mostVotedChoice;
 
@@ -98,7 +109,7 @@ export default class extends Module {
 		} else {
 			this.ai.post({ // TODO: Extract serif
 				cw: `${title}アンケートの結果発表です！`,
-				text: `結果は「${mostVotedChoice.text}」でした！`,
+				text: `結果は${mostVotedChoice.votes}票を獲得した「${mostVotedChoice.text}」でした！`,
 				renoteId: noteId,
 			});
 		}

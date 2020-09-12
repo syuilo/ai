@@ -233,6 +233,7 @@ export const items = [
 	'エラトステネスの篩',
 	'ブラウン管',
 	'タキオン',
+	'ラッセルのティーポット',
 ];
 
 export const and = [
