@@ -234,6 +234,8 @@ export const items = [
 	'ブラウン管',
 	'タキオン',
 	'ラッセルのティーポット',
+	'電子機器',
+	'TNT',
 ];
 
 export const and = [
