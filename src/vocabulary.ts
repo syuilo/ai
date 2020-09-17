@@ -240,6 +240,11 @@ export const items = [
 	'空気',
 	'RTX 3090',
 	'シャーペンの芯',
+	'ロゼッタストーン',
+	'CapsLockキー',
+	'虚無',
+	'UFO',
+	'NumLockキー',
 ];
 
 export const and = [
