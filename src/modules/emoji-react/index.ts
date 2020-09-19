@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import { parse } from 'twemoji-parser';
 
 import { Note } from '../../misskey/note';
-import Module from '../../module';
+import Module from '@/module';
 import Stream from '../../stream';
 import includes from '../../utils/includes';
 

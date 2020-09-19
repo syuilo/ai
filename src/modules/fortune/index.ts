@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import Module from '../../module';
-import Message from '../../message';
-import serifs from '../../serifs';
+import Module from '@/module';
+import Message from '@/message';
+import serifs from '@/serifs';
 import * as seedrandom from 'seedrandom';
 import { genItem } from '../../vocabulary';
 

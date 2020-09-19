@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
-import Module from '../../module';
-import serifs from '../../serifs';
+import Module from '@/module';
+import serifs from '@/serifs';
 import { genMaze } from './gen-maze';
 import { renderMaze } from './render-maze';
-import Message from '../../message';
+import Message from '@/message';
 
 export default class extends Module {
 	public readonly name = 'maze';

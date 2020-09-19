@@ -1,18 +1,17 @@
 import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
-import Module from '../../module';
-import Message from '../../message';
-import serifs from '../../serifs';
-
-type User = {
-	id: string;
-	username: string;
-	host: string;
-};
+import Module from '@/module';
+import Message from '@/message';
+import serifs from '@/serifs';
+import { User } from '@/misskey/user';
 
 type Game = {
 	votes: {
-		user: User;
+		user: {
+			id: string;
+			username: string;
+			host: User['host'];
+		};
 		number: number;
 	}[];
 	isEnded: boolean;
@@ -173,14 +172,14 @@ export default class extends Module {
 			return;
 		}
 
-		function acct(user: User): string {
+		function acct(user: Game['votes'][0]['user']): string {
 			return user.host
 				? `@${user.username}@${user.host}`
 				: `@${user.username}`;
 		}
 
 		let results: string[] = [];
-		let winner: User | null = null;
+		let winner: Game['votes'][0]['user'] | null = null;
 
 		for (let i = 100; i >= 0; i--) {
 			const users = game.votes

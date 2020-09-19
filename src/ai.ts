@@ -80,9 +80,11 @@ export default class 藍 {
 		this.account = account;
 		this.modules = modules;
 
-		this.log('Lodaing the memory...');
+		const file = process.env.NODE_ENV === 'test' ? 'test.memory.json' : 'memory.json';
 
-		this.db = new loki('memory.json', {
+		this.log(`Lodaing the memory from ${file}...`);
+
+		this.db = new loki(file, {
 			autoload: true,
 			autosave: true,
 			autosaveInterval: 1000,

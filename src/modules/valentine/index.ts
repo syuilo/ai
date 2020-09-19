@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import Module from '../../module';
+import Module from '@/module';
 import Friend from '../../friend';
-import serifs from '../../serifs';
+import serifs from '@/serifs';
 
 export default class extends Module {
 	public readonly name = 'valentine';

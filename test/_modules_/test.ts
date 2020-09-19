@@ -3,7 +3,7 @@ import Module from '@/module';
 import Message from '@/message';
 
 export default class extends Module {
-	public readonly name = 'ping';
+	public readonly name = 'test';
 
 	@autobind
 	public install() {

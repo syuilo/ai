@@ -1,5 +1,7 @@
 // AiOS bootstrapper
 
+import 'module-alias/register';
+
 import * as chalk from 'chalk';
 import * as request from 'request-promise-native';
 const promiseRetry = require('promise-retry');

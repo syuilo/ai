@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
-import Module from '../../module';
-import serifs from '../../serifs';
+import Module from '@/module';
+import serifs from '@/serifs';
 import config from '../../config';
 
 export default class extends Module {

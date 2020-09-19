@@ -1,9 +1,9 @@
 import * as childProcess from 'child_process';
 import autobind from 'autobind-decorator';
-import Module from '../../module';
-import serifs from '../../serifs';
+import Module from '@/module';
+import serifs from '@/serifs';
 import config from '../../config';
-import Message from '../../message';
+import Message from '@/message';
 import Friend from '../../friend';
 import getDate from '../../utils/get-date';
 
