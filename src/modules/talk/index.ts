@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
-import { HandlerResult } from '../../ai';
+import { HandlerResult } from '@/ai';
 import Module from '@/module';
 import Message from '@/message';
-import serifs, { getSerif } from '../../serifs';
-import getDate from '../../utils/get-date';
+import serifs, { getSerif } from '@/serifs';
+import getDate from '@/utils/get-date';
 
 export default class extends Module {
 	public readonly name = 'talk';

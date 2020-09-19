@@ -201,7 +201,7 @@ export default {
 		/**
 		 * 接待のつもりが勝ってしまったとき
 		 */
-		iWonButSettai: name => `(${name}に接待で勝ってしまいました...)`,
+		iWonButSettai: name => `(${name}に接待で勝っちゃいました...)`,
 
 		/**
 		 * 負けたとき

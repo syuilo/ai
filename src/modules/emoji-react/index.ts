@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
 import { parse } from 'twemoji-parser';
 
-import { Note } from '../../misskey/note';
+import { Note } from '@/misskey/note';
 import Module from '@/module';
-import Stream from '../../stream';
-import includes from '../../utils/includes';
+import Stream from '@/stream';
+import includes from '@/utils/includes';
 
 export default class extends Module {
 	public readonly name = 'emoji-react';

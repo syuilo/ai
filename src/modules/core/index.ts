@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import Module from '@/module';
 import Message from '@/message';
 import serifs from '@/serifs';
-import { safeForInterpolate } from '../../utils/safe-for-interpolate';
+import { safeForInterpolate } from '@/utils/safe-for-interpolate';
 
 const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
 

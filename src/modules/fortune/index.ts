@@ -3,7 +3,7 @@ import Module from '@/module';
 import Message from '@/message';
 import serifs from '@/serifs';
 import * as seedrandom from 'seedrandom';
-import { genItem } from '../../vocabulary';
+import { genItem } from '@/vocabulary';
 
 export const blessing = [
 	'藍吉',

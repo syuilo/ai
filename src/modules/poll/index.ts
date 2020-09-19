@@ -2,9 +2,9 @@ import autobind from 'autobind-decorator';
 import Message from '@/message';
 import Module from '@/module';
 import serifs from '@/serifs';
-import { genItem } from '../../vocabulary';
-import config from '../../config';
-import { Note } from '../../misskey/note';
+import { genItem } from '@/vocabulary';
+import config from '@/config';
+import { Note } from '@/misskey/note';
 
 export default class extends Module {
 	public readonly name = 'poll';

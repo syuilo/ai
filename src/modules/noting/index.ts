@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Module from '@/module';
 import serifs from '@/serifs';
-import { genItem } from '../../vocabulary';
+import { genItem } from '@/vocabulary';
 
 export default class extends Module {
 	public readonly name = 'noting';

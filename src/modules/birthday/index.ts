@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Module from '@/module';
-import Friend from '../../friend';
+import Friend from '@/friend';
 import serifs from '@/serifs';
 
 function zeroPadding(num: number, length: number): string {

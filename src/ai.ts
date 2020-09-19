@@ -8,13 +8,13 @@ import * as chalk from 'chalk';
 import { v4 as uuid } from 'uuid';
 const delay = require('timeout-as-promise');
 
-import config from './config';
-import Module from './module';
-import Message from './message';
-import Friend, { FriendDoc } from './friend';
-import { User } from './misskey/user';
-import Stream from './stream';
-import log from './utils/log';
+import config from '@/config';
+import Module from '@/module';
+import Message from '@/message';
+import Friend, { FriendDoc } from '@/friend';
+import { User } from '@/misskey/user';
+import Stream from '@/stream';
+import log from '@/utils/log';
 const pkg = require('../package.json');
 
 type MentionHook = (msg: Message) => Promise<boolean | HandlerResult>;

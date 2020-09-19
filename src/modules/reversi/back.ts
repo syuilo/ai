@@ -8,9 +8,9 @@
 
 import * as request from 'request-promise-native';
 import Reversi, { Color } from 'misskey-reversi';
-import config from '../../config';
+import config from '@/config';
 import serifs from '@/serifs';
-import { User } from '../../misskey/user';
+import { User } from '@/misskey/user';
 
 const db = {};
 
