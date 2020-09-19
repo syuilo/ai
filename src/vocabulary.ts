@@ -90,6 +90,7 @@ export const itemPrefixes = [
 	'シュレディンガーの',
 	'分散型',
 	'卵かけ',
+	'次世代',
 ];
 
 export const items = [
