@@ -25,7 +25,7 @@ export default class extends Module {
 
 	@autobind
 	private async post() {
-		const duration = 1000 * 60 * 30;
+		const duration = 1000 * 60 * 10;
 
 		const polls = [ // TODO: Extract serif
 			['珍しそうなもの', 'みなさんは、どれがいちばん珍しいと思いますか？'],
