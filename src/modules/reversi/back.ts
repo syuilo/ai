@@ -6,6 +6,8 @@
  * 切断されてしまうので、別々のプロセスで行うようにします
  */
 
+import 'module-alias/register';
+
 import * as request from 'request-promise-native';
 import Reversi, { Color } from 'misskey-reversi';
 import config from '@/config';

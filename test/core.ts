@@ -1,7 +1,7 @@
 import 藍 from '@/ai';
-import { account } from '#/_mocks_/account';
-import TestModule from '#/_modules_/test';
-import { StreamingApi } from '#/_mocks_/ws';
+import { account } from '#/__mocks__/account';
+import TestModule from '#/__modules__/test';
+import { StreamingApi } from '#/__mocks__/ws';
 
 process.env.NODE_ENV = 'test';
 

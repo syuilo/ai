@@ -246,6 +246,10 @@ export const items = [
 	'虚無',
 	'UFO',
 	'NumLockキー',
+	'放射性廃棄物',
+	'火星',
+	'ウラン',
+	'遠心分離機',
 ];
 
 export const and = [
