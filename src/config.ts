@@ -9,6 +9,7 @@ type Config = {
 	chartEnabled: boolean;
 	serverMonitoring: boolean;
 	mecab?: string;
+	mecabDic?: string;
 };
 
 const config = require('../config.json');
