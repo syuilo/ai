@@ -47,7 +47,7 @@ export default class extends Module {
 		let keywords: string[][] = [];
 
 		for (const note of interestedNotes) {
-			const tokens = await mecab(note.text, config.mecab);
+			const tokens = await mecab(note.text, config.mecab, config.mecabDic);
 			const keywordsInThisNote = tokens.filter(token => token[2] == '固有名詞' && token[8] != null);
 			keywords = keywords.concat(keywordsInThisNote);
 		}
