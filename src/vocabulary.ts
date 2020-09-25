@@ -91,6 +91,7 @@ export const itemPrefixes = [
 	'分散型',
 	'卵かけ',
 	'次世代',
+	'帯電',
 ];
 
 export const items = [

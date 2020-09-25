@@ -25,7 +25,7 @@ export default class extends Module {
 
 	@autobind
 	private async post() {
-		const duration = 1000 * 60 * 10;
+		const duration = 1000 * 60 * 15;
 
 		const polls = [ // TODO: Extract serif
 			['珍しそうなもの', 'みなさんは、どれがいちばん珍しいと思いますか？'],
@@ -124,21 +124,29 @@ export default class extends Module {
 				continue;
 			}
 
-			// TODO: 同数一位のハンドリング
 			if (choice.votes > mostVotedChoice.votes) {
 				mostVotedChoice = choice;
 			}
 		}
+
+		const mostVotedChoices = choices.filter(choice => choice.votes === mostVotedChoice.votes);
 
 		if (mostVotedChoice.votes === 0) {
 			this.ai.post({ // TODO: Extract serif
 				text: '投票はありませんでした',
 				renoteId: noteId,
 			});
-		} else {
+		} else if (mostVotedChoices.length === 1) {
 			this.ai.post({ // TODO: Extract serif
 				cw: `${title}アンケートの結果発表です！`,
-				text: `結果は${mostVotedChoice.votes}票を獲得した「${mostVotedChoice.text}」でした！`,
+				text: `結果は${mostVotedChoice.votes}票の「${mostVotedChoice.text}」でした！`,
+				renoteId: noteId,
+			});
+		} else {
+			const choices = mostVotedChoices.map(choice => `「${choice.text}」`).join('と');
+			this.ai.post({ // TODO: Extract serif
+				cw: `${title}アンケートの結果発表です！`,
+				text: `結果は${mostVotedChoice.votes}票の${choices}でした！`,
 				renoteId: noteId,
 			});
 		}
