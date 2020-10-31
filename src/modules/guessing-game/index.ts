@@ -66,7 +66,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private async contextHook(msg: Message) {
+	private async contextHook(key: any, msg: Message) {
 		if (msg.text == null) return;
 
 		const exist = this.guesses.findOne({
@@ -76,7 +76,7 @@ export default class extends Module {
 
 		 // 処理の流れ上、実際にnullになることは無さそうだけど一応
 		if (exist == null) {
-			this.unsubscribeReply(msg.userId);
+			this.unsubscribeReply(key);
 			return;
 		}
 
@@ -85,7 +85,7 @@ export default class extends Module {
 			exist.isEnded = true;
 			exist.endedAt = Date.now();
 			this.guesses.update(exist);
-			this.unsubscribeReply(msg.userId);
+			this.unsubscribeReply(key);
 			return;
 		}
 
@@ -124,7 +124,7 @@ export default class extends Module {
 		if (end) {
 			exist.isEnded = true;
 			exist.endedAt = Date.now();
-			this.unsubscribeReply(msg.userId);
+			this.unsubscribeReply(key);
 		}
 
 		this.guesses.update(exist);

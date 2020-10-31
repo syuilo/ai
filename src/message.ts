@@ -30,6 +30,13 @@ export default class Message {
 		return this.messageOrNote.text;
 	}
 
+	public get quoteId(): string | null {
+		return this.messageOrNote.renoteId;
+	}
+
+	/**
+	 * メンション部分を除いたテキスト本文
+	 */
 	public get extractedText(): string {
 		const host = new URL(config.host).host.replace(/\./g, '\\.');
 		return this.text

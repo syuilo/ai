@@ -33,6 +33,7 @@ import ChartModule from './modules/chart';
 import SleepReportModule from './modules/sleep-report';
 import NotingModule from './modules/noting';
 import PollModule from './modules/poll';
+import ReminderModule from './modules/reminder';
 
 console.log('   __    ____  _____  ___ ');
 console.log('  /__\\  (_  _)(  _  )/ __)');
@@ -86,6 +87,7 @@ promiseRetry(retry => {
 		new SleepReportModule(),
 		new NotingModule(),
 		new PollModule(),
+		new ReminderModule(),
 	]);
 }).catch(e => {
 	log(chalk.red('Failed to fetch the account'));

@@ -141,12 +141,12 @@ export default class extends Module {
 	}
 
 	@autobind
-	private async contextHook(msg: Message, data: any) {
+	private async contextHook(key: any, msg: Message, data: any) {
 		if (msg.text == null) return;
 
 		const done = () => {
 			msg.reply(serifs.core.setNameOk(msg.friend.name));
-			this.unsubscribeReply(msg.userId);
+			this.unsubscribeReply(key);
 		};
 
 		if (msg.text.includes('はい')) {

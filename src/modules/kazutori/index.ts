@@ -4,6 +4,7 @@ import Module from '@/module';
 import Message from '@/message';
 import serifs from '@/serifs';
 import { User } from '@/misskey/user';
+import { acct } from '@/utils/acct';
 
 type Game = {
 	votes: {
@@ -82,7 +83,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private async contextHook(msg: Message) {
+	private async contextHook(key: any, msg: Message) {
 		if (msg.text == null) return {
 			reaction: 'hmm'
 		};
@@ -170,12 +171,6 @@ export default class extends Module {
 			});
 
 			return;
-		}
-
-		function acct(user: Game['votes'][0]['user']): string {
-			return user.host
-				? `@${user.username}@${user.host}`
-				: `@${user.username}`;
 		}
 
 		let results: string[] = [];
