@@ -2,8 +2,9 @@ import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
 import Module from '@/module';
 import Message from '@/message';
-import serifs from '@/serifs';
+import serifs, { getSerif } from '@/serifs';
 import { acct } from '@/utils/acct';
+import config from '@/config';
 
 const NOTIFY_INTERVAL = 1000 * 60 * 60 * 12;
 
@@ -37,6 +38,18 @@ export default class extends Module {
 	private async mentionHook(msg: Message) {
 		let text = msg.extractedText.toLowerCase();
 		if (!text.startsWith('remind') && !text.startsWith('todo')) return false;
+
+		if (text.startsWith('reminds') || text.startsWith('todos')) {
+			const reminds = this.reminds.find({
+				userId: msg.userId,
+			});
+
+			const getQuoteLink = id => `[${id}](${config.host}/notes/${id})`;
+
+			msg.reply(serifs.reminder.reminds + '\n' + reminds.map(remind => `・${remind.thing ? remind.thing : getQuoteLink(remind.quoteId)}`).join('\n'));
+			return true;
+		}
+
 		if (text.match(/^(.+?)\s(.+)/)) {
 			text = text.replace(/^(.+?)\s/, '');
 		} else {
@@ -61,13 +74,21 @@ export default class extends Module {
 			createdAt: Date.now(),
 		});
 
-		this.subscribeReply(msg.id, msg.isDm, msg.isDm ? msg.userId : msg.id, {
+		// メンションをsubscribe
+		this.subscribeReply(remind!.id, msg.isDm, msg.isDm ? msg.userId : msg.id, {
 			id: remind!.id
 		});
 
+		if (msg.quoteId) {
+			// 引用元をsubscribe
+			this.subscribeReply(remind!.id, false, msg.quoteId, {
+				id: remind!.id
+			});
+		}
+
 		// タイマーセット
 		this.setTimeoutWithPersistence(NOTIFY_INTERVAL, {
-			id: msg.id,
+			id: remind!.id,
 		});
 
 		return {
@@ -89,13 +110,13 @@ export default class extends Module {
 			return;
 		}
 
-		const done = msg.includes(['done', 'やった']);
-		const cancel = msg.includes(['やめる']);
+		const done = msg.includes(['done', 'やった', 'やりました', 'はい']);
+		const cancel = msg.includes(['やめる', 'やめた', 'キャンセル']);
 
 		if (done || cancel) {
 			this.unsubscribeReply(key);
 			this.reminds.remove(remind);
-			msg.reply(done ? serifs.reminder.done(msg.friend.name) : serifs.reminder.cancel);
+			msg.reply(done ? getSerif(serifs.reminder.done(msg.friend.name)) : serifs.reminder.cancel);
 			return;
 		} else {
 			if (msg.isDm) this.unsubscribeReply(key);

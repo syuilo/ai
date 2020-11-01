@@ -341,11 +341,21 @@ export default {
 	reminder: {
 		invalid: 'うーん...？',
 
+		reminds: 'やること一覧です！',
+
 		notify: (name) => name ? `${name}、これやりましたか？` : `これやりましたか？`,
 
 		notifyWithThing: (thing, name) => name ? `${name}、「${thing}」やりましたか？` : `「${thing}」やりましたか？`,
 
-		done: (name) => name ? `よく出来ました、${name}♪` : `よく出来ました♪`,
+		done: (name) => name ? [
+			`よく出来ました、${name}♪`,
+			`${name}、さすがですっ！`,
+			`${name}、えらすぎます...！`,
+		] : [
+			`よく出来ました♪`,
+			`さすがですっ！`,
+			`えらすぎます...！`,
+		],
 
 		cancel: `わかりました。`,
 	},
