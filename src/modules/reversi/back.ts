@@ -259,6 +259,7 @@ class Session {
 
 	/**
 	 * Botにとってある局面がどれだけ有利か取得する
+	 * TODO: 確定石の数をスコアとし、 確定石がなければ(現状の実装のように)価値マップを参照してスコアを決めるようにする
 	 */
 	private staticEval = () => {
 		let score = this.o.canPutSomewhere(this.botColor).length;
