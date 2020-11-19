@@ -368,6 +368,7 @@ class Session {
 				let b = beta;
 
 				// 次のターンのプレイヤーにとって最も良い手を取得
+				// TODO: cansをまず浅く読んで(または価値マップを利用して)から有益そうな手から順に並べ替え、効率よく枝刈りできるようにする
 				for (const p of cans) {
 					if (isBotTurn) {
 						const score = dive(p, a, beta, depth + 1);
