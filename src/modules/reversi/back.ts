@@ -126,12 +126,12 @@ class Session {
 		this.maxTurn = this.o.map.filter(p => p === 'empty').length - this.o.board.filter(x => x != null).length;
 
 		//#region 各マスの価値を計算しておく
+		// NOTE: 1 を最大値(隅)とする
 
 		//#region 隅
 		this.cellWeights = this.o.map.map((pix, i) => {
 			if (pix == 'null') return 0;
 			const [x, y] = this.o.transformPosToXy(i);
-			let count = 0;
 			const get = (x, y) => {
 				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 'null';
 				return this.o.mapDataGet(this.o.transformXyToPos(x, y));
