@@ -14,8 +14,6 @@ import config from '@/config';
 import serifs from '@/serifs';
 import { User } from '@/misskey/user';
 
-const db = {};
-
 function getUserName(user) {
 	return user.name || user.username;
 }
@@ -304,26 +302,6 @@ class Session {
 			// 試し打ち
 			this.o.put(this.o.turn, pos);
 
-			const key = this.o.board.toString();
-			let cache = db[key];
-			if (cache) {
-				if (alpha >= cache.upper) {
-					this.o.undo();
-					return cache.upper;
-				}
-				if (beta <= cache.lower) {
-					this.o.undo();
-					return cache.lower;
-				}
-				alpha = Math.max(alpha, cache.lower);
-				beta = Math.min(beta, cache.upper);
-			} else {
-				cache = {
-					upper: Infinity,
-					lower: -Infinity
-				};
-			}
-
 			const isBotTurn = this.o.turn === this.botColor;
 
 			// 勝った
@@ -385,17 +363,6 @@ class Session {
 
 				// 巻き戻し
 				this.o.undo();
-
-				if (value <= alpha) {
-					cache.upper = value;
-				} else if (value >= beta) {
-					cache.lower = value;
-				} else {
-					cache.upper = value;
-					cache.lower = value;
-				}
-
-				db[key] = cache;
 
 				return value;
 			}
