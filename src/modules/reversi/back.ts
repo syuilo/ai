@@ -33,9 +33,14 @@ class Session {
 	private botColor: Color;
 
 	/**
-	 * 各マスの強さ (-1.0 ~ 1.0)
+	 * 隅周辺のインデックスリスト(静的評価に利用)
 	 */
-	private cellWeights: number[];
+	private sumiNearIndexes: number[] = [];
+
+	/**
+	 * 隅のインデックスリスト(静的評価に利用)
+	 */
+	private sumiIndexes: number[] = [];
 
 	/**
 	 * 最大のターン数
@@ -125,12 +130,12 @@ class Session {
 
 		this.maxTurn = this.o.map.filter(p => p === 'empty').length - this.o.board.filter(x => x != null).length;
 
-		//#region 各マスの価値を計算しておく
-		// NOTE: 1 を最大値(隅)とする
+		//#region 隅の位置計算など
 
 		//#region 隅
-		this.cellWeights = this.o.map.map((pix, i) => {
-			if (pix == 'null') return 0;
+		this.o.map.forEach((pix, i) => {
+			if (pix == 'null') return;
+
 			const [x, y] = this.o.transformPosToXy(i);
 			const get = (x, y) => {
 				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 'null';
@@ -161,34 +166,34 @@ class Session {
 
 			const isSumi = !isNotSumi;
 
-			return isSumi ? 1 : 0;
+			if (isSumi) this.sumiIndexes.push(i);
 		});
 		//#endregion
 
-		//#region 隅の隣は危険
-		this.cellWeights.forEach((cell, i) => {
+		//#region 隅の隣
+		this.o.map.forEach((pix, i) => {
+			if (pix == 'null') return;
+			if (this.sumiIndexes.includes(i)) return;
+
 			const [x, y] = this.o.transformPosToXy(i);
 
-			if (cell === 1) return;
-			if (this.o.mapDataGet(this.o.transformXyToPos(x, y)) == 'null') return;
-
-			const get = (x, y) => {
+			const check = (x, y) => {
 				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 0;
-				return this.cellWeights[this.o.transformXyToPos(x, y)];
+				return this.sumiIndexes.includes(this.o.transformXyToPos(x, y));
 			};
 
 			const isSumiNear = (
-				(get(x - 1, y - 1) === 1) || // 左上
-				(get(x    , y - 1) === 1) || // 上
-				(get(x + 1, y - 1) === 1) || // 右上
-				(get(x + 1, y    ) === 1) || // 右
-				(get(x + 1, y + 1) === 1) || // 右下
-				(get(x    , y + 1) === 1) || // 下
-				(get(x - 1, y + 1) === 1) || // 左下
-				(get(x - 1, y    ) === 1)    // 左
+				check(x - 1, y - 1) || // 左上
+				check(x    , y - 1) || // 上
+				check(x + 1, y - 1) || // 右上
+				check(x + 1, y    ) || // 右
+				check(x + 1, y + 1) || // 右下
+				check(x    , y + 1) || // 下
+				check(x - 1, y + 1) || // 左下
+				check(x - 1, y    )    // 左
 			)
 
-			if (isSumiNear) this.cellWeights[i] = -0.125;
+			if (isSumiNear) this.sumiNearIndexes.push(i);
 		});
 		//#endregion
 
@@ -258,25 +263,34 @@ class Session {
 	}
 
 	/**
-	 * Botにとってある局面がどれだけ有利か取得する
-	 * TODO: 確定石の数をスコアとし、 確定石がなければ(現状の実装のように)価値マップを参照してスコアを決めるようにする
+	 * Botにとってある局面がどれだけ有利か静的に評価する
+	 * static(静的)というのは、先読みはせずに盤面の状態のみで評価するということ。
+	 * TODO: 接待時はまるっと処理の中身を変え、とにかく相手が隅を取っていること優先な評価にする
 	 */
 	private staticEval = () => {
 		let score = this.o.canPutSomewhere(this.botColor).length;
 
-		this.cellWeights.forEach((weight, i) => {
-			// 係数
-			const coefficient = 30;
-			weight = weight * coefficient;
+		for (const index of this.sumiIndexes) {
+			const stone = this.o.board[index];
 
-			const stone = this.o.board[i];
 			if (stone === this.botColor) {
-				// TODO: 確定石を考慮する
-				score += weight;
+				score += 1000; // 自分が隅を取っていたらスコアプラス
 			} else if (stone !== null) {
-				score -= weight;
+				score -= 1000; // 相手が隅を取っていたらスコアマイナス
 			}
-		});
+		}
+
+		// TODO: ここに (隅以外の確定石の数 * 100) をスコアに加算する処理を入れる
+
+		for (const index of this.sumiNearIndexes) {
+			const stone = this.o.board[index];
+
+			if (stone === this.botColor) {
+				score -= 10; // 自分が隅の周辺を取っていたらスコアマイナス(危険なので)
+			} else if (stone !== null) {
+				score += 10; // 相手が隅の周辺を取っていたらスコアプラス
+			}
+		}
 
 		// ロセオならスコアを反転
 		if (this.game.isLlotheo) score = -score;
