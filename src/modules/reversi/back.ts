@@ -270,7 +270,7 @@ class Session {
 
 			const stone = this.o.board[i];
 			if (stone === this.botColor) {
-				// TODO: 価値のあるマスに設置されている自分の石に縦か横に接するマスは価値があると判断する
+				// TODO: 確定石を考慮する
 				score += weight;
 			} else if (stone !== null) {
 				score -= weight;
