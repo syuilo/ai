@@ -38,6 +38,16 @@ class Session {
 	private cellWeights: number[];
 
 	/**
+	 * 最大のターン数
+	 */
+	private maxTurn;
+
+	/**
+	 * 現在のターン数
+	 */
+	private currentTurn = 0;
+
+	/**
 	 * 対局が開始したことを知らせた投稿
 	 */
 	private startedNote: any = null;
@@ -112,6 +122,8 @@ class Session {
 			canPutEverywhere: this.game.canPutEverywhere,
 			loopedBoard: this.game.loopedBoard
 		});
+
+		this.maxTurn = this.o.map.filter(p => p === 'empty').length - this.o.board.filter(x => x != null).length;
 
 		//#region 各マスの価値を計算しておく
 
@@ -253,6 +265,7 @@ class Session {
 	 */
 	private onSet = (msg: any) =>  {
 		this.o.put(msg.color, msg.pos);
+		this.currentTurn++;
 
 		if (msg.next === this.botColor) {
 			this.think();
@@ -289,7 +302,7 @@ class Session {
 	}
 
 	private think = () => {
-		console.log('Thinking...');
+		console.log(`(${this.currentTurn}/${this.maxTurn}) Thinking...`);
 		console.time('think');
 
 		// 接待モードのときは、全力(5手先読みくらい)で負けるようにする
@@ -351,16 +364,18 @@ class Session {
 				let a = alpha;
 				let b = beta;
 
+				const nextDepth = (this.strength >= 4) && ((this.maxTurn - this.currentTurn) <= 12) ? Infinity : depth + 1;
+
 				// 次のターンのプレイヤーにとって最も良い手を取得
 				// TODO: cansをまず浅く読んで(または価値マップを利用して)から有益そうな手から順に並べ替え、効率よく枝刈りできるようにする
 				for (const p of cans) {
 					if (isBotTurn) {
-						const score = dive(p, a, beta, depth + 1);
+						const score = dive(p, a, beta, nextDepth);
 						value = Math.max(value, score);
 						a = Math.max(a, value);
 						if (value >= beta) break;
 					} else {
-						const score = dive(p, alpha, b, depth + 1);
+						const score = dive(p, alpha, b, nextDepth);
 						value = Math.min(value, score);
 						b = Math.min(b, value);
 						if (value <= alpha) break;
