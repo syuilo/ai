@@ -364,6 +364,7 @@ class Session {
 				let a = alpha;
 				let b = beta;
 
+				// TODO: 残りターン数というよりも「空いているマスが12以下」の場合に完全読みさせる
 				const nextDepth = (this.strength >= 4) && ((this.maxTurn - this.currentTurn) <= 12) ? Infinity : depth + 1;
 
 				// 次のターンのプレイヤーにとって最も良い手を取得
