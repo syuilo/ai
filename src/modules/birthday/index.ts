@@ -30,7 +30,7 @@ export default class extends Module {
 		const today = `${zeroPadding(m + 1, 2)}-${zeroPadding(d, 2)}`;
 
 		const birthFriends = this.ai.friends.find({
-			'user.profile.birthday': { '$regex': new RegExp('-' + today + '$') }
+			'user.birthday': { '$regex': new RegExp('-' + today + '$') }
 		} as any);
 
 		birthFriends.forEach(f => {
