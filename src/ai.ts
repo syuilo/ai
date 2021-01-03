@@ -172,6 +172,11 @@ export default class 藍 {
 			if (data.userId == this.account.id) return; // 自分は弾く
 			this.onReceiveMessage(new Message(this, data, true));
 		});
+
+		// 通知
+		mainStream.on('notification', data => {
+			this.onNotification(data);
+		});
 		//#endregion
 
 		// Install modules
@@ -274,6 +279,22 @@ export default class 藍 {
 					reaction: reaction
 				});
 			}
+		}
+	}
+
+	@autobind
+	private onNotification(notification: any) {
+		switch (notification.type) {
+			// リアクションされたら親愛度を少し上げる
+			// TODO: リアクション取り消しをよしなにハンドリングする
+			case 'reaction': {
+				const friend = new Friend(this, { user: notification.user });
+				friend.incLove(0.1);
+				break;
+			}
+
+			default:
+				break;
 		}
 	}
 

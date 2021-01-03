@@ -101,7 +101,7 @@ export default class Friend {
 	}
 
 	@autobind
-	public incLove() {
+	public incLove(amount = 1) {
 		const today = getDate();
 
 		if (this.doc.lastLoveIncrementedAt != today) {
@@ -112,20 +112,25 @@ export default class Friend {
 		if (this.doc.lastLoveIncrementedAt == today && (this.doc.todayLoveIncrements || 0) >= 3) return;
 
 		if (this.doc.love == null) this.doc.love = 0;
-		this.doc.love++;
+		this.doc.love += amount;
 
 		// 最大 100
 		if (this.doc.love > 100) this.doc.love = 100;
 
 		this.doc.lastLoveIncrementedAt = today;
-		this.doc.todayLoveIncrements = (this.doc.todayLoveIncrements || 0) + 1;
+		this.doc.todayLoveIncrements = (this.doc.todayLoveIncrements || 0) + amount;
 		this.save();
+
+		this.ai.log(`💗 ${this.userId} +${amount}`);
 	}
 
 	@autobind
-	public decLove() {
+	public decLove(amount = 1) {
+		// 親愛度MAXなら下げない
+		if (this.doc.love === 100) return;
+
 		if (this.doc.love == null) this.doc.love = 0;
-		this.doc.love--;
+		this.doc.love -= amount;
 
 		// 最低 -30
 		if (this.doc.love < -30) this.doc.love = -30;
@@ -136,6 +141,8 @@ export default class Friend {
 		}
 
 		this.save();
+
+		this.ai.log(`💢 ${this.userId} -${amount}`);
 	}
 
 	@autobind
