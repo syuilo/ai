@@ -2,12 +2,15 @@ import autobind from 'autobind-decorator';
 import Module from '@/module';
 import serifs from '@/serifs';
 import { genItem } from '@/vocabulary';
+import config from '@/config';
 
 export default class extends Module {
 	public readonly name = 'noting';
 
 	@autobind
 	public install() {
+		if (config.notingEnabled === false) return {};
+
 		setInterval(() => {
 			if (Math.random() < 0.04) {
 				this.post();
