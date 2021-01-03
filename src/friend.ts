@@ -60,7 +60,6 @@ export default class Friend {
 			} else {
 				this.doc = exist;
 				this.doc.user = { ...this.doc.user, ...opts.user };
-				console.log(this.doc.user);
 				this.save();
 			}
 		} else if (opts.doc) {
