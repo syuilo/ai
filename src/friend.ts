@@ -59,7 +59,8 @@ export default class Friend {
 				this.doc = inserted;
 			} else {
 				this.doc = exist;
-				this.doc.user = opts.user;
+				this.doc.user = { ...this.doc.user, ...opts.user };
+				console.log(this.doc.user);
 				this.save();
 			}
 		} else if (opts.doc) {
@@ -70,8 +71,11 @@ export default class Friend {
 	}
 
 	@autobind
-	public updateUser(user: User) {
-		this.doc.user = user;
+	public updateUser(user: Partial<User>) {
+		this.doc.user = {
+			...this.doc.user,
+			...user,
+		};
 		this.save();
 	}
 
