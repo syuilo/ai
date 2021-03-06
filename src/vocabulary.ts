@@ -92,6 +92,7 @@ export const itemPrefixes = [
 	'卵かけ',
 	'次世代',
 	'帯電',
+	'太古の',
 ];
 
 export const items = [
@@ -257,6 +258,7 @@ export const items = [
 	'[object Object]',
 	'ゼロ幅スペース',
 	'全角スペース',
+	'太鼓',
 ];
 
 export const and = [
