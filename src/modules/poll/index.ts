@@ -62,19 +62,11 @@ export default class extends Module {
 			['Misskey本部にありそうなもの', 'みなさんは、Misskey本部にありそうなものはどれだと思いますか？'],
 			['燃えるゴミ', 'みなさんは、どれが燃えるゴミだと思いますか？'],
 			['好きなおにぎりの具', 'みなさんの好きなおにぎりの具はなんですか？'],
-			['そして輝くウルトラ', 'みなさんは、そして輝くウルトラ…？'],
 		];
 
 		const poll = polls[Math.floor(Math.random() * polls.length)];
 
-		const choices = poll[0] === 'そして輝くウルトラ' ? [
-			'そう',
-			'どちらかというとそう',
-			'どちらでもない',
-			'どちらかというとそうではない',
-			'そうではない',
-			'わからない・回答しない',
-		] : [
+		const choices = [
 			genItem(),
 			genItem(),
 			genItem(),
