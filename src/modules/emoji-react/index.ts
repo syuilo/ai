@@ -58,7 +58,7 @@ export default class extends Module {
 			switch (reaction) {
 				case '✊': return react('🖐', true);
 				case '✌': return react('✊', true);
-				case '🖐': return react('✌', true);
+				case '🖐': case '✋': return react('✌', true);
 			}
 
 			return react(reaction);
