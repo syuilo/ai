@@ -185,7 +185,7 @@ export default class extends Module {
 				if (winner == null) {
 					winner = users[0];
 					const icon = i == 100 ? '💯' : '🎉';
-					results.push(`${icon} **${i}**: [jelly ${acct(users[0])}]`);
+					results.push(`${icon} **${i}**: $[jelly ${acct(users[0])}]`);
 				} else {
 					results.push(`➖ ${i}: ${acct(users[0])}`);
 				}
