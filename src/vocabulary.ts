@@ -94,6 +94,7 @@ export const itemPrefixes = [
 	'帯電',
 	'太古の',
 	'WiFi対応',
+	'高反発',
 ];
 
 export const items = [
