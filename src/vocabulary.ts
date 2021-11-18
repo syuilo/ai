@@ -104,6 +104,13 @@ export const itemPrefixes = [
 	'賞味期限切れ',
 	'地獄から来た',
 	'ニンニクマシ',
+	'放射性',
+	'フラクタルな',
+	'再帰的',
+	'ときどき分裂する',
+	'消える',
+	'等速直線運動する',
+	'X線照射',
 ];
 
 export const items = [
@@ -272,6 +279,7 @@ export const items = [
 	'太鼓',
 	'石像',
 	'スライム',
+	'点P',
 ];
 
 export const and = [
