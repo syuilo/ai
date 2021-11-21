@@ -111,6 +111,8 @@ export const itemPrefixes = [
 	'消える',
 	'等速直線運動する',
 	'X線照射',
+	'蠢く',
+	'形而上学的',
 ];
 
 export const items = [
@@ -305,7 +307,7 @@ export function genItem(seedOrRng?: (() => number) | string | number) {
 	let item = '';
 	if (Math.floor(rng() * 5) !== 0) item += itemPrefixes[Math.floor(rng() * itemPrefixes.length)];
 	item += items[Math.floor(rng() * items.length)];
-	if (Math.floor(rng() * 6) === 0) {
+	if (Math.floor(rng() * 10) === 0) {
 		item += and[Math.floor(rng() * and.length)];
 		if (Math.floor(rng() * 5) !== 0) item += itemPrefixes[Math.floor(rng() * itemPrefixes.length)];
 		item += items[Math.floor(rng() * items.length)];
