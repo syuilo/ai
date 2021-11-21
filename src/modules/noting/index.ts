@@ -32,6 +32,10 @@ export default class extends Module {
 				const item = genItem();
 				return serifs.noting.see(item);
 			},
+			() => {
+				const item = genItem();
+				return serifs.noting.expire(item);
+			},
 		];
 
 		const note = notes[Math.floor(Math.random() * notes.length)];
