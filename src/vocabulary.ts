@@ -291,6 +291,7 @@ export const items = [
 	'石像',
 	'スライム',
 	'点P',
+	'🤯',
 ];
 
 export const and = [
