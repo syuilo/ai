@@ -344,6 +344,7 @@ export const items = [
 	'サンドピクチャー',
 	'ストームグラス',
 	'ニュートンクレードル',
+	'永久機関',
 ];
 
 export const and = [
