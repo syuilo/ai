@@ -154,6 +154,7 @@ export const itemPrefixes = [
 	'ぷるぷる',
 	'ぐにゃぐにゃ',
 	'多目的',
+	'いい感じ™の',
 ];
 
 export const items = [
