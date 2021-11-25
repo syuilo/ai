@@ -199,6 +199,7 @@ export const itemPrefixes = [
 	'丹念に熟成された',
 	'アルミダイキャスト',
 	'畏怖の念を抱く',
+	'養殖',
 ];
 
 export const items = [
@@ -419,6 +420,7 @@ export const items = [
 	'<ここに任意の文字列>',
 	'化石',
 	'マンホールの蓋',
+	'蛇口',
 ];
 
 export const and = [
