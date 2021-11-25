@@ -200,6 +200,11 @@ export const itemPrefixes = [
 	'アルミダイキャスト',
 	'畏怖の念を抱く',
 	'養殖',
+	'やばい',
+	'すごい',
+	'かわいい',
+	'デジタル',
+	'アナログ',
 ];
 
 export const items = [
