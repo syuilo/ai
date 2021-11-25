@@ -416,6 +416,9 @@ export const items = [
 	'巻物',
 	'Misskey',
 	'もぎもぎフルーツ',
+	'<ここに任意の文字列>',
+	'化石',
+	'マンホールの蓋',
 ];
 
 export const and = [
