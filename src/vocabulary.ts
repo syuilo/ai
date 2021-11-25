@@ -216,6 +216,7 @@ export const itemPrefixes = [
 	'当たり判定のない',
 	'めり込んだ',
 	'100年に一度の',
+	'ジューシーな',
 ];
 
 export const items = [
