@@ -435,6 +435,10 @@ export const items = [
 	'蛇口',
 	'彁',
 	'鬮',
+	'1円玉',
+	'ト音記号',
+	'ポータル',
+	'国家予算',
 ];
 
 export const and = [
