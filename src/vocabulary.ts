@@ -415,6 +415,7 @@ export const items = [
 	'古文書',
 	'巻物',
 	'Misskey',
+	'もぎもぎフルーツ',
 ];
 
 export const and = [
