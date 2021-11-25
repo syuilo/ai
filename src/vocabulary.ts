@@ -211,6 +211,7 @@ export const itemPrefixes = [
 	'キミの',
 	'あなただけの',
 	'ゴキゲンな',
+	'この文が真なら、',
 ];
 
 export const items = [
@@ -433,6 +434,7 @@ export const items = [
 	'マンホールの蓋',
 	'蛇口',
 	'彁',
+	'鬮',
 ];
 
 export const and = [
