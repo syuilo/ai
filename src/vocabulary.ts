@@ -217,6 +217,7 @@ export const itemPrefixes = [
 	'めり込んだ',
 	'100年に一度の',
 	'ジューシーな',
+	'Hi-Res',
 ];
 
 export const items = [
@@ -447,6 +448,9 @@ export const items = [
 	'閉じ忘れられた鉤括弧の片割れ',
 	'電動マッサージ機',
 	'ポップアップ広告',
+	'README.txt',
+	'あああああ',
+	'コミット',
 ];
 
 export const and = [
