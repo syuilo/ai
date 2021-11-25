@@ -407,6 +407,14 @@ export const items = [
 	'DVD',
 	'市営バス',
 	'基地局',
+	'404 Not Found',
+	'JSON',
+	'タペストリー',
+	'本',
+	'石像',
+	'古文書',
+	'巻物',
+	'Misskey',
 ];
 
 export const and = [
