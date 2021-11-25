@@ -198,6 +198,7 @@ export const itemPrefixes = [
 	'カビの生えた',
 	'丹念に熟成された',
 	'アルミダイキャスト',
+	'畏怖の念を抱く',
 ];
 
 export const items = [
