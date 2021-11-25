@@ -205,6 +205,8 @@ export const itemPrefixes = [
 	'かわいい',
 	'デジタル',
 	'アナログ',
+	'考察の対象となり得る',
+	'値切る余地がありそうな',
 ];
 
 export const items = [
