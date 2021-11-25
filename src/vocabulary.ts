@@ -213,6 +213,8 @@ export const itemPrefixes = [
 	'ゴキゲンな',
 	'この文が真なら、',
 	'電動',
+	'当たり判定のない',
+	'めり込んだ',
 ];
 
 export const items = [
