@@ -207,6 +207,7 @@ export const itemPrefixes = [
 	'アナログ',
 	'考察の対象となり得る',
 	'値切る余地がありそうな',
+	'彁な',
 ];
 
 export const items = [
@@ -428,6 +429,7 @@ export const items = [
 	'化石',
 	'マンホールの蓋',
 	'蛇口',
+	'彁',
 ];
 
 export const and = [
