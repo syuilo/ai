@@ -451,6 +451,8 @@ export const items = [
 	'README.txt',
 	'あああああ',
 	'コミット',
+	'素数',
+	'タスクマネージャー',
 ];
 
 export const and = [
