@@ -208,6 +208,9 @@ export const itemPrefixes = [
 	'考察の対象となり得る',
 	'値切る余地がありそうな',
 	'彁な',
+	'キミの',
+	'あなただけの',
+	'ゴキゲンな',
 ];
 
 export const items = [
