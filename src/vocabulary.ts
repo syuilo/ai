@@ -212,6 +212,7 @@ export const itemPrefixes = [
 	'あなただけの',
 	'ゴキゲンな',
 	'この文が真なら、',
+	'電動',
 ];
 
 export const items = [
@@ -439,6 +440,8 @@ export const items = [
 	'ト音記号',
 	'ポータル',
 	'国家予算',
+	'閉じ忘れられた鉤括弧の片割れ',
+	'電動マッサージ機',
 ];
 
 export const and = [
