@@ -218,6 +218,7 @@ export const itemPrefixes = [
 	'100年に一度の',
 	'ジューシーな',
 	'Hi-Res',
+	'確変',
 ];
 
 export const items = [
