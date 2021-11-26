@@ -219,6 +219,9 @@ export const itemPrefixes = [
 	'ジューシーな',
 	'Hi-Res',
 	'確変',
+	'食用',
+	'THE ',
+	'某',
 ];
 
 export const items = [
