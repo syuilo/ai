@@ -222,6 +222,8 @@ export const itemPrefixes = [
 	'食用',
 	'THE ',
 	'某',
+	'朽ちゆく',
+	'滅びの',
 ];
 
 export const items = [
@@ -457,6 +459,7 @@ export const items = [
 	'コミット',
 	'素数',
 	'タスクマネージャー',
+	'有象無象',
 ];
 
 export const and = [
