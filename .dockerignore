@@ -1,2 +1,10 @@
 config.json
 font.ttf
+data/memory.json
+ai.*
+*.md
+Dockerfile
+docker-compose.yml
+
+node_modules/
+.vscode/
