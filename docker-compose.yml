@@ -1,0 +1,9 @@
+version: '3'
+services:
+  app:
+    build: .
+    volumes:
+      - './config.json:/ai/config.json:ro'
+      - './font.ttf:/ai/font.ttf:ro'
+      - './data:/ai/data'
+    restart: always
