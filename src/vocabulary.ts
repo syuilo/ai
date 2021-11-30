@@ -225,6 +225,7 @@ export const itemPrefixes = [
 	'朽ちゆく',
 	'滅びの',
 	'反発係数がe>1の',
+	'摩擦係数0の',
 ];
 
 export const items = [
