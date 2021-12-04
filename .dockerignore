@@ -1,10 +1,13 @@
 config.json
 font.ttf
-data/memory.json
 ai.*
 *.md
+*.png
 Dockerfile
 docker-compose.yml
+LICENSE
 
 node_modules/
+test/
+data/
 .vscode/
