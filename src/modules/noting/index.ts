@@ -40,6 +40,8 @@ export default class extends Module {
 
 		const note = notes[Math.floor(Math.random() * notes.length)];
 
+		// TODO: 季節に応じたセリフ
+
 		this.ai.post({
 			text: typeof note === 'function' ? note() : note
 		});

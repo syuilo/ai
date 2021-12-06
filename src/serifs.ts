@@ -76,8 +76,6 @@ export default {
 
 		invalidName: '発音が難しい気がします',
 
-		requireMoreLove: 'もっと仲良くなったら考えてあげてもいいですよ？',
-
 		nadenade: {
 			normal: 'ひゃっ…！ びっくりしました',
 

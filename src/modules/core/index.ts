@@ -75,11 +75,6 @@ export default class extends Module {
 		// メッセージのみ
 		if (!msg.isDm) return true;
 
-		if (msg.friend.love < 5) {
-			msg.reply(serifs.core.requireMoreLove);
-			return true;
-		}
-
 		const name = msg.text.match(/^(.+?)って呼んで/)![1];
 
 		if (name.length > 10) {
