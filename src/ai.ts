@@ -81,12 +81,11 @@ export default class 藍 {
 		this.account = account;
 		this.modules = modules;
 
-		let memoryPath = './';
-		if (config.memoryPath)
-		{
-			memoryPath = config.memoryPath;
+		let memoryDir = '.';
+		if (config.memoryDir) {
+			memoryDir = config.memoryDir;
 		}
-		const file = process.env.NODE_ENV === 'test' ? `${memoryPath}/test.memory.json` : `${memoryPath}/memory.json`;
+		const file = process.env.NODE_ENV === 'test' ? `${memoryDir}/test.memory.json` : `${memoryDir}/memory.json`;
 
 		this.log(`Lodaing the memory from ${file}...`);
 

@@ -11,7 +11,7 @@ type Config = {
 	serverMonitoring: boolean;
 	mecab?: string;
 	mecabDic?: string;
-	memoryPath?: string;
+	memoryDir?: string;
 };
 
 const config = require('../config.json');

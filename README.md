@@ -21,7 +21,7 @@ Misskey用の日本語Botです。
 	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false)",
 	"mecab": "MeCab のインストールパス (ソースからインストールした場合、大体は /usr/local/bin/mecab)",
 	"mecabDic": "MeCab の辞書ファイルパス (オプション)",
-	"memoryPath": "memory.jsonの保存先（オプション、デフォルトは'.'（レポジトリのルートです））"
+	"memoryDir": "memory.jsonの保存先（オプション、デフォルトは'.'（レポジトリのルートです））"
 }
 ```
 `npm install` して `npm run build` して `npm start` すれば起動できます
@@ -29,7 +29,7 @@ Misskey用の日本語Botです。
 ## Dockerで動かす
 まず適当なディレクトリに `git clone` します。
 次にそのディレクトリに `config.json` を作成します。中身は次のようにします:
-（MeCabの設定、memoryPathについては触らないでください）
+（MeCabの設定、memoryDirについては触らないでください）
 ``` json
 {
 	"host": "https:// + あなたのインスタンスのURL (末尾の / は除く)",
@@ -42,7 +42,7 @@ Misskey用の日本語Botです。
 	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false)",
 	"mecab": "/usr/bin/mecab",
 	"mecabDic": "/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd/",
-	"memoryPath": "data"
+	"memoryDir": "data"
 }
 ```
 `docker-compose build` して `docker-compose up` すれば起動できます。
