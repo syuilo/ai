@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      args:
+        - enable_mecab=1
+    volumes:
+      - './config.json:/ai/config.json:ro'
+      - './font.ttf:/ai/font.ttf:ro'
+      - './data:/ai/data'
+    restart: always

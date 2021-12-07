@@ -1,0 +1,13 @@
+config.json
+font.ttf
+ai.*
+*.md
+*.png
+Dockerfile
+docker-compose.yml
+LICENSE
+
+node_modules/
+test/
+data/
+.vscode/
