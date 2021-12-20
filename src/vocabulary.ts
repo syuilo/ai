@@ -231,6 +231,9 @@ export const itemPrefixes = [
 	'大きな',
 	'小さな',
 	'強欲な',
+	'うねうね',
+	'水没',
+	'燃え盛る',
 ];
 
 export const items = [
