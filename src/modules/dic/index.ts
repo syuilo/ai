@@ -17,7 +17,7 @@ export default class extends Module {
 		if (msg.text && msg.text.includes('って何')) {
             // msg.textのうち、「の意味は」の直前で、「@ai」よりも後の物を抽出
             const dic_prefix = "https://www.weblio.jp/content/";
-            const raw_word = msg.text.split('って何')[0].split('@ai_dev')[1].trim();
+            const raw_word = msg.text.split('って何')[0].split('@ai')[1].trim();
             // スペースがある場合は、半角スペースを除去
             const word = raw_word.replace(/\s/g, '');
             const url = dic_prefix + encodeURIComponent(word);
