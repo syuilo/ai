@@ -470,6 +470,7 @@ export const items = [
 	'クラインの壺',
 	'メビウスの輪',
 	'オリハルコン',
+	'ヘドロ',
 ];
 
 export const and = [
