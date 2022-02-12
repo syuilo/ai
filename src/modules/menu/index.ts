@@ -3,7 +3,6 @@ import Module from '@/module';
 import Message from '@/message';
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
-import { title } from 'process';
 
 export default class extends Module {
     public readonly name = 'menu';
