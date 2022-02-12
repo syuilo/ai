@@ -35,6 +35,7 @@ import NotingModule from './modules/noting';
 import PollModule from './modules/poll';
 import ReminderModule from './modules/reminder';
 import DicModule from './modules/dic';
+import menuModule from './modules/menu';
 import GetColorModule from './modules/color';
 
 console.log('   __    ____  _____  ___ ');
@@ -91,6 +92,7 @@ promiseRetry(retry => {
 		new PollModule(),
 		new ReminderModule(),
 		new DicModule(),
+		new menuModule(),
 		new GetColorModule(),
 	]);
 }).catch(e => {
