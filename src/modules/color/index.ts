@@ -30,7 +30,7 @@ export default class extends Module {
 				msg.reply(message, { file });
 			}, 500);
 			return {
-				reaction: 'like'
+				reaction: '🎨'
 			};
 		} else {
 			return false;
