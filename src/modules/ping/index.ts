@@ -14,10 +14,16 @@ export default class extends Module {
 
 	@autobind
 	private async mentionHook(msg: Message) {
-		if (msg.text && msg.text.includes('ping')) {
-			msg.reply('PONG!', {
-				immediate: true
-			});
+		if (msg.text && (msg.text.includes('ping') || msg.text.includes('おい'))) {
+			if (msg.text.includes('おい')) {
+				msg.reply('はい。。。', {
+					immediate: true
+				});
+			} else {
+				msg.reply('PONG!', {
+					immediate: true
+				});
+			}
 			return true;
 		} else {
 			return false;
