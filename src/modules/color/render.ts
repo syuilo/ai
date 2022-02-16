@@ -1,6 +1,6 @@
 import { createCanvas } from 'canvas';
 
-const imageSize = 512; //px
+const imageSize = 1; //px
 
 export function generateColorSample(r: string, g: string, b: string) {
     const canvas = createCanvas(imageSize, imageSize);
