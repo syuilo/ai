@@ -16,7 +16,6 @@ import TalkModule from './modules/talk';
 import BirthdayModule from './modules/birthday';
 import ReversiModule from './modules/reversi';
 import PingModule from './modules/ping';
-import okngModule from './modules/okng';
 import EmojiModule from './modules/emoji';
 import EmojiReactModule from './modules/emoji-react';
 import FortuneModule from './modules/fortune';
@@ -70,7 +69,6 @@ promiseRetry(retry => {
 	// 藍起動
 	new 藍(account, [
 		new CoreModule(),
-		new okngModule(),
 		new EmojiModule(),
 		new EmojiReactModule(),
 		new FortuneModule(),

@@ -36,6 +36,15 @@ export default class extends Module {
 			});
 		};
 
+		if (includes(note.text, ['いい']) && (includes(note.text, ["?"]) || includes(note.text, ["？"]))) {
+            // 50%の確率で":dame:"または":yattare:"を返す
+            if (Math.random() < 0.5) {
+                return react(':dame:', true);
+            } else {
+                return react(':yattare:', true);
+            }
+        }
+
 		const customEmojis = note.text.match(/:([^\n:]+?):/g);
 		if (customEmojis) {
 			// カスタム絵文字が複数種類ある場合はキャンセル
