@@ -37,7 +37,7 @@ export default class extends Module {
 		};
 
 		// /う[〜|ー]*んこ/g]にマッチしたときの処理
-		if (note.text.match(/う[〜|ー]*んこ/g)) {
+		if (note.text.match(/う[〜|ー]*んこ/g) || includes(note.text, ['unko'])) {
 			await react(':anataima_unkotte_iimashitane:', true);
 		}
 
