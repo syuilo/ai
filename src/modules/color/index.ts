@@ -22,7 +22,7 @@ export default class extends Module {
             const b = Math.floor(Math.random() * 256);
             // rgbをhexに変換する
             const hex = `${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
-            const message = `RGB: ${r}, ${g}, ${b} (\`#${hex})\`とかどう？`
+            const message = `RGB: ${r}, ${g}, ${b} \`(#${hex})\`とかどう？`
 
 			setTimeout(async () => {
 				const file = await this.getColorSampleFile(r,g,b);
