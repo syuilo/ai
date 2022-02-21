@@ -88,5 +88,15 @@ export default class extends Module {
 
 		if (includes(note.text, ['ずなず']) || includes(note.text, ['ずにゃず'])) return react('🙌');
 		if (includes(note.text, ['なず']) || includes(note.text, ['にゃず'])) return react(':google_hart:');
+
+		const gameReact = [
+			':ysvi:',
+			':ysf:',
+			':yso:'
+		]
+		if (includes(note.text, ['おゲームするかしら'])){
+			// gameReactの中からランダムに選択
+			return react(gameReact[Math.floor(Math.random() * gameReact.length)]);
+		}
 	}
 }
