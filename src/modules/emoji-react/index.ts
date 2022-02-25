@@ -38,19 +38,19 @@ export default class extends Module {
 
 		// /う[〜|ー]*んこ/g]にマッチしたときの処理
 		if (note.text.match(/う[〜|ー]*んこ/g) || includes(note.text, ['unko'])) {
-			await react(':anataima_unkotte_iimashitane:', true);
+			await react(':anataima_unkotte_iimashitane:');
 		}
 
 		if (note.text.match(/う[〜|ー]*んち/g)) {
-			await react(':erait:', true);
+			await react(':erait:');
 		}
 
 		if (includes(note.text, ['いい']) && (includes(note.text, ["?"]) || includes(note.text, ["？"]))) {
             // 50%の確率で":dame:"または":yattare:"を返す
             if (Math.random() < 0.5) {
-                return react(':dame:', true);
+                return react(':dame:');
             } else {
-                return react(':yattare:', true);
+                return react(':yattare:');
             }
         }
 

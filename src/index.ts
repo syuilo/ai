@@ -15,6 +15,7 @@ import CoreModule from './modules/core';
 import TalkModule from './modules/talk';
 import BirthdayModule from './modules/birthday';
 import ReversiModule from './modules/reversi';
+import summonCat from './modules/summonCat';
 import PingModule from './modules/ping';
 import EmojiModule from './modules/emoji';
 import EmojiReactModule from './modules/emoji-react';
@@ -69,6 +70,7 @@ promiseRetry(retry => {
 	// 藍起動
 	new 藍(account, [
 		new CoreModule(),
+		new summonCat(),
 		new EmojiModule(),
 		new EmojiReactModule(),
 		new FortuneModule(),
