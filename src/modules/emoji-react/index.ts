@@ -28,7 +28,7 @@ export default class extends Module {
 
 		const react = async (reaction: string, immediate = false) => {
 			if (!immediate) {
-				await delay(1500);
+				await delay(2500);
 			}
 			this.ai.api('notes/reactions/create', {
 				noteId: note.id,
@@ -38,11 +38,11 @@ export default class extends Module {
 
 		// /う[〜|ー]*んこ/g]にマッチしたときの処理
 		if (note.text.match(/う[〜|ー]*んこ/g) || includes(note.text, ['unko'])) {
-			await react(':anataima_unkotte_iimashitane:');
+			return await react(':anataima_unkotte_iimashitane:');
 		}
 
 		if (note.text.match(/う[〜|ー]*んち/g)) {
-			await react(':erait:');
+			return await react(':erait:');
 		}
 
 		if (includes(note.text, ['いい']) && (includes(note.text, ["?"]) || includes(note.text, ["？"]))) {
@@ -53,6 +53,10 @@ export default class extends Module {
                 return react(':yattare:');
             }
         }
+
+		if (includes(note.text, ['どこ'])) {
+			return await react(':t_ofuton:');
+		}
 
 		const customEmojis = note.text.match(/:([^\n:]+?):/g);
 		if (customEmojis) {
