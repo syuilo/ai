@@ -48,7 +48,18 @@ export default class extends Module {
   public readonly name = "earthquake";
   private message: string = "";
 
-	private earthQuakeIndex: string[] = ["0未満", "0", "1", "2", "3", "4", "5弱", "5強", "6弱", "7"]
+  private earthQuakeIndex: string[] = [
+    "0未満",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5弱",
+    "5強",
+    "6弱",
+    "7",
+  ];
 
   @autobind
   public install() {
@@ -81,34 +92,41 @@ export default class extends Module {
             max_index: rawDataJSON.max_index,
             intensity_list: rawDataJSON.intensity_list,
           };
-          this.message = `地震かも？\n\n震度レポート\n${data.time.toLocaleString()}\n最大震度:${this.earthQuakeIndex[data.max_index + 1]}\n\n${
-            data.intensity_list.map((intensity) =>
-              `震度${this.earthQuakeIndex[intensity.index + 1]}: ${intensity.region_list.join(" ")}`
-            ).join("\n")
-          }`;
-        } if (rawDataJSON.type == 'eew' && false) { // これ使わなさそうだしとりあえず入らないようにした
-					const data: 緊急地震速報 = {
-						type: rawDataJSON.type,
-						time: new Date(parseInt(rawDataJSON.time)),
-						report: rawDataJSON.report,
-						epicenter: rawDataJSON.epicenter,
-						depth: rawDataJSON.depth,
-						magnitude: rawDataJSON.magnitude,
-						latitude: rawDataJSON.latitude,
-						longitude: rawDataJSON.longitude,
-						intensity: rawDataJSON.intensity,
-						index: rawDataJSON.index,
-					}
+          this.message =
+            `地震かも？\n\n震度レポート\n${data.time.toLocaleString()}\n最大震度:${
+              this.earthQuakeIndex[data.max_index + 1]
+            }\n\n${
+              data.intensity_list.map((intensity) =>
+                `震度${this.earthQuakeIndex[intensity.index + 1]}: ${
+                  intensity.region_list.join(" ")
+                }`
+              ).join("\n")
+            }`;
+        }
+        if (rawDataJSON.type == "eew" && false) { // これ使わなさそうだしとりあえず入らないようにした
+          const data: 緊急地震速報 = {
+            type: rawDataJSON.type,
+            time: new Date(parseInt(rawDataJSON.time)),
+            report: rawDataJSON.report,
+            epicenter: rawDataJSON.epicenter,
+            depth: rawDataJSON.depth,
+            magnitude: rawDataJSON.magnitude,
+            latitude: rawDataJSON.latitude,
+            longitude: rawDataJSON.longitude,
+            intensity: rawDataJSON.intensity,
+            index: rawDataJSON.index,
+          };
 
-					if (data.report == '1') {
-						this.message = `**TEST TEST TEST TEST**\n地震かも？\n\n緊急地震速報\n${data.time.toLocaleString()}\n\n第${data.report}報\n震源地: ${data.epicenter}\n震源の深さ: ${data.depth}\n地震の規模(M): ${data.magnitude}\n緯度: ${data.latitude}\n経度: ${data.longitude}\n予想される最大震度(？): ${data.intensity}\n`;
-					}
-				}
-				console.log(rawDataJSON); // デバッグ用
+          if (data.report == "1") {
+            this.message =
+              `**TEST TEST TEST TEST**\n地震かも？\n\n緊急地震速報\n${data.time.toLocaleString()}\n\n第${data.report}報\n震源地: ${data.epicenter}\n震源の深さ: ${data.depth}\n地震の規模(M): ${data.magnitude}\n緯度: ${data.latitude}\n経度: ${data.longitude}\n予想される最大震度(？): ${data.intensity}\n`;
+          }
+        }
+        console.log(rawDataJSON); // デバッグ用
         this.returnResponse(res, "ok");
         if (this.message) {
           this.ai.post({
-						cw: "試験運用中！！！！！",
+            cw: "試験運用中！！！！！",
             visibility: "home",
             text: this.message,
           });
