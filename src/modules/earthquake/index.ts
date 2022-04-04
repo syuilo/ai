@@ -86,7 +86,7 @@ export default class extends Module {
               `震度${this.earthQuakeIndex[intensity.index + 1]}: ${intensity.region_list.join(" ")}`
             ).join("\n")
           }`;
-        } if (rawDataJSON.type == 'eew' && false) {
+        } if (rawDataJSON.type == 'eew' && false) { // これ使わなさそうだしとりあえず入らないようにした
 					const data: 緊急地震速報 = {
 						type: rawDataJSON.type,
 						time: new Date(parseInt(rawDataJSON.time)),
