@@ -35,6 +35,7 @@ import SleepReportModule from './modules/sleep-report';
 import NotingModule from './modules/noting';
 // import PollModule from './modules/poll';
 import ReminderModule from './modules/reminder';
+import earthquake from './modules/earthquake';
 import DicModule from './modules/dic';
 import menuModule from './modules/menu';
 import GetColorModule from './modules/color';
@@ -96,6 +97,7 @@ promiseRetry(retry => {
 		new DicModule(),
 		new menuModule(),
 		new GetColorModule(),
+		new earthquake(),
 	]);
 }).catch(e => {
 	log(chalk.red('Failed to fetch the account'));
