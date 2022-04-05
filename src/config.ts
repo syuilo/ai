@@ -12,6 +12,7 @@ type Config = {
 	mecab?: string;
 	mecabDic?: string;
 	memoryDir?: string;
+	earthQuakeMonitorPort?: number;
 };
 
 const config = require('../config.json');
