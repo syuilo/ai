@@ -91,6 +91,7 @@ export default class extends Module {
 					if (rawDataJSON.max_index >= this.thresholdVal - 1) {
 						const data: 震度レポート = {
 							type: rawDataJSON.type,
+							// 日付時刻は、yyyy-mm-dd hh:mm:ss
 							time: new Date(parseInt(rawDataJSON.time)),
 							max_index: rawDataJSON.max_index,
 							intensity_list: rawDataJSON.intensity_list,
