@@ -48,7 +48,7 @@ export default class extends Module {
   public readonly name = "earthquake";
   private message: string = "";
 
-  private earthQuakeIndex: string[] = [
+  private earthquakeIntensityIndex: string[] = [
     "0未満",
     "0",
     "1",
@@ -58,6 +58,7 @@ export default class extends Module {
     "5弱",
     "5強",
     "6弱",
+		"6強",
     "7",
   ];
 
@@ -94,10 +95,10 @@ export default class extends Module {
           };
           this.message =
             `地震かも？\n\n震度レポート\n${data.time.toLocaleString()}\n最大震度:${
-              this.earthQuakeIndex[data.max_index + 1]
+              this.earthquakeIntensityIndex[data.max_index + 1]
             }\n\n${
               data.intensity_list.map((intensity) =>
-                `震度${this.earthQuakeIndex[intensity.index + 1]}: ${
+                `震度${this.earthquakeIntensityIndex[intensity.index + 1]}: ${
                   intensity.region_list.join(" ")
                 }`
               ).join("\n")
@@ -122,7 +123,12 @@ export default class extends Module {
               `**TEST TEST TEST TEST**\n地震かも？\n\n緊急地震速報\n${data.time.toLocaleString()}\n\n第${data.report}報\n震源地: ${data.epicenter}\n震源の深さ: ${data.depth}\n地震の規模(M): ${data.magnitude}\n緯度: ${data.latitude}\n経度: ${data.longitude}\n予想される最大震度(？): ${data.intensity}\n`;
           }
         }
-        console.log(rawDataJSON); // デバッグ用
+				
+        console.table(rawDataJSON); // デバッグ用
+				if (rawDataJSON.type == 'intensity_report') {
+					console.table(rawDataJSON.region_list); // デバッグ用
+				}
+
         this.returnResponse(res, "ok");
         if (this.message) {
           this.ai.post({
