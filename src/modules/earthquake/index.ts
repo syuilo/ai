@@ -48,6 +48,7 @@ export default class extends Module {
   public readonly name = "earthquake";
   private message: string = "";
 
+	private thresholdVal = 0; // 下の配列の添え字に相当する値。しきい値以上のものについて通知を出す。
   private earthquakeIntensityIndex: string[] = [
     "0未満",
     "0",
@@ -87,22 +88,24 @@ export default class extends Module {
         );
 
         if (rawDataJSON.type == "intensity_report") {
-          const data: 震度レポート = {
-            type: rawDataJSON.type,
-            time: new Date(parseInt(rawDataJSON.time)),
-            max_index: rawDataJSON.max_index,
-            intensity_list: rawDataJSON.intensity_list,
-          };
-          this.message =
-            `地震かも？\n\n震度レポート\n${data.time.toLocaleString()}\n最大震度:${
-              this.earthquakeIntensityIndex[data.max_index + 1]
-            }\n\n${
-              data.intensity_list.map((intensity) =>
-                `震度${this.earthquakeIntensityIndex[intensity.index + 1]}: ${
-                  intensity.region_list.join(" ")
-                }`
-              ).join("\n")
-            }`;
+					if (rawDataJSON.max_index >= this.thresholdVal) {
+						const data: 震度レポート = {
+							type: rawDataJSON.type,
+							time: new Date(parseInt(rawDataJSON.time)),
+							max_index: rawDataJSON.max_index,
+							intensity_list: rawDataJSON.intensity_list,
+						};
+						this.message =
+							`地震かも？\n\n震度レポート\n${data.time.toLocaleString()}\n最大震度:${
+								this.earthquakeIntensityIndex[data.max_index + 1]
+							}\n\n${
+								data.intensity_list.map((intensity) =>
+									`震度${this.earthquakeIntensityIndex[intensity.index + 1]}: ${
+										intensity.region_list.join(" ")
+									}`
+								).join("\n")
+							}`;
+					}
         }
         if (rawDataJSON.type == "eew" && false) { // これ使わなさそうだしとりあえず入らないようにした
           const data: 緊急地震速報 = {
@@ -123,7 +126,7 @@ export default class extends Module {
               `**TEST TEST TEST TEST**\n地震かも？\n\n緊急地震速報\n${data.time.toLocaleString()}\n\n第${data.report}報\n震源地: ${data.epicenter}\n震源の深さ: ${data.depth}\n地震の規模(M): ${data.magnitude}\n緯度: ${data.latitude}\n経度: ${data.longitude}\n予想される最大震度(？): ${data.intensity}\n`;
           }
         }
-				
+
         console.table(rawDataJSON); // デバッグ用
 				if (rawDataJSON.type == 'intensity_report') {
 					console.table(rawDataJSON.region_list); // デバッグ用
