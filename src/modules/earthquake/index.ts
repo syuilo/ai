@@ -80,7 +80,7 @@ export default class extends Module {
       const rawDataString = Buffer.concat(buffers).toString();
       // rawDataString について、Unicodeエスケープシーケンスが含まれていたら通常の文字列に変換する
       // JSONでなければreturn falseする
-      if (rawDataString.match(/\\u[0-9a-f]{4}/) || true) {
+      if (rawDataString.match(/\\u[0-9a-f]{4}/)) {
         const rawDataJSON = JSON.parse(
           rawDataString.replace(/\\u([\d\w]{4})/g, (match, p1) => {
             return String.fromCharCode(parseInt(p1, 16));
