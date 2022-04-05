@@ -48,7 +48,7 @@ export default class extends Module {
   public readonly name = "earthquake";
   private message: string = "";
 
-	private thresholdVal = 0; // 下の配列の添え字に相当する値。しきい値以上のものについて通知を出す。
+	private thresholdVal = 5; // 下の配列の添え字に相当する値。しきい値以上のものについて通知を出す。
   private earthquakeIntensityIndex: string[] = [
     "0未満",
     "0",
@@ -88,7 +88,7 @@ export default class extends Module {
         );
 
         if (rawDataJSON.type == "intensity_report") {
-					if (rawDataJSON.max_index >= this.thresholdVal) {
+					if (rawDataJSON.max_index >= this.thresholdVal - 1) {
 						const data: 震度レポート = {
 							type: rawDataJSON.type,
 							time: new Date(parseInt(rawDataJSON.time)),
@@ -96,7 +96,7 @@ export default class extends Module {
 							intensity_list: rawDataJSON.intensity_list,
 						};
 						this.message =
-							`地震かも？\n\n震度レポート\n${data.time.toLocaleString()}\n最大震度:${
+							`地震かも？\n\n震度レポート\n${data.time.toLocaleString()}\n最大震度: ${
 								this.earthquakeIntensityIndex[data.max_index + 1]
 							}\n\n${
 								data.intensity_list.map((intensity) =>
@@ -129,7 +129,7 @@ export default class extends Module {
 
         console.table(rawDataJSON); // デバッグ用
 				if (rawDataJSON.type == 'intensity_report') {
-					console.table(rawDataJSON.region_list); // デバッグ用
+					console.table(rawDataJSON.intensity_list); // デバッグ用
 				}
 
         this.returnResponse(res, "ok");
