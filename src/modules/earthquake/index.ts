@@ -26,7 +26,7 @@ interface 緊急地震速報キャンセル {
 
 interface 震度レポート {
   type: "intensity_report";
-  time: Date;
+  time: string;
   max_index: number;
   intensity_list: {
     intensity: string;
@@ -89,21 +89,24 @@ export default class extends Module {
 
         if (rawDataJSON.type == "intensity_report") {
 					if (rawDataJSON.max_index >= this.thresholdVal - 1) {
+						// 日付時刻は、yyyy-mm-dd hh:mm:ss
+						const time = new Date(parseInt(rawDataJSON.time));
+						const timeString = `${time.getFullYear()}-${(time.getMonth() +
+							1).toString().padStart(2, '0')}-${time.getDate().toString().padStart(2, '0')} ${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}:${time.getSeconds().toString().padStart(2, '0')}`;
 						const data: 震度レポート = {
 							type: rawDataJSON.type,
-							// 日付時刻は、yyyy-mm-dd hh:mm:ss
-							time: new Date(parseInt(rawDataJSON.time)),
+							time: timeString,
 							max_index: rawDataJSON.max_index,
 							intensity_list: rawDataJSON.intensity_list,
 						};
 						this.message =
-							`地震かも？\n\n震度レポート\n${data.time.toLocaleString()}\n最大震度: ${
+							`地震かも？\n\`\`\`\n震度レポート\n${data.time}\n最大震度: ${
 								this.earthquakeIntensityIndex[data.max_index + 1]
 							}\n\n${
 								data.intensity_list.map((intensity) =>
 									`震度${this.earthquakeIntensityIndex[intensity.index + 1]}: ${
 										intensity.region_list.join(" ")
-									}`
+									}\n\`\`\``
 								).join("\n")
 							}`;
 					}
