@@ -1,4 +1,8 @@
 {
 	"typescript.tsdk": "node_modules\\typescript\\lib",
-	"C_Cpp.errorSquiggles": "Disabled"
+	"C_Cpp.errorSquiggles": "Disabled",
+	"cSpell.words": [
+		"lokijs",
+		"todos"
+	]
 }
