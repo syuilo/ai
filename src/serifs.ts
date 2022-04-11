@@ -339,6 +339,8 @@ export default {
 	reminder: {
 		invalid: 'うーん...？',
 
+		invalidVisibility: "公開範囲の指定を変えてみて",
+
 		reminds: 'やること一覧です！',
 
 		notify: (name) => name ? `${name}、これやりましたか？` : `これやりましたか？`,

@@ -59,8 +59,13 @@ export default class extends Module {
 		const separatorIndex = text.indexOf(' ') > -1 ? text.indexOf(' ') : text.indexOf('\n');
 		const thing = text.substr(separatorIndex + 1).trim();
 
-		if (thing === '' && msg.quoteId == null || msg.visibility === 'followers') {
+		if (thing === '' && msg.quoteId == null) {
 			msg.reply(serifs.reminder.invalid);
+			return true;
+		}
+
+		if (msg.visibility === 'followers') {
+			msg.reply(serifs.reminder.invalidVisibility);
 			return {
 				reaction: '🆖',
 				immediate: true,
