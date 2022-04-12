@@ -48,7 +48,7 @@ export default class extends Module {
   public readonly name = "earthquake";
   private message: string = "";
 
-	private thresholdVal = 0; // 下の配列の添え字に相当する値。しきい値以上のものについて通知を出す。 普段は5(震度3)
+	private thresholdVal = 5; // 下の配列の添え字に相当する値。しきい値以上のものについて通知を出す。 普段は5(震度3)
   private earthquakeIntensityIndex: string[] = [
     "0未満",
     "0",
