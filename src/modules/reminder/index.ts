@@ -123,7 +123,7 @@ export default class extends Module {
 			msg.reply(done ? getSerif(serifs.reminder.done(msg.friend.name)) : serifs.reminder.cancel);
 			return;
 		} else if (isOneself === false) {
-			msg.reply("イタズラはめっですよ！");
+			msg.reply(serifs.reminder.doneFromInvalidUser);
 			return;
 		} else {
 			if (msg.isDm) this.unsubscribeReply(key);
