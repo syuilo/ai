@@ -1,61 +1,19 @@
-<h1><p align="center"><img src="./ai.svg" alt="藍" height="200"></p></h1>
-<p align="center">An Ai for Misskey. <a href="./torisetu.md">About Ai</a></p>
+# フォーク元と違うところ
 
-## これなに
-Misskey用の日本語Botです。
+- 一部の絵文字リアクション機能
+- ねこ召喚(summonCat)
+- ランダムカラーピッカー(color)
+- ランダムにクックパッドからレシピを引っ張ってくる(menu)
+- 強震モニター Extension と連携して震度レポートのノート(earthquake)
 
-## インストール
-> Node.js と npm と MeCab (オプション) がインストールされている必要があります。
+# メモ
 
-まず適当なディレクトリに `git clone` します。
-次にそのディレクトリに `config.json` を作成します。中身は次のようにします:
-``` json
-{
-	"host": "https:// + あなたのインスタンスのURL (末尾の / は除く)",
-	"i": "藍として動かしたいアカウントのアクセストークン",
-	"master": "管理者のユーザー名(オプション)",
-	"notingEnabled": "ランダムにノートを投稿する機能を無効にする場合は false を入れる",
-	"keywordEnabled": "キーワードを覚える機能 (MeCab が必要) を有効にする場合は true を入れる (無効にする場合は false)",
-	"chartEnabled": "チャート機能を無効化する場合は false を入れてください",
-	"reversiEnabled": "藍とリバーシで対局できる機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"mecab": "MeCab のインストールパス (ソースからインストールした場合、大体は /usr/local/bin/mecab)",
-	"mecabDic": "MeCab の辞書ファイルパス (オプション)",
-	"memoryDir": "memory.jsonの保存先（オプション、デフォルトは'.'（レポジトリのルートです））"
-}
-```
-`npm install` して `npm run build` して `npm start` すれば起動できます
+## 強震モニターについて
 
-## Dockerで動かす
-まず適当なディレクトリに `git clone` します。
-次にそのディレクトリに `config.json` を作成します。中身は次のようにします:
-（MeCabの設定、memoryDirについては触らないでください）
-``` json
-{
-	"host": "https:// + あなたのインスタンスのURL (末尾の / は除く)",
-	"i": "藍として動かしたいアカウントのアクセストークン",
-	"master": "管理者のユーザー名(オプション)",
-	"notingEnabled": "ランダムにノートを投稿する機能を無効にする場合は false を入れる",
-	"keywordEnabled": "キーワードを覚える機能 (MeCab が必要) を有効にする場合は true を入れる (無効にする場合は false)",
-	"chartEnabled": "チャート機能を無効化する場合は false を入れてください",
-	"reversiEnabled": "藍とリバーシで対局できる機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"mecab": "/usr/bin/mecab",
-	"mecabDic": "/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd/",
-	"memoryDir": "data"
-}
-```
-`docker-compose build` して `docker-compose up` すれば起動できます。
-`docker-compose.yml` の `enable_mecab` を `0` にすると、MeCabをインストールしないようにもできます。（メモリが少ない環境など）
+http サーバーを起動させて、震度レポートを受け取るような仕組み。  
+config.json にポート番号を指定、そのポート番号に対して、震度レポートを受け取るようにする。  
+リバースプロキシなんかを使ってたりします。
 
-## フォント
-一部の機能にはフォントが必要です。藍にはフォントは同梱されていないので、ご自身でフォントをインストールディレクトリに`font.ttf`という名前で設置してください。
+## ランダムカラーピッカー
 
-## 記憶
-藍は記憶の保持にインメモリデータベースを使用しており、藍のインストールディレクトリに `memory.json` という名前で永続化されます。
-
-## ライセンス
-MIT
-
-## Awards
-<img src="./WorksOnMyMachine.png" alt="Works on my machine" height="120">
+ランダムに決定した色の 1px \* 1px の画像をアップロードしてます。

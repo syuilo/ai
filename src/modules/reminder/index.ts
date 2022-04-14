@@ -67,6 +67,14 @@ export default class extends Module {
 			};
 		}
 
+		if (msg.visibility === 'followers') {
+			msg.reply(serifs.reminder.invalidVisibility);
+			return {
+				reaction: '🆖',
+				immediate: true,
+			};
+		}
+
 		const remind = this.reminds.insertOne({
 			id: msg.id,
 			userId: msg.userId,

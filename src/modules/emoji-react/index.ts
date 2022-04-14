@@ -28,13 +28,35 @@ export default class extends Module {
 
 		const react = async (reaction: string, immediate = false) => {
 			if (!immediate) {
-				await delay(1500);
+				await delay(2500);
 			}
 			this.ai.api('notes/reactions/create', {
 				noteId: note.id,
 				reaction: reaction
 			});
 		};
+
+		// /う[〜|ー]*んこ/g]にマッチしたときの処理
+		if (note.text.match(/う[〜|ー]*んこ/g) || includes(note.text, ['unko'])) {
+			return await react(':anataima_unkotte_iimashitane:');
+		}
+
+		if (note.text.match(/う[〜|ー]*んち/g)) {
+			return await react(':erait:');
+		}
+
+		if (includes(note.text, ['いい']) && (includes(note.text, ["?"]) || includes(note.text, ["？"]))) {
+            // 50%の確率で":dame:"または":yattare:"を返す
+            if (Math.random() < 0.5) {
+                return react(':dame:');
+            } else {
+                return react(':yattare:');
+            }
+        }
+
+		if (includes(note.text, ['どこ'])) {
+			return await react(':t_ofuton:');
+		}
 
 		const customEmojis = note.text.match(/:([^\n:]+?):/g);
 		if (customEmojis) {
@@ -68,6 +90,17 @@ export default class extends Module {
 		if (includes(note.text, ['ぷりん'])) return react('🍮');
 		if (includes(note.text, ['寿司', 'sushi']) || note.text === 'すし') return react('🍣');
 
-		if (includes(note.text, ['藍'])) return react('🙌');
+		if (includes(note.text, ['ずなず']) || includes(note.text, ['ずにゃず'])) return react('🙌');
+		if (includes(note.text, ['なず']) || includes(note.text, ['にゃず'])) return react(':google_hart:');
+
+		const gameReact = [
+			':ysvi:',
+			':ysf:',
+			':yso:'
+		]
+		if (includes(note.text, ['おゲームするかしら'])){
+			// gameReactの中からランダムに選択
+			return react(gameReact[Math.floor(Math.random() * gameReact.length)]);
+		}
 	}
 }
