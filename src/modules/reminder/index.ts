@@ -149,7 +149,12 @@ export default class extends Module {
 					text: acct(friend.doc.user) + ' ' + serifs.reminder.notify(friend.name)
 				});
 			} catch (err) {
-				// TODO: renote対象が消されていたらリマインダー解除
+				// renote対象が消されていたらリマインダー解除
+				if (err.statusCode === 400 && err.error.error.message === 'No such renote target.') {
+					this.unsubscribeReply(remind.thing == null && remind.quoteId ? remind.quoteId : remind.id);
+					this.reminds.remove(remind);
+					return;
+				}
 				return;
 			}
 		}
