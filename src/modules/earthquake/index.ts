@@ -106,9 +106,9 @@ export default class extends Module {
 								data.intensity_list.map((intensity) =>
 									`震度${this.earthquakeIntensityIndex[intensity.index + 1]}: ${
 										intensity.region_list.join(" ")
-									}\n\`\`\``
+									}`
 								).join("\n")
-							}`;
+							}\n\`\`\``;
 					}
         }
         if (rawDataJSON.type == "eew" && false) { // これ使わなさそうだしとりあえず入らないようにした
