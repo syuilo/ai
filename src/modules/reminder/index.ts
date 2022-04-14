@@ -59,9 +59,12 @@ export default class extends Module {
 		const separatorIndex = text.indexOf(' ') > -1 ? text.indexOf(' ') : text.indexOf('\n');
 		const thing = text.substr(separatorIndex + 1).trim();
 
-		if (thing === '' && msg.quoteId == null) {
+		if (thing === '' && msg.quoteId == null || msg.visibility === 'followers') {
 			msg.reply(serifs.reminder.invalid);
-			return true;
+			return {
+				reaction: '🆖',
+				immediate: true,
+			};
 		}
 
 		if (msg.visibility === 'followers') {
@@ -157,7 +160,12 @@ export default class extends Module {
 					text: acct(friend.doc.user) + ' ' + serifs.reminder.notify(friend.name)
 				});
 			} catch (err) {
-				// TODO: renote対象が消されていたらリマインダー解除
+				// renote対象が消されていたらリマインダー解除
+				if (err.statusCode === 400 && err.error.error.message === 'No such renote target.') {
+					this.unsubscribeReply(remind.thing == null && remind.quoteId ? remind.quoteId : remind.id);
+					this.reminds.remove(remind);
+					return;
+				}
 				return;
 			}
 		}
