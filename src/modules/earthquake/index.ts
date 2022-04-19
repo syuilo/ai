@@ -72,6 +72,7 @@ export default class extends Module {
   @autobind
   private async createListenServer() {
     http.createServer(async (req, res) => {
+      this.message = "";
       const buffers: Buffer[] = [];
       for await (const chunk of req) {
         buffers.push(chunk);
