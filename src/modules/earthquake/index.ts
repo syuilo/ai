@@ -145,13 +145,6 @@ export default class extends Module {
             text: this.message,
           });
         }
-      } else {
-				this.ai.post({
-					cw: "試験運用中！！！！！",
-					visibility: "home",
-					text: 'eq:デボビゲゴ',
-				});
-        this.returnResponse(res, "debobigego");
       }
     }).listen(config.earthQuakeMonitorPort || 9999);
   }
