@@ -157,7 +157,7 @@ export default class extends Module {
 				});
 			} catch (err) {
 				// renote対象が消されていたらリマインダー解除
-				if (err.statusCode === 400 && err.error.error.message === 'No such renote target.') {
+				if (err.statusCode === 400) {
 					this.unsubscribeReply(remind.thing == null && remind.quoteId ? remind.quoteId : remind.id);
 					this.reminds.remove(remind);
 					return;
