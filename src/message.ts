@@ -34,6 +34,10 @@ export default class Message {
 		return this.messageOrNote.renoteId;
 	}
 
+	public get visibility(): string {
+		return this.messageOrNote.visibility;
+	}
+
 	/**
 	 * メンション部分を除いたテキスト本文
 	 */
