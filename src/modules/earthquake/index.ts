@@ -112,7 +112,7 @@ export default class extends Module {
 							}\n\`\`\``;
 					}
         }
-        if (rawDataJSON.type == "eew" && false) { // これ使わなさそうだしとりあえず入らないようにした
+        if (rawDataJSON.type == "eew") { // これ使わなさそうだしとりあえず入らないようにした
           const data: 緊急地震速報 = {
             type: rawDataJSON.type,
             time: new Date(parseInt(rawDataJSON.time)),
@@ -126,9 +126,10 @@ export default class extends Module {
             index: rawDataJSON.index,
           };
 
-          if (data.report == "1") {
-            this.message =
-              `**TEST TEST TEST TEST**\n地震かも？\n\n緊急地震速報\n${data.time.toLocaleString()}\n\n第${data.report}報\n震源地: ${data.epicenter}\n震源の深さ: ${data.depth}\n地震の規模(M): ${data.magnitude}\n緯度: ${data.latitude}\n経度: ${data.longitude}\n予想される最大震度(？): ${data.intensity}\n`;
+          if (data.report == "final") { //  && data.index >= this.thresholdVal - 1
+						const timeString = `${data.time.getFullYear()}-${(data.time.getMonth() +
+							1).toString().padStart(2, '0')}-${data.time.getDate().toString().padStart(2, '0')} ${data.time.getHours().toString().padStart(2, '0')}:${data.time.getMinutes().toString().padStart(2, '0')}:${data.time.getSeconds().toString().padStart(2, '0')}`;
+            this.message = `\`\`\`\n緊急地震速報(最終報)\n${timeString}\n震源地: ${data.epicenter}\n震源の深さ: ${data.depth}km\n最大震度: ${this.earthquakeIntensityIndex[data.index + 1]}\nマグニチュード: ${data.magnitude}\n\`\`\``;
           }
         }
 
