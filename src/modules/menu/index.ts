@@ -1,7 +1,6 @@
 import autobind from 'autobind-decorator';
 import Module from '@/module';
 import Message from '@/message';
-import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
 
 export default class extends Module {
@@ -40,22 +39,4 @@ export default class extends Module {
             return false;
         }
     }
-}
-
-function testUrl(url: string) {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-        xhr.open('GET', url)
-        xhr.onload = () => {
-            if (xhr.status === 200) {
-                resolve(true)
-            } else {
-                reject(false)
-            }
-        }
-        xhr.onerror = () => {
-            reject(false)
-        }
-        xhr.send()
-    })
 }
