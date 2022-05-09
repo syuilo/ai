@@ -21,12 +21,10 @@ export default class extends Module {
         if (msg.text && (msg.text.match(/(cat|Cat|ねこ|ネコ|にゃ[〜|ー]*ん)/g))) {
             const message = "にゃ～ん！";
 
-            setTimeout(async () => {
-                const file = await this.getCatImage();
-                this.log(file);
-                this.log('Replying...');
-                msg.reply(message, { file });
-            }, 500);
+            const file = await this.getCatImage();
+            this.log(file);
+            this.log('Replying...');
+            msg.reply(message, { file });
 
             return {
                 reaction: ':blobcatmeltnomblobcatmelt:'
@@ -40,10 +38,10 @@ export default class extends Module {
     private async getCatImage(): Promise<any> {
         // https://aws.random.cat/meowにGETリクエストを送る
         // fileに画像URLが返ってくる
-        const res = await fetch('https://aws.random.cat/meow');
+        const res = await fetch('https://api.thecatapi.com/v1/images/search');
         const json = await res.json();
         console.table(json);
-        const fileUri = json.file;
+        const fileUri = json[0].url;
         // 拡張子を取り除く
         const fileName = fileUri.split('/').pop().split('.')[0];
         const rawFile = await fetch(fileUri);
