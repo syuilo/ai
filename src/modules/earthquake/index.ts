@@ -129,7 +129,7 @@ export default class extends Module {
           if (data.report == "final") { //  && data.index >= this.thresholdVal - 1
 						const timeString = `${data.time.getFullYear()}-${(data.time.getMonth() +
 							1).toString().padStart(2, '0')}-${data.time.getDate().toString().padStart(2, '0')} ${data.time.getHours().toString().padStart(2, '0')}:${data.time.getMinutes().toString().padStart(2, '0')}:${data.time.getSeconds().toString().padStart(2, '0')}`;
-            this.message = `\`\`\`\n緊急地震速報(最終報)\n${timeString}\n震源地: ${data.epicenter}\n震源の深さ: ${data.depth}km\n最大震度: ${this.earthquakeIntensityIndex[data.index + 1]}\nマグニチュード: ${data.magnitude}\n\`\`\``;
+            this.message = `\`\`\`\n緊急地震速報(最終報)\n${timeString}\n震源地: ${data.epicenter}\n震源の深さ: ${data.depth}\n最大予測震度: ${this.earthquakeIntensityIndex[data.index + 1]}\nマグニチュード: ${data.magnitude}\n\`\`\``;
           }
         }
 
