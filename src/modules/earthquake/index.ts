@@ -141,7 +141,6 @@ export default class extends Module {
         this.returnResponse(res, "ok");
         if (this.message) {
           this.ai.post({
-            cw: "試験運用中！！！！！",
             visibility: "home",
             text: this.message,
           });
