@@ -71,6 +71,7 @@ promiseRetry(retry => {
 	// 藍起動
 	new 藍(account, [
 		new CoreModule(),
+		new ReminderModule(),
 		new summonCat(),
 		new EmojiModule(),
 		new EmojiReactModule(),
@@ -93,7 +94,6 @@ promiseRetry(retry => {
 		new SleepReportModule(),
 		new NotingModule(),
 		// new PollModule(),
-		new ReminderModule(),
 		new DicModule(),
 		new menuModule(),
 		new GetColorModule(),
