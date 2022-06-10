@@ -72,7 +72,7 @@ export default class extends Module {
 
 		this.ai.post({
 			visibility: "home",
-			"localOnly": true,
+			localOnly: true,
 			text: serifs.server.cpu
 		});
 
