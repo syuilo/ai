@@ -36,6 +36,27 @@ export type Meta = {
 	lastWakingAt: number;
 };
 
+type postParam = {
+	text: string;
+	visibility?: 'public' | 'home' | 'followers' | 'specified';
+	visibleUserIds?: string[];
+	cw? : string | null;
+	localOnly?: boolean;
+	noExtractMentions?: boolean;
+	noExtractHashtags?: boolean;
+	noExtractEmojis?: boolean;
+	fileIds?: string[];
+	replyId?: string;
+	renoteId?: string;
+	channelId?: string;
+	poll?: {
+		choices: string[];
+		multiple?: boolean;
+		expiresAt?: number | null;
+		expiredAfter?: number | null;
+	}
+}
+
 /**
  * 藍
  */
@@ -374,7 +395,7 @@ export default class 藍 {
 	 * 投稿します
 	 */
 	@autobind
-	public async post(param: any) {
+	public async post(param: postParam) {
 		const res = await this.api('notes/create', param);
 		return res.createdNote;
 	}
