@@ -16,9 +16,13 @@ export default class extends Module {
 	private async mentionHook(msg: Message) {
 		if (msg.text && (msg.text.includes('ping') || msg.text.includes('おい'))) {
 			if (msg.text.includes('おい')) {
-				msg.reply('はい。。。', {
-					immediate: true
-				});
+				if (this.ai.isMaster(msg.userId)) {
+					msg.reply('はい。。。', {
+						immediate: true
+					});
+				} else {
+					return false;
+				}
 			} else {
 				msg.reply('PONG!', {
 					immediate: true
