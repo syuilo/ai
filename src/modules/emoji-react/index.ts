@@ -91,7 +91,12 @@ export default class extends Module {
 		if (includes(note.text, ['寿司', 'sushi']) || note.text === 'すし') return react('🍣');
 
 		if (includes(note.text, ['ずなず']) || includes(note.text, ['ずにゃず'])) return react('🙌');
-		if (includes(note.text, ['なず']) || includes(note.text, ['にゃず'])) return react(':google_hart:');
+		if (includes(note.text, ['なず']) || includes(note.text, ['にゃず'])) {
+			if (this.ai.isMaster(note.userId)) {
+				return react(':google_hart:')
+			}
+			return react(':oltu:');
+		};
 
 		const gameReact = [
 			':ysvi:',

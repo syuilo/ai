@@ -85,7 +85,7 @@ promiseRetry(retry => {
 		new PingModule(),
 		new WelcomeModule(),
 		new ServerModule(),
-		new FollowModule(),
+		// new FollowModule(),
 		new BirthdayModule(),
 		new ValentineModule(),
 		new KeywordModule(),

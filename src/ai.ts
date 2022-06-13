@@ -507,4 +507,12 @@ export default class 藍 {
 
 		this.meta.update(rec);
 	}
+
+	/**
+	 * ご主人様かどうかを返します
+	 */
+	@autobind
+	public isMaster(userId: User['id']): boolean {
+		return config.masterID === userId;
+	}
 }
