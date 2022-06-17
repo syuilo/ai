@@ -442,6 +442,7 @@ export const items = [
 	'メビウスの輪',
 	'オリハルコン',
 	'ヘドロ',
+	'グレーチング',
 ];
 
 export const and = [
