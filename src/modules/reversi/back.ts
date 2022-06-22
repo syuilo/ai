@@ -14,7 +14,7 @@ import config from '@/config';
 import serifs from '@/serifs';
 import { User } from '@/misskey/user';
 
-function getUserName(user) {
+function getUserName(user: User) {
 	return user.name || user.username;
 }
 
@@ -45,7 +45,7 @@ class Session {
 	/**
 	 * 最大のターン数
 	 */
-	private maxTurn;
+	private maxTurn: number;
 
 	/**
 	 * 現在のターン数
@@ -137,7 +137,7 @@ class Session {
 			if (pix == 'null') return;
 
 			const [x, y] = this.o.transformPosToXy(i);
-			const get = (x, y) => {
+			const get = (x: number, y: number) => {
 				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 'null';
 				return this.o.mapDataGet(this.o.transformXyToPos(x, y));
 			};

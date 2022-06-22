@@ -4,6 +4,7 @@ import Module from '@/module';
 import config from '@/config';
 import serifs from '@/serifs';
 import { mecab } from './mecab';
+import { Note } from '@/misskey/note';
 
 function kanaToHira(str: string) {
 	return str.replace(/[\u30a1-\u30f6]/g, match => {
@@ -39,7 +40,7 @@ export default class extends Module {
 			limit: 30
 		});
 
-		const interestedNotes = tl.filter(note =>
+		const interestedNotes = tl.filter((note: Note) =>
 			note.userId !== this.ai.account.id &&
 			note.text != null &&
 			note.cw == null);

@@ -1,5 +1,6 @@
 import * as gen from 'random-seed';
 import { CellType } from './maze';
+import {mazeSize} from './index'
 
 const cellVariants = {
 	void: {
@@ -77,19 +78,22 @@ const cellVariants = {
 
 type Dir = 'left' | 'right' | 'top' | 'bottom';
 
-export function genMaze(seed, complexity?) {
+export function genMaze(seed: string, complexity: mazeSize): CellType[][] {
 	const rand = gen.create(seed);
 
-	let mazeSize;
-	if (complexity) {
-		if (complexity === 'veryEasy') mazeSize = 3 + rand(3);
-		if (complexity === 'easy') mazeSize = 8 + rand(8);
-		if (complexity === 'hard') mazeSize = 22 + rand(13);
-		if (complexity === 'veryHard') mazeSize = 40 + rand(20);
-		if (complexity === 'ai') mazeSize = 100;
-	} else {
-		mazeSize = 11 + rand(21);
+	function decisionSize(complexity: mazeSize): number {
+		if (complexity) {
+			if (complexity === 'veryEasy') return 3 + rand(3);
+			if (complexity === 'easy') return 8 + rand(8);
+			if (complexity === 'hard') return 22 + rand(13);
+			if (complexity === 'veryHard') return 40 + rand(20);
+			if (complexity === 'ai') return 100;
+		}
+		return 11 + rand(21);
 	}
+
+	let mazeSize: number = decisionSize(complexity);
+
 
 	const donut = rand(3) === 0;
 	const donutWidth = 1 + Math.floor(mazeSize / 8) + rand(Math.floor(mazeSize / 4));

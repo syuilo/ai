@@ -5,6 +5,7 @@ import Message from '@/message';
 import { renderChart } from './render-chart';
 import { items } from '@/vocabulary';
 import config from '@/config';
+type chartType = 'userNotes'| 'notes' | 'followers' | 'random';
 
 export default class extends Module {
 	public readonly name = 'chart';
@@ -42,7 +43,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private async genChart(type, params?): Promise<any> {
+	private async genChart(type: chartType, params?: any): Promise<any> {
 		this.log('Chart data fetching...');
 
 		let chart;
@@ -142,7 +143,7 @@ export default class extends Module {
 			this.log('Chart requested');
 		}
 
-		let type = 'random';
+		let type: chartType = 'random';
 		if (msg.includes(['フォロワー'])) type = 'followers';
 		if (msg.includes(['投稿'])) type = 'userNotes';
 

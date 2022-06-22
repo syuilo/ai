@@ -2,7 +2,7 @@ import { createCanvas } from 'canvas';
 
 const imageSize = 1; //px
 
-export function generateColorSample(r: string, g: string, b: string) {
+export function generateColorSample(r: number, g: number, b: number): Buffer {
     const canvas = createCanvas(imageSize, imageSize);
     const ctx = canvas.getContext('2d');
     ctx.antialias = 'none';

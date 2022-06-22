@@ -502,6 +502,7 @@ export default class 藍 {
 		const rec = this.getMeta();
 
 		for (const [k, v] of Object.entries(meta)) {
+			// @ts-ignore
 			rec[k] = v;
 		}
 

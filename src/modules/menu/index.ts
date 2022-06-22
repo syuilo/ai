@@ -14,7 +14,7 @@ export default class extends Module {
     }
 
     @autobind
-    private async mentionHook(msg: Message) {
+    private async mentionHook(msg: Message): Promise<boolean> {
         if (msg.text && msg.text.includes('ごはん')) {
             // 1~2535111の適当な数字を取得
             const random_number = Math.floor(Math.random() * 2535111) + 1;
@@ -35,8 +35,7 @@ export default class extends Module {
                 });
                 return true;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 }

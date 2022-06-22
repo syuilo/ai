@@ -5,6 +5,8 @@ import { genMaze } from './gen-maze';
 import { renderMaze } from './render-maze';
 import Message from '@/message';
 
+export type mazeSize = 'veryEasy' | 'easy' | 'hard' | 'veryHard' | 'ai' | undefined;
+
 export default class extends Module {
 	public readonly name = 'maze';
 
@@ -39,7 +41,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private async genMazeFile(seed, size?): Promise<any> {
+	private async genMazeFile(seed: string, size?: mazeSize): Promise<any> {
 		this.log('Maze generating...');
 		const maze = genMaze(seed, size);
 
@@ -58,7 +60,7 @@ export default class extends Module {
 	@autobind
 	private async mentionHook(msg: Message) {
 		if (msg.includes(['迷路'])) {
-			let size: string | null = null;
+			let size: mazeSize = void 0;
 			if (msg.includes(['接待'])) size = 'veryEasy';
 			if (msg.includes(['簡単', 'かんたん', '易しい', 'やさしい', '小さい', 'ちいさい'])) size = 'easy';
 			if (msg.includes(['難しい', 'むずかしい', '複雑な', '大きい', 'おおきい'])) size = 'hard';
@@ -66,7 +68,7 @@ export default class extends Module {
 			if (msg.includes(['藍']) && msg.includes(['本気'])) size = 'ai';
 			this.log('Maze requested');
 			setTimeout(async () => {
-				const file = await this.genMazeFile(Date.now(), size);
+				const file = await this.genMazeFile(Date.now().toString(), size);
 				this.log('Replying...');
 				msg.reply(serifs.maze.foryou, { file });
 			}, 3000);

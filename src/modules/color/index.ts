@@ -38,7 +38,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private async getColorSampleFile(r,g,b): Promise<any> {
+	private async getColorSampleFile(r: number,g: number,b: number): Promise<any> {
 		const colorSample = generateColorSample(r,g,b);
 
 		this.log('Image uploading...');
