@@ -1,5 +1,5 @@
 import * as gen from 'random-seed';
-import { createCanvas, NodeCanvasRenderingContext2D } from 'canvas';
+import { createCanvas, CanvasRenderingContext2D } from 'canvas';
 
 import { CellType } from './maze';
 import { themes } from './themes';
@@ -27,7 +27,7 @@ export function renderMaze(seed: string, maze: CellType[][]) {
 	ctx.fillRect(margin / 2, margin / 2, imageSize - ((margin / 2) * 2), imageSize - ((margin / 2) * 2));
 
 	// Draw
-	function drawCell(ctx: NodeCanvasRenderingContext2D, x: number, y: number, size: number, left: boolean, right: boolean, top: boolean, bottom: boolean, mark: boolean) {
+	function drawCell(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, left: boolean, right: boolean, top: boolean, bottom: boolean, mark: boolean) {
 		const wallThickness = size / 6;
 		const margin = size / 6;
 		const markerMargin = size / 3;
