@@ -147,13 +147,11 @@ export const itemPrefixes = [
 	'先進的な',
 	'レトロな',
 	'ヴィンテージ',
-	'100日後に何らかが起きる',
 	'合法',
 	'プレミア付き',
 	'デカ',
 	'ギガ',
 	'穢れた',
-	'加護を受けた',
 	'品質保証付き',
 	'AppleCare+加入済み',
 	'えっちな',
@@ -200,6 +198,7 @@ export const itemPrefixes = [
 	'うねうね',
 	'水没',
 	'燃え盛る',
+	'高圧',
 ];
 
 export const items = [
@@ -443,19 +442,17 @@ export const items = [
 	'オリハルコン',
 	'ヘドロ',
 	'グレーチング',
+	'繝九Λ縺ｮ縺ｿ縺晄ｱ',
 ];
 
 export const and = [
 	'に擬態した',
 	'入りの',
-	'が埋め込まれた',
-	'を連想させる',
 	'っぽい',
 	'に見せかけて',
 	'を虐げる',
 	'を侍らせた',
 	'が上に乗った',
-	'のそばにある',
 ];
 
 export function genItem(seedOrRng?: (() => number) | string | number) {
