@@ -444,6 +444,7 @@ export const items = [
 	'ヘドロ',
 	'グレーチング',
 	'繝九Λ縺ｮ縺ｿ縺晄ｱ',
+	'スーパーカミオカンデ',
 ];
 
 export const and = [
