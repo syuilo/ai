@@ -19,16 +19,16 @@ const kanaMap: string[][] = [
 	['ワ', 'ﾜ'], ['ヲ', 'ｦ'], ['ン', 'ﾝ'],
 	['ァ', 'ｧ'], ['ィ', 'ｨ'], ['ゥ', 'ｩ'], ['ェ', 'ｪ'], ['ォ', 'ｫ'],
 	['ッ', 'ｯ'], ['ャ', 'ｬ'], ['ュ', 'ｭ'], ['ョ', 'ｮ'],
-	['ー', 'ｰ']
+	['ー', 'ｰ'],
 ];
 
 /**
  * カタカナをひらがなに変換します
  * @param str カタカナ
- * @returns ひらがな
+ * @return ひらがな
  */
 export function katakanaToHiragana(str: string): string {
-	return str.replace(/[\u30a1-\u30f6]/g, match => {
+	return str.replace(/[\u30a1-\u30f6]/g, (match) => {
 		const char = match.charCodeAt(0) - 0x60;
 		return String.fromCharCode(char);
 	});
@@ -37,10 +37,10 @@ export function katakanaToHiragana(str: string): string {
 /**
  * ひらがなをカタカナに変換します
  * @param str ひらがな
- * @returns カタカナ
+ * @return カタカナ
  */
 export function hiraganaToKatagana(str: string): string {
-	return str.replace(/[\u3041-\u3096]/g, match => {
+	return str.replace(/[\u3041-\u3096]/g, (match) => {
 		const char = match.charCodeAt(0) + 0x60;
 		return String.fromCharCode(char);
 	});
@@ -49,14 +49,14 @@ export function hiraganaToKatagana(str: string): string {
 /**
  * 全角カタカナを半角カタカナに変換します
  * @param str 全角カタカナ
- * @returns 半角カタカナ
+ * @return 半角カタカナ
  */
 export function zenkakuToHankaku(str: string): string {
-	const reg = new RegExp('(' + kanaMap.map(x => x[0]).join('|') + ')', 'g');
+	const reg = new RegExp('(' + kanaMap.map((x) => x[0]).join('|') + ')', 'g');
 
 	return str
-		.replace(reg, match =>
-			kanaMap.find(x => x[0] == match)![1]
+		.replace(reg, (match) =>
+			kanaMap.find((x) => x[0] == match)![1],
 		)
 		.replace(/゛/g, 'ﾞ')
 		.replace(/゜/g, 'ﾟ');
@@ -65,14 +65,14 @@ export function zenkakuToHankaku(str: string): string {
 /**
  * 半角カタカナを全角カタカナに変換します
  * @param str 半角カタカナ
- * @returns 全角カタカナ
+ * @return 全角カタカナ
  */
 export function hankakuToZenkaku(str: string): string {
-	const reg = new RegExp('(' + kanaMap.map(x => x[1]).join('|') + ')', 'g');
+	const reg = new RegExp('(' + kanaMap.map((x) => x[1]).join('|') + ')', 'g');
 
 	return str
-		.replace(reg, match =>
-			kanaMap.find(x => x[1] == match)![0]
+		.replace(reg, (match) =>
+			kanaMap.find((x) => x[1] == match)![0],
 		)
 		.replace(/ﾞ/g, '゛')
 		.replace(/ﾟ/g, '゜');

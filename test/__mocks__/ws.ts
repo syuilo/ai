@@ -8,7 +8,7 @@ export class StreamingApi {
 	}
 
 	public async waitForMainChannelConnected() {
-		await expect(this.ws).toReceiveMessage("hello");
+		await expect(this.ws).toReceiveMessage('hello');
 	}
 
 	public send(message) {

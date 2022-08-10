@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import { parse } from 'twemoji-parser';
+import {parse} from 'twemoji-parser';
 const delay = require('timeout-as-promise');
 
-import { Note } from '@/misskey/note';
+import {Note} from '@/misskey/note';
 import Module from '@/module';
 import Stream from '@/stream';
 import includes from '@/utils/includes';
@@ -32,7 +32,7 @@ export default class extends Module {
 			}
 			this.ai.api('notes/reactions/create', {
 				noteId: note.id,
-				reaction: reaction
+				reaction: reaction,
 			});
 		};
 
@@ -45,14 +45,14 @@ export default class extends Module {
 			return await react(':erait:');
 		}
 
-		if (includes(note.text, ['いい']) && (includes(note.text, ["?"]) || includes(note.text, ["？"]))) {
-            // 50%の確率で":dame:"または":yattare:"を返す
-            if (Math.random() < 0.5) {
-                return react(':dame:');
-            } else {
-                return react(':yattare:');
-            }
-        }
+		if (includes(note.text, ['いい']) && (includes(note.text, ['?']) || includes(note.text, ['？']))) {
+			// 50%の確率で":dame:"または":yattare:"を返す
+			if (Math.random() < 0.5) {
+				return react(':dame:');
+			} else {
+				return react(':yattare:');
+			}
+		}
 
 		if (includes(note.text, ['どこ'])) {
 			return await react(':t_ofuton:');
@@ -68,19 +68,19 @@ export default class extends Module {
 			return react(customEmojis[0]);
 		}
 
-		const emojis = parse(note.text).map(x => x.text);
+		const emojis = parse(note.text).map((x) => x.text);
 		if (emojis.length > 0) {
 			// 絵文字が複数種類ある場合はキャンセル
 			if (!emojis.every((val, i, arr) => val === arr[0])) return;
 
 			this.log(`Emoji detected - ${emojis[0]}`);
 
-			let reaction = emojis[0];
+			const reaction = emojis[0];
 
 			switch (reaction) {
-				case '✊': return react('🖐', true);
-				case '✌': return react('✊', true);
-				case '🖐': case '✋': return react('✌', true);
+			case '✊': return react('🖐', true);
+			case '✌': return react('✊', true);
+			case '🖐': case '✋': return react('✌', true);
 			}
 
 			return react(reaction);
@@ -93,7 +93,7 @@ export default class extends Module {
 		if (includes(note.text, ['ずなず']) || includes(note.text, ['ずにゃず'])) return react('🙌');
 		if (includes(note.text, ['なず']) || includes(note.text, ['にゃず'])) {
 			if (this.ai.isMaster(note.userId)) {
-				return react(':google_hart:')
+				return react(':google_hart:');
 			}
 			return react(':oltu:');
 		};
@@ -101,9 +101,9 @@ export default class extends Module {
 		const gameReact = [
 			':ysvi:',
 			':ysf:',
-			':yso:'
-		]
-		if (includes(note.text, ['おゲームするかしら'])){
+			':yso:',
+		];
+		if (includes(note.text, ['おゲームするかしら'])) {
 			// gameReactの中からランダムに選択
 			return react(gameReact[Math.floor(Math.random() * gameReact.length)]);
 		}

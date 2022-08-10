@@ -8,7 +8,7 @@ export default class extends Module {
 	@autobind
 	public install() {
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
 		};
 	}
 
@@ -16,7 +16,7 @@ export default class extends Module {
 	private async mentionHook(msg: Message) {
 		if (msg.text && msg.text.includes('ping')) {
 			msg.reply('PONG!', {
-				immediate: true
+				immediate: true,
 			});
 			return true;
 		} else {

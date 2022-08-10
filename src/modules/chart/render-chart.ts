@@ -1,4 +1,4 @@
-import { createCanvas, registerFont } from 'canvas';
+import {createCanvas, registerFont} from 'canvas';
 
 const width = 1024 + 256;
 const height = 512 + 256;
@@ -18,7 +18,7 @@ const colors = {
 		'#69d2e7',
 		'#f38630',
 		'#f9d423',
-	]
+	],
 };
 
 const yAxisTicks = 4;
@@ -32,7 +32,7 @@ type Chart = {
 };
 
 export function renderChart(chart: Chart) {
-	registerFont('./font.ttf', { family: 'CustomFont' });
+	registerFont('./font.ttf', {family: 'CustomFont'});
 
 	const canvas = createCanvas(width, height);
 	const ctx = canvas.getContext('2d');
@@ -42,9 +42,9 @@ export function renderChart(chart: Chart) {
 	ctx.beginPath();
 	ctx.fillRect(0, 0, width, height);
 
-	let chartAreaX = margin;
+	const chartAreaX = margin;
 	let chartAreaY = margin;
-	let chartAreaWidth = width - (margin * 2);
+	const chartAreaWidth = width - (margin * 2);
 	let chartAreaHeight = height - (margin * 2);
 
 	// Draw title
@@ -100,7 +100,7 @@ export function renderChart(chart: Chart) {
 
 	for (let series = 0; series < serieses; series++) {
 		newDatasets.push({
-			data: []
+			data: [],
 		});
 	}
 

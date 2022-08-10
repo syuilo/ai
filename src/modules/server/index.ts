@@ -39,7 +39,7 @@ export default class extends Module {
 	private check() {
 		const average = (arr) => arr.reduce((a, b) => a + b) / arr.length;
 
-		const cpuPercentages = this.statsLogs.map(s => s && (s.cpu_usage || s.cpu) * 100 || 0);
+		const cpuPercentages = this.statsLogs.map((s) => s && (s.cpu_usage || s.cpu) * 100 || 0);
 		const cpuPercentage = average(cpuPercentages);
 		if (cpuPercentage >= 70) {
 			this.warn();
@@ -55,12 +55,12 @@ export default class extends Module {
 
 	@autobind
 	private warn() {
-		//#region 前に警告したときから一旦落ち着いた状態を経験していなければ警告しない
+		// #region 前に警告したときから一旦落ち着いた状態を経験していなければ警告しない
 		// 常に負荷が高いようなサーバーで無限に警告し続けるのを防ぐため
 		if (this.warned) return;
-		//#endregion
+		// #endregion
 
-		//#region 前の警告から1時間経っていない場合は警告しない
+		// #region 前の警告から1時間経っていない場合は警告しない
 		const now = Date.now();
 
 		if (this.lastWarnedAt != null) {
@@ -68,12 +68,12 @@ export default class extends Module {
 		}
 
 		this.lastWarnedAt = now;
-		//#endregion
+		// #endregion
 
 		this.ai.post({
-			visibility: "home",
+			visibility: 'home',
 			localOnly: true,
-			text: serifs.server.cpu
+			text: serifs.server.cpu,
 		});
 
 		this.warned = true;

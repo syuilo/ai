@@ -1,4 +1,4 @@
-export default function (): string {
+export default function(): string {
 	const now = new Date();
 	const y = now.getFullYear();
 	const m = now.getMonth();

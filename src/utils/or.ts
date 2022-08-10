@@ -1,12 +1,12 @@
-import { hankakuToZenkaku, katakanaToHiragana } from './japanese';
+import {hankakuToZenkaku, katakanaToHiragana} from './japanese';
 
 export default function(text: string, words: (string | RegExp)[]): boolean {
 	if (text == null) return false;
 
 	text = katakanaToHiragana(hankakuToZenkaku(text));
-	words = words.map(word => typeof word == 'string' ? katakanaToHiragana(word) : word);
+	words = words.map((word) => typeof word == 'string' ? katakanaToHiragana(word) : word);
 
-	return words.some(word => {
+	return words.some((word) => {
 		/**
 		 * テキストの余分な部分を取り除く
 		 * 例えば「藍ちゃん好き！」のようなテキストを「好き」にする

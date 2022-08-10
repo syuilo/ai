@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import 藍, { InstallerResult } from '@/ai';
+import 藍, {InstallerResult} from '@/ai';
 
 export default abstract class Module {
 	public abstract readonly name: string;
@@ -11,13 +11,13 @@ export default abstract class Module {
 		this.ai = ai;
 
 		this.doc = this.ai.moduleData.findOne({
-			module: this.name
+			module: this.name,
 		});
 
 		if (this.doc == null) {
 			this.doc = this.ai.moduleData.insertOne({
 				module: this.name,
-				data: {}
+				data: {},
 			});
 		}
 	}

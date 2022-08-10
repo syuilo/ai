@@ -5,14 +5,14 @@ import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
 import * as request from 'request-promise-native';
 import * as chalk from 'chalk';
-import { v4 as uuid } from 'uuid';
+import {v4 as uuid} from 'uuid';
 const delay = require('timeout-as-promise');
 
 import config from '@/config';
 import Module from '@/module';
 import Message from '@/message';
-import Friend, { FriendDoc } from '@/friend';
-import { User } from '@/misskey/user';
+import Friend, {FriendDoc} from '@/friend';
+import {User} from '@/misskey/user';
 import Stream from '@/stream';
 import log from '@/utils/log';
 const pkg = require('../package.json');
@@ -114,14 +114,14 @@ export default class 藍 {
 			autoload: true,
 			autosave: true,
 			autosaveInterval: 1000,
-			autoloadCallback: err => {
+			autoloadCallback: (err) => {
 				if (err) {
 					this.log(chalk.red(`Failed to load the memory: ${err}`));
 				} else {
 					this.log(chalk.green('The memory loaded successfully'));
 					this.run();
 				}
-			}
+			},
 		});
 	}
 
@@ -132,25 +132,25 @@ export default class 藍 {
 
 	@autobind
 	private run() {
-		//#region Init DB
+		// #region Init DB
 		this.meta = this.getCollection('meta', {});
 
 		this.contexts = this.getCollection('contexts', {
-			indices: ['key']
+			indices: ['key'],
 		});
 
 		this.timers = this.getCollection('timers', {
-			indices: ['module']
+			indices: ['module'],
 		});
 
 		this.friends = this.getCollection('friends', {
-			indices: ['userId']
+			indices: ['userId'],
 		});
 
 		this.moduleData = this.getCollection('moduleData', {
-			indices: ['module']
+			indices: ['module'],
 		});
-		//#endregion
+		// #endregion
 
 		const meta = this.getMeta();
 		this.lastSleepedAt = meta.lastWakingAt;
@@ -158,54 +158,54 @@ export default class 藍 {
 		// Init stream
 		this.connection = new Stream();
 
-		//#region Main stream
+		// #region Main stream
 		const mainStream = this.connection.useSharedConnection('main');
 
 		// メンションされたとき
-		mainStream.on('mention', async data => {
+		mainStream.on('mention', async (data) => {
 			if (data.userId == this.account.id) return; // 自分は弾く
 			if (data.text && data.text.startsWith('@' + this.account.username)) {
 				// Misskeyのバグで投稿が非公開扱いになる
-				if (data.text == null) data = await this.api('notes/show', { noteId: data.id });
+				if (data.text == null) data = await this.api('notes/show', {noteId: data.id});
 				this.onReceiveMessage(new Message(this, data, false));
 			}
 		});
 
 		// 返信されたとき
-		mainStream.on('reply', async data => {
+		mainStream.on('reply', async (data) => {
 			if (data.userId == this.account.id) return; // 自分は弾く
 			if (data.text && data.text.startsWith('@' + this.account.username)) return;
 			// Misskeyのバグで投稿が非公開扱いになる
-			if (data.text == null) data = await this.api('notes/show', { noteId: data.id });
+			if (data.text == null) data = await this.api('notes/show', {noteId: data.id});
 			this.onReceiveMessage(new Message(this, data, false));
 		});
 
 		// Renoteされたとき
-		mainStream.on('renote', async data => {
+		mainStream.on('renote', async (data) => {
 			if (data.userId == this.account.id) return; // 自分は弾く
 			if (data.text == null && (data.files || []).length == 0) return;
 
 			// リアクションする
 			this.api('notes/reactions/create', {
 				noteId: data.id,
-				reaction: 'love'
+				reaction: 'love',
 			});
 		});
 
 		// メッセージ
-		mainStream.on('messagingMessage', data => {
+		mainStream.on('messagingMessage', (data) => {
 			if (data.userId == this.account.id) return; // 自分は弾く
 			this.onReceiveMessage(new Message(this, data, true));
 		});
 
 		// 通知
-		mainStream.on('notification', data => {
+		mainStream.on('notification', (data) => {
 			this.onNotification(data);
 		});
-		//#endregion
+		// #endregion
 
 		// Install modules
-		this.modules.forEach(m => {
+		this.modules.forEach((m) => {
 			this.log(`Installing ${chalk.cyan.italic(m.name)}\tmodule...`);
 			m.init(this);
 			const res = m.install();
@@ -244,16 +244,16 @@ export default class 藍 {
 		// Look up the context
 		const context = isNoContext ? null : this.contexts.findOne(msg.isDm ? {
 			isDm: true,
-			userId: msg.userId
+			userId: msg.userId,
 		} : {
 			isDm: false,
-			noteId: msg.replyId
+			noteId: msg.replyId,
 		});
 
 		let reaction: string | null = 'love';
 		let immediate: boolean = false;
 
-		//#region
+		// #region
 		const invokeMentionHooks = async () => {
 			let res: boolean | HandlerResult | null = null;
 
@@ -285,7 +285,7 @@ export default class 藍 {
 		} else {
 			await invokeMentionHooks();
 		}
-		//#endregion
+		// #endregion
 
 		if (!immediate) {
 			await delay(1000);
@@ -301,7 +301,7 @@ export default class 藍 {
 			if (reaction) {
 				this.api('notes/reactions/create', {
 					noteId: msg.id,
-					reaction: reaction
+					reaction: reaction,
 				});
 			}
 		}
@@ -310,16 +310,16 @@ export default class 藍 {
 	@autobind
 	private onNotification(notification: any) {
 		switch (notification.type) {
-			// リアクションされたら親愛度を少し上げる
-			// TODO: リアクション取り消しをよしなにハンドリングする
-			case 'reaction': {
-				const friend = new Friend(this, { user: notification.user });
-				friend.incLove(0.1);
-				break;
-			}
+		// リアクションされたら親愛度を少し上げる
+		// TODO: リアクション取り消しをよしなにハンドリングする
+		case 'reaction': {
+			const friend = new Friend(this, {user: notification.user});
+			friend.incLove(0.1);
+			break;
+		}
 
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 
@@ -362,12 +362,12 @@ export default class 藍 {
 	@autobind
 	public lookupFriend(userId: User['id']): Friend | null {
 		const doc = this.friends.findOne({
-			userId: userId
+			userId: userId,
 		});
 
 		if (doc == null) return null;
 
-		const friend = new Friend(this, { doc: doc });
+		const friend = new Friend(this, {doc: doc});
 
 		return friend;
 	}
@@ -383,10 +383,10 @@ export default class 藍 {
 				i: config.i,
 				file: {
 					value: file,
-					options: meta
-				}
+					options: meta,
+				},
 			},
-			json: true
+			json: true,
 		});
 		return res;
 	}
@@ -417,8 +417,8 @@ export default class 藍 {
 	public api(endpoint: string, param?: any) {
 		return request.post(`${config.apiUrl}/${endpoint}`, {
 			json: Object.assign({
-				i: config.i
-			}, param)
+				i: config.i,
+			}, param),
 		});
 	};
 
@@ -437,13 +437,13 @@ export default class 藍 {
 			userId: id,
 			module: module.name,
 			key: key,
-			data: data
+			data: data,
 		} : {
 			isDm: false,
 			noteId: id,
 			module: module.name,
 			key: key,
-			data: data
+			data: data,
 		});
 	}
 
@@ -456,7 +456,7 @@ export default class 藍 {
 	public unsubscribeReply(module: Module, key: string | null) {
 		this.contexts.findAndRemove({
 			key: key,
-			module: module.name
+			module: module.name,
 		});
 	}
 
@@ -475,7 +475,7 @@ export default class 藍 {
 			module: module.name,
 			insertedAt: Date.now(),
 			delay: delay,
-			data: data
+			data: data,
 		});
 
 		this.log(`Timer persisted: ${module.name} ${id} ${delay}ms`);

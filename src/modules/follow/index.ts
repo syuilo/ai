@@ -8,7 +8,7 @@ export default class extends Module {
 	@autobind
 	public install() {
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
 		};
 	}
 
@@ -20,11 +20,11 @@ export default class extends Module {
 					userId: msg.userId,
 				});
 				return {
-					reaction: msg.friend.love >= 0 ? 'like' : null
+					reaction: msg.friend.love >= 0 ? 'like' : null,
 				};
 			} else {
 				return {
-					reaction: msg.friend.love >= 0 ? 'hmm' : null
+					reaction: msg.friend.love >= 0 ? 'hmm' : null,
 				};
 			}
 		} else {

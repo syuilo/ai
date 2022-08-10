@@ -1,8 +1,8 @@
 import * as gen from 'random-seed';
-import { createCanvas, CanvasRenderingContext2D } from 'canvas';
+import {createCanvas, CanvasRenderingContext2D} from 'canvas';
 
-import { CellType } from './maze';
-import { themes } from './themes';
+import {CellType} from './maze';
+import {themes} from './themes';
 
 const imageSize = 4096; // px
 const margin = 96 * 4;

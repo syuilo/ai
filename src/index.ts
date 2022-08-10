@@ -15,7 +15,7 @@ import CoreModule from './modules/core';
 import TalkModule from './modules/talk';
 import BirthdayModule from './modules/birthday';
 import ReversiModule from './modules/reversi';
-import summonCat from './modules/summonCat';
+import SummonCat from './modules/summonCat';
 import PingModule from './modules/ping';
 import EmojiModule from './modules/emoji';
 import EmojiReactModule from './modules/emoji-react';
@@ -35,9 +35,9 @@ import SleepReportModule from './modules/sleep-report';
 import NotingModule from './modules/noting';
 // import PollModule from './modules/poll';
 import ReminderModule from './modules/reminder';
-import earthquake from './modules/earthquake';
+import Earthquake from './modules/earthquake';
 import DicModule from './modules/dic';
-import menuModule from './modules/menu';
+import MenuModule from './modules/menu';
 import GetColorModule from './modules/color';
 
 console.log('   __    ____  _____  ___ ');
@@ -51,18 +51,18 @@ function log(msg: string): void {
 
 log(chalk.bold(`Ai v${pkg._v}`));
 
-promiseRetry(retry => {
+promiseRetry((retry) => {
 	log(`Account fetching... ${chalk.gray(config.host)}`);
 
 	// アカウントをフェッチ
 	return request.post(`${config.apiUrl}/i`, {
 		json: {
-			i: config.i
-		}
+			i: config.i,
+		},
 	}).catch(retry);
 }, {
-	retries: 3
-}).then(account => {
+	retries: 3,
+}).then((account) => {
 	const acct = `@${account.username}`;
 	log(chalk.green(`Account fetched successfully: ${chalk.underline(acct)}`));
 
@@ -72,7 +72,7 @@ promiseRetry(retry => {
 	new 藍(account, [
 		new CoreModule(),
 		new ReminderModule(),
-		new summonCat(),
+		new SummonCat(),
 		new EmojiModule(),
 		new EmojiReactModule(),
 		new FortuneModule(),
@@ -95,10 +95,10 @@ promiseRetry(retry => {
 		new NotingModule(),
 		// new PollModule(),
 		new DicModule(),
-		new menuModule(),
+		new MenuModule(),
 		new GetColorModule(),
-		new earthquake(),
+		new Earthquake(),
 	]);
-}).catch(e => {
+}).catch((e) => {
 	log(chalk.red('Failed to fetch the account'));
 });

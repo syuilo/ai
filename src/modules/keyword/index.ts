@@ -3,11 +3,11 @@ import * as loki from 'lokijs';
 import Module from '@/module';
 import config from '@/config';
 import serifs from '@/serifs';
-import { mecab } from './mecab';
-import { Note } from '@/misskey/note';
+import {mecab} from './mecab';
+import {Note} from '@/misskey/note';
 
 function kanaToHira(str: string) {
-	return str.replace(/[\u30a1-\u30f6]/g, match => {
+	return str.replace(/[\u30a1-\u30f6]/g, (match) => {
 		const chr = match.charCodeAt(0) - 0x60;
 		return String.fromCharCode(chr);
 	});
@@ -26,7 +26,7 @@ export default class extends Module {
 		if (!config.keywordEnabled) return {};
 
 		this.learnedKeywords = this.ai.getCollection('_keyword_learnedKeywords', {
-			indices: ['userId']
+			indices: ['userId'],
 		});
 
 		setInterval(this.learn, 1000 * 60 * 60);
@@ -37,7 +37,7 @@ export default class extends Module {
 	@autobind
 	private async learn() {
 		const tl = await this.ai.api('notes/local-timeline', {
-			limit: 30
+			limit: 30,
 		});
 
 		const interestedNotes = tl.filter((note: Note) =>
@@ -49,7 +49,7 @@ export default class extends Module {
 
 		for (const note of interestedNotes) {
 			const tokens = await mecab(note.text, config.mecab, config.mecabDic);
-			const keywordsInThisNote = tokens.filter(token => token[2] == '固有名詞' && token[8] != null);
+			const keywordsInThisNote = tokens.filter((token) => token[2] == '固有名詞' && token[8] != null);
 			keywords = keywords.concat(keywordsInThisNote);
 		}
 
@@ -59,7 +59,7 @@ export default class extends Module {
 		const keyword = keywords.sort((a, b) => a[0].length < b[0].length ? 1 : -1)[rnd];
 
 		const exist = this.learnedKeywords.findOne({
-			keyword: keyword[0]
+			keyword: keyword[0],
 		});
 
 		let text: string;
@@ -69,14 +69,14 @@ export default class extends Module {
 		} else {
 			this.learnedKeywords.insertOne({
 				keyword: keyword[0],
-				learnedAt: Date.now()
+				learnedAt: Date.now(),
 			});
 
 			text = serifs.keyword.learned(keyword[0], kanaToHira(keyword[8]));
 		}
 
 		this.ai.post({
-			text: text
+			text: text,
 		});
 	}
 }

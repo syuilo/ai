@@ -1,75 +1,75 @@
 import * as gen from 'random-seed';
-import { CellType } from './maze';
-import {mazeSize} from './index'
+import {CellType} from './maze';
+import {mazeSize} from './index';
 
 const cellVariants = {
 	void: {
-		digg: { left: null, right: null, top: null, bottom: null },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: null, right: null, top: null, bottom: null},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	empty: {
-		digg: { left: 'left', right: 'right', top: 'top', bottom: 'bottom' },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: 'left', right: 'right', top: 'top', bottom: 'bottom'},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	left: {
-		digg: { left: null, right: 'leftRight', top: 'leftTop', bottom: 'leftBottom' },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: null, right: 'leftRight', top: 'leftTop', bottom: 'leftBottom'},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	right: {
-		digg: { left: 'leftRight', right: null, top: 'rightTop', bottom: 'rightBottom' },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: 'leftRight', right: null, top: 'rightTop', bottom: 'rightBottom'},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	top: {
-		digg: { left: 'leftTop', right: 'rightTop', top: null, bottom: 'topBottom' },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: 'leftTop', right: 'rightTop', top: null, bottom: 'topBottom'},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	bottom: {
-		digg: { left: 'leftBottom', right: 'rightBottom', top: 'topBottom', bottom: null },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: 'leftBottom', right: 'rightBottom', top: 'topBottom', bottom: null},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	leftTop: {
-		digg: { left: null, right: 'leftRightTop', top: null, bottom: 'leftTopBottom' },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: null, right: 'leftRightTop', top: null, bottom: 'leftTopBottom'},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	leftBottom: {
-		digg: { left: null, right: 'leftRightBottom', top: 'leftTopBottom', bottom: null },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: null, right: 'leftRightBottom', top: 'leftTopBottom', bottom: null},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	rightTop: {
-		digg: { left: 'leftRightTop', right: null, top: null, bottom: 'rightTopBottom' },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: 'leftRightTop', right: null, top: null, bottom: 'rightTopBottom'},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	rightBottom: {
-		digg: { left: 'leftRightBottom', right: null, top: 'rightTopBottom', bottom: null },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: 'leftRightBottom', right: null, top: 'rightTopBottom', bottom: null},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	leftRightTop: {
-		digg: { left: null, right: null, top: null, bottom: null },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: null, right: null, top: null, bottom: null},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	leftRightBottom: {
-		digg: { left: null, right: null, top: null, bottom: null },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: null, right: null, top: null, bottom: null},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	leftTopBottom: {
-		digg: { left: null, right: null, top: null, bottom: null },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: null, right: null, top: null, bottom: null},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	rightTopBottom: {
-		digg: { left: null, right: null, top: null, bottom: null },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: null, right: null, top: null, bottom: null},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 	leftRight: {
-		digg: { left: null, right: null, top: 'leftRightTop', bottom: 'leftRightBottom' },
-		cross: { left: false, right: false, top: true, bottom: true },
+		digg: {left: null, right: null, top: 'leftRightTop', bottom: 'leftRightBottom'},
+		cross: {left: false, right: false, top: true, bottom: true},
 	},
 	topBottom: {
-		digg: { left: 'leftTopBottom', right: 'rightTopBottom', top: null, bottom: null },
-		cross: { left: true, right: true, top: false, bottom: false },
+		digg: {left: 'leftTopBottom', right: 'rightTopBottom', top: null, bottom: null},
+		cross: {left: true, right: true, top: false, bottom: false},
 	},
 	cross: {
-		digg: { left: 'cross', right: 'cross', top: 'cross', bottom: 'cross' },
-		cross: { left: false, right: false, top: false, bottom: false },
+		digg: {left: 'cross', right: 'cross', top: 'cross', bottom: 'cross'},
+		cross: {left: false, right: false, top: false, bottom: false},
 	},
 } as { [k in CellType]: {
 	digg: { left: CellType | null; right: CellType | null; top: CellType | null; bottom: CellType | null; };
@@ -92,7 +92,7 @@ export function genMaze(seed: string, complexity: mazeSize): CellType[][] {
 		return 11 + rand(21);
 	}
 
-	let mazeSize: number = decisionSize(complexity);
+	const mazeSize: number = decisionSize(complexity);
 
 
 	const donut = rand(3) === 0;
@@ -121,11 +121,11 @@ export function genMaze(seed: string, complexity: mazeSize): CellType[][] {
 		if (cellVariants[maze[x][y]].digg[dir] === null) return false;
 
 		const newPos =
-			dir === 'top'    ? { x: x, y: y - 1 } :
-			dir === 'bottom' ? { x: x, y: y + 1 } :
-			dir === 'left'   ? { x: x - 1, y: y } :
-			dir === 'right'  ? { x: x + 1, y: y } :
-			{ x, y };
+			dir === 'top' ? {x: x, y: y - 1} :
+				dir === 'bottom' ? {x: x, y: y + 1} :
+					dir === 'left' ? {x: x - 1, y: y} :
+						dir === 'right' ? {x: x + 1, y: y} :
+							{x, y};
 
 		if (newPos.x < 0 || newPos.y < 0 || newPos.x >= mazeSize || newPos.y >= mazeSize) return false;
 
@@ -138,10 +138,10 @@ export function genMaze(seed: string, complexity: mazeSize): CellType[][] {
 	}
 
 	function diggFrom(x: number, y: number, prevDir?: Dir) {
-		const isUpDiggable    = checkDiggable(x, y, 'top');
+		const isUpDiggable = checkDiggable(x, y, 'top');
 		const isRightDiggable = checkDiggable(x, y, 'right');
-		const isDownDiggable  = checkDiggable(x, y, 'bottom');
-		const isLeftDiggable  = checkDiggable(x, y, 'left');
+		const isDownDiggable = checkDiggable(x, y, 'bottom');
+		const isLeftDiggable = checkDiggable(x, y, 'left');
 
 		if (!isUpDiggable && !isRightDiggable && !isDownDiggable && !isLeftDiggable) return;
 
@@ -186,7 +186,7 @@ export function genMaze(seed: string, complexity: mazeSize): CellType[][] {
 		}
 	}
 
-	//#region start digg
+	// #region start digg
 	const nonVoidCells: [number, number][] = [];
 
 	for (let y = 0; y < mazeSize; y++) {
@@ -199,7 +199,7 @@ export function genMaze(seed: string, complexity: mazeSize): CellType[][] {
 	const origin = nonVoidCells[rand(nonVoidCells.length)];
 
 	diggFrom(origin[0], origin[1]);
-	//#endregion
+	// #endregion
 
 	let hasEmptyCell = true;
 	while (hasEmptyCell) {

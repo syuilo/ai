@@ -19,12 +19,12 @@ export default class extends Module {
 	@autobind
 	public install() {
 		this.guesses = this.ai.getCollection('guessingGame', {
-			indices: ['userId']
+			indices: ['userId'],
 		});
 
 		return {
 			mentionHook: this.mentionHook,
-			contextHook: this.contextHook
+			contextHook: this.contextHook,
 		};
 	}
 
@@ -34,7 +34,7 @@ export default class extends Module {
 
 		const exist = this.guesses.findOne({
 			userId: msg.userId,
-			isEnded: false
+			isEnded: false,
 		});
 
 		if (!msg.isDm) {
@@ -55,10 +55,10 @@ export default class extends Module {
 			tries: [],
 			isEnded: false,
 			startedAt: Date.now(),
-			endedAt: null
+			endedAt: null,
 		});
 
-		msg.reply(serifs.guessingGame.started).then(reply => {
+		msg.reply(serifs.guessingGame.started).then((reply) => {
 			this.subscribeReply(msg.userId, msg.isDm, msg.isDm ? msg.userId : reply.id);
 		});
 
@@ -71,7 +71,7 @@ export default class extends Module {
 
 		const exist = this.guesses.findOne({
 			userId: msg.userId,
-			isEnded: false
+			isEnded: false,
 		});
 
 		 // 処理の流れ上、実際にnullになることは無さそうだけど一応
@@ -92,7 +92,7 @@ export default class extends Module {
 		const guess = msg.extractedText.match(/[0-9]+/);
 
 		if (guess == null) {
-			msg.reply(serifs.guessingGame.nan).then(reply => {
+			msg.reply(serifs.guessingGame.nan).then((reply) => {
 				this.subscribeReply(msg.userId, msg.isDm, reply.id);
 			});
 			return;
@@ -109,13 +109,13 @@ export default class extends Module {
 		let end = false;
 
 		if (exist.secret < g) {
-			text = firsttime
-				? serifs.guessingGame.less(g.toString())
-				: serifs.guessingGame.lessAgain(g.toString());
+			text = firsttime ?
+				serifs.guessingGame.less(g.toString()) :
+				serifs.guessingGame.lessAgain(g.toString());
 		} else if (exist.secret > g) {
-			text = firsttime
-				? serifs.guessingGame.grater(g.toString())
-				: serifs.guessingGame.graterAgain(g.toString());
+			text = firsttime ?
+				serifs.guessingGame.grater(g.toString()) :
+				serifs.guessingGame.graterAgain(g.toString());
 		} else {
 			end = true;
 			text = serifs.guessingGame.congrats(exist.tries.length.toString());
@@ -129,7 +129,7 @@ export default class extends Module {
 
 		this.guesses.update(exist);
 
-		msg.reply(text).then(reply => {
+		msg.reply(text).then((reply) => {
 			if (!end) {
 				this.subscribeReply(msg.userId, msg.isDm, reply.id);
 			}

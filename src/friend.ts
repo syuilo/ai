@@ -2,8 +2,8 @@ import autobind from 'autobind-decorator';
 import 藍 from '@/ai';
 import IModule from '@/module';
 import getDate from '@/utils/get-date';
-import { User } from '@/misskey/user';
-import { genItem } from '@/vocabulary';
+import {User} from '@/misskey/user';
+import {genItem} from '@/vocabulary';
 
 export type FriendDoc = {
 	userId: string;
@@ -43,13 +43,13 @@ export default class Friend {
 
 		if (opts.user) {
 			const exist = this.ai.friends.findOne({
-				userId: opts.user.id
+				userId: opts.user.id,
 			});
 
 			if (exist == null) {
 				const inserted = this.ai.friends.insertOne({
 					userId: opts.user.id,
-					user: opts.user
+					user: opts.user,
 				});
 
 				if (inserted == null) {
@@ -59,7 +59,7 @@ export default class Friend {
 				this.doc = inserted;
 			} else {
 				this.doc = exist;
-				this.doc.user = { ...this.doc.user, ...opts.user };
+				this.doc.user = {...this.doc.user, ...opts.user};
 				this.save();
 			}
 		} else if (opts.doc) {
@@ -172,7 +172,7 @@ export default class Friend {
 	@autobind
 	public transferMemory(code: string): boolean {
 		const src = this.ai.friends.findOne({
-			transferCode: code
+			transferCode: code,
 		});
 
 		if (src == null) return false;

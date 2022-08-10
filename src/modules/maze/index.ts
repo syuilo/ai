@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
 import Module from '@/module';
 import serifs from '@/serifs';
-import { genMaze } from './gen-maze';
-import { renderMaze } from './render-maze';
+import {genMaze} from './gen-maze';
+import {renderMaze} from './render-maze';
 import Message from '@/message';
 
 export type mazeSize = 'veryEasy' | 'easy' | 'hard' | 'veryHard' | 'ai' | undefined;
@@ -16,7 +16,7 @@ export default class extends Module {
 		setInterval(this.post, 1000 * 60 * 3);
 
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
 		};
 	}
 
@@ -36,7 +36,7 @@ export default class extends Module {
 		this.log('Posting...');
 		this.ai.post({
 			text: serifs.maze.post,
-			fileIds: [file.id]
+			fileIds: [file.id],
 		});
 	}
 
@@ -51,7 +51,7 @@ export default class extends Module {
 		this.log('Image uploading...');
 		const file = await this.ai.upload(data, {
 			filename: 'maze.png',
-			contentType: 'image/png'
+			contentType: 'image/png',
 		});
 
 		return file;
@@ -70,10 +70,10 @@ export default class extends Module {
 			setTimeout(async () => {
 				const file = await this.genMazeFile(Date.now().toString(), size);
 				this.log('Replying...');
-				msg.reply(serifs.maze.foryou, { file });
+				msg.reply(serifs.maze.foryou, {file});
 			}, 3000);
 			return {
-				reaction: 'like'
+				reaction: 'like',
 			};
 		} else {
 			return false;

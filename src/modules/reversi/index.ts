@@ -22,24 +22,24 @@ export default class extends Module {
 		this.reversiConnection = this.ai.connection.useSharedConnection('gamesReversi');
 
 		// 招待されたとき
-		this.reversiConnection.on('invited', msg => this.onReversiInviteMe(msg.parent));
+		this.reversiConnection.on('invited', (msg) => this.onReversiInviteMe(msg.parent));
 
 		// マッチしたとき
-		this.reversiConnection.on('matched', msg => this.onReversiGameStart(msg));
+		this.reversiConnection.on('matched', (msg) => this.onReversiGameStart(msg));
 
 		if (config.reversiEnabled) {
 			const mainStream = this.ai.connection.useSharedConnection('main');
-			mainStream.on('pageEvent', msg => {
+			mainStream.on('pageEvent', (msg) => {
 				if (msg.event === 'inviteReversi') {
 					this.ai.api('games/reversi/match', {
-						userId: msg.user.id
+						userId: msg.user.id,
 					});
 				}
 			});
 		}
 
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
 		};
 	}
 
@@ -50,7 +50,7 @@ export default class extends Module {
 				msg.reply(serifs.reversi.ok);
 
 				this.ai.api('games/reversi/match', {
-					userId: msg.userId
+					userId: msg.userId,
 				});
 			} else {
 				msg.reply(serifs.reversi.decline);
@@ -69,7 +69,7 @@ export default class extends Module {
 		if (config.reversiEnabled) {
 			// 承認
 			const game = await this.ai.api('games/reversi/match', {
-				userId: inviter.id
+				userId: inviter.id,
 			});
 
 			this.onReversiGameStart(game);
@@ -84,7 +84,7 @@ export default class extends Module {
 
 		// ゲームストリームに接続
 		const gw = this.ai.connection.connectToChannel('gamesReversiGame', {
-			gameId: game.id
+			gameId: game.id,
 		});
 
 		// フォーム
@@ -92,7 +92,7 @@ export default class extends Module {
 			id: 'publish',
 			type: 'switch',
 			label: '藍が対局情報を投稿するのを許可',
-			value: true
+			value: true,
 		}, {
 			id: 'strength',
 			type: 'radio',
@@ -100,23 +100,23 @@ export default class extends Module {
 			value: 3,
 			items: [{
 				label: '接待',
-				value: 0
+				value: 0,
 			}, {
 				label: '弱',
-				value: 2
+				value: 2,
 			}, {
 				label: '中',
-				value: 3
+				value: 3,
 			}, {
 				label: '強',
-				value: 4
+				value: 4,
 			}, {
 				label: '最強',
-				value: 5
-			}]
+				value: 5,
+			}],
 		}];
 
-		//#region バックエンドプロセス開始
+		// #region バックエンドプロセス開始
 		const ai = childProcess.fork(__dirname + '/back.js');
 
 		// バックエンドプロセスに情報を渡す
@@ -125,14 +125,14 @@ export default class extends Module {
 			body: {
 				game: game,
 				form: form,
-				account: this.ai.account
-			}
+				account: this.ai.account,
+			},
 		});
 
 		ai.on('message', (msg: Record<string, any>) => {
 			if (msg.type == 'put') {
 				gw.send('set', {
-					pos: msg.pos
+					pos: msg.pos,
 				});
 			} else if (msg.type == 'ended') {
 				gw.dispose();
@@ -142,10 +142,10 @@ export default class extends Module {
 		});
 
 		// ゲームストリームから情報が流れてきたらそのままバックエンドプロセスに伝える
-		gw.addListener('*', message => {
+		gw.addListener('*', (message) => {
 			ai.send(message);
 		});
-		//#endregion
+		// #endregion
 
 		// フォーム初期化
 		setTimeout(() => {
@@ -162,10 +162,10 @@ export default class extends Module {
 	private onGameEnded(game: any) {
 		const user = game.user1Id == this.ai.account.id ? game.user2 : game.user1;
 
-		//#region 1日に1回だけ親愛度を上げる
+		// #region 1日に1回だけ親愛度を上げる
 		const today = getDate();
 
-		const friend = new Friend(this.ai, { user: user });
+		const friend = new Friend(this.ai, {user: user});
 
 		const data = friend.getPerModulesData(this);
 
@@ -175,6 +175,6 @@ export default class extends Module {
 
 			friend.incLove();
 		}
-		//#endregion
+		// #endregion
 	}
 }

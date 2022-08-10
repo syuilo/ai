@@ -30,8 +30,8 @@ const hands = [
 	'🤙',
 	'💪',
 	['💪', '✌'],
-	'🖕'
-]
+	'🖕',
+];
 
 const faces = [
 	'😀',
@@ -123,8 +123,8 @@ const faces = [
 	'🤠',
 	'🗿',
 	'🤖',
-	'👽'
-]
+	'👽',
+];
 
 export default class extends Module {
 	public readonly name = 'emoji';
@@ -132,7 +132,7 @@ export default class extends Module {
 	@autobind
 	public install() {
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
 		};
 	}
 

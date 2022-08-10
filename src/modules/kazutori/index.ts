@@ -3,8 +3,8 @@ import * as loki from 'lokijs';
 import Module from '@/module';
 import Message from '@/message';
 import serifs from '@/serifs';
-import { User } from '@/misskey/user';
-import { acct } from '@/utils/acct';
+import {User} from '@/misskey/user';
+import {acct} from '@/utils/acct';
 
 type Game = {
 	votes: {
@@ -36,7 +36,7 @@ export default class extends Module {
 
 		return {
 			mentionHook: this.mentionHook,
-			contextHook: this.contextHook
+			contextHook: this.contextHook,
 		};
 	}
 
@@ -52,7 +52,7 @@ export default class extends Module {
 			// 現在アクティブなゲームがある場合
 			if (!recentGame.isEnded) {
 				msg.reply(serifs.kazutori.alreadyStarted, {
-					renote: recentGame.postId
+					renote: recentGame.postId,
 				});
 				return true;
 			}
@@ -65,14 +65,14 @@ export default class extends Module {
 		}
 
 		const post = await this.ai.post({
-			text: serifs.kazutori.intro(limitMinutes)
+			text: serifs.kazutori.intro(limitMinutes),
 		});
 
 		this.games.insertOne({
 			votes: [],
 			isEnded: false,
 			startedAt: Date.now(),
-			postId: post.id
+			postId: post.id,
 		});
 
 		this.subscribeReply(null, false, post.id);
@@ -84,38 +84,48 @@ export default class extends Module {
 
 	@autobind
 	private async contextHook(key: any, msg: Message) {
-		if (msg.text == null) return {
-			reaction: 'hmm'
-		};
+		if (msg.text == null) {
+			return {
+				reaction: 'hmm',
+			};
+		}
 
 		const game = this.games.findOne({
-			isEnded: false
+			isEnded: false,
 		});
 
 		// 処理の流れ上、実際にnullになることは無さそうだけど一応
 		if (game == null) return;
 
 		// 既に数字を取っていたら
-		if (game.votes.some(x => x.user.id == msg.userId)) return {
-			reaction: 'confused'
-		};
+		if (game.votes.some((x) => x.user.id == msg.userId)) {
+			return {
+				reaction: 'confused',
+			};
+		}
 
 		const match = msg.extractedText.match(/[0-9]+/);
-		if (match == null) return {
-			reaction: 'hmm'
-		};
+		if (match == null) {
+			return {
+				reaction: 'hmm',
+			};
+		}
 
 		const num = parseInt(match[0], 10);
 
 		// 整数じゃない
-		if (!Number.isInteger(num)) return {
-			reaction: 'hmm'
-		};
+		if (!Number.isInteger(num)) {
+			return {
+				reaction: 'hmm',
+			};
+		}
 
 		// 範囲外
-		if (num < 0 || num > 100) return {
-			reaction: 'confused'
-		};
+		if (num < 0 || num > 100) {
+			return {
+				reaction: 'confused',
+			};
+		}
 
 		this.log(`Voted ${num} by ${msg.user.id}`);
 
@@ -124,15 +134,15 @@ export default class extends Module {
 			user: {
 				id: msg.user.id,
 				username: msg.user.username,
-				host: msg.user.host
+				host: msg.user.host,
 			},
-			number: num
+			number: num,
 		});
 
 		this.games.update(game);
 
 		return {
-			reaction: 'like'
+			reaction: 'like',
 		};
 	}
 
@@ -142,7 +152,7 @@ export default class extends Module {
 	@autobind
 	private crawleGameEnd() {
 		const game = this.games.findOne({
-			isEnded: false
+			isEnded: false,
 		});
 
 		if (game == null) return;
@@ -167,19 +177,19 @@ export default class extends Module {
 		if (game.votes.length <= 1) {
 			this.ai.post({
 				text: serifs.kazutori.onagare,
-				renoteId: game.postId
+				renoteId: game.postId,
 			});
 
 			return;
 		}
 
-		let results: string[] = [];
+		const results: string[] = [];
 		let winner: Game['votes'][0]['user'] | null = null;
 
 		for (let i = 100; i >= 0; i--) {
 			const users = game.votes
-				.filter(x => x.number == i)
-				.map(x => x.user);
+				.filter((x) => x.number == i)
+				.map((x) => x.user);
 
 			if (users.length == 1) {
 				if (winner == null) {
@@ -190,21 +200,21 @@ export default class extends Module {
 					results.push(`➖ ${i}: ${acct(users[0])}`);
 				}
 			} else if (users.length > 1) {
-				results.push(`❌ ${i}: ${users.map(u => acct(u)).join(' ')}`);
+				results.push(`❌ ${i}: ${users.map((u) => acct(u)).join(' ')}`);
 			}
 		}
 
 		const winnerFriend = winner ? this.ai.lookupFriend(winner.id) : null;
 		const name = winnerFriend ? winnerFriend.name : null;
 
-		const text = results.join('\n') + '\n\n' + (winner
-			? serifs.kazutori.finishWithWinner(acct(winner), name)
-			: serifs.kazutori.finishWithNoWinner);
+		const text = results.join('\n') + '\n\n' + (winner ?
+			serifs.kazutori.finishWithWinner(acct(winner), name) :
+			serifs.kazutori.finishWithNoWinner);
 
 		this.ai.post({
 			text: text,
 			cw: serifs.kazutori.finish,
-			renoteId: game.postId
+			renoteId: game.postId,
 		});
 
 		this.unsubscribeReply(null);

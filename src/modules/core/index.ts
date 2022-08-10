@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import Module from '@/module';
 import Message from '@/message';
 import serifs from '@/serifs';
-import { safeForInterpolate } from '@/utils/safe-for-interpolate';
+import {safeForInterpolate} from '@/utils/safe-for-interpolate';
 
 const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
 
@@ -13,7 +13,7 @@ export default class extends Module {
 	public install() {
 		return {
 			mentionHook: this.mentionHook,
-			contextHook: this.contextHook
+			contextHook: this.contextHook,
 		};
 	}
 
@@ -31,7 +31,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private transferBegin(msg: Message): boolean  {
+	private transferBegin(msg: Message): boolean {
 		if (!msg.text) return false;
 		if (!msg.includes(['引継', '引き継ぎ', '引越', '引っ越し'])) return false;
 
@@ -49,7 +49,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private transferEnd(msg: Message): boolean  {
+	private transferEnd(msg: Message): boolean {
 		if (!msg.text) return false;
 		if (!msg.text.startsWith('「') || !msg.text.endsWith('」')) return false;
 
@@ -67,7 +67,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private setName(msg: Message): boolean  {
+	private setName(msg: Message): boolean {
 		if (!msg.text) return false;
 		if (!msg.text.includes('って呼んで')) return false;
 		if (msg.text.startsWith('って呼んで')) return false;
@@ -87,15 +87,15 @@ export default class extends Module {
 			return true;
 		}
 
-		const withSan = titles.some(t => name.endsWith(t));
+		const withSan = titles.some((t) => name.endsWith(t));
 
 		if (withSan) {
 			msg.friend.updateName(name);
 			msg.reply(serifs.core.setNameOk(name));
 		} else {
-			msg.reply(serifs.core.san).then(reply => {
+			msg.reply(serifs.core.san).then((reply) => {
 				this.subscribeReply(msg.userId, msg.isDm, msg.isDm ? msg.userId : reply.id, {
-					name: name
+					name: name,
 				});
 			});
 		}
@@ -104,7 +104,7 @@ export default class extends Module {
 	}
 
 	@autobind
-	private modules(msg: Message): boolean  {
+	private modules(msg: Message): boolean {
 		if (!msg.text) return false;
 		if (!msg.or(['modules'])) return false;
 
@@ -117,19 +117,19 @@ export default class extends Module {
 		text += '```';
 
 		msg.reply(text, {
-			immediate: true
+			immediate: true,
 		});
 
 		return true;
 	}
 
 	@autobind
-	private version(msg: Message): boolean  {
+	private version(msg: Message): boolean {
 		if (!msg.text) return false;
 		if (!msg.or(['v', 'version', 'バージョン'])) return false;
 
 		msg.reply(`\`\`\`\nv${this.ai.version}\n\`\`\``, {
-			immediate: true
+			immediate: true,
 		});
 
 		return true;
@@ -151,7 +151,7 @@ export default class extends Module {
 			msg.friend.updateName(data.name);
 			done();
 		} else {
-			msg.reply(serifs.core.yesOrNo).then(reply => {
+			msg.reply(serifs.core.yesOrNo).then((reply) => {
 				this.subscribeReply(msg.userId, msg.isDm, reply.id, data);
 			});
 		}

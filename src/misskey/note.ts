@@ -7,7 +7,7 @@ export type Note = {
 	},
 	text: string | null;
 	cw: string | null;
-	visibility: "public" | "home" | "followers" | "specified";
+	visibility: 'public' | 'home' | 'followers' | 'specified';
 	reply: any | null;
 	poll?: {
 		choices: {

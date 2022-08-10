@@ -2,9 +2,9 @@ import autobind from 'autobind-decorator';
 import Message from '@/message';
 import Module from '@/module';
 import serifs from '@/serifs';
-import { genItem } from '@/vocabulary';
+import {genItem} from '@/vocabulary';
 import config from '@/config';
-import { Note } from '@/misskey/note';
+import {Note} from '@/misskey/note';
 
 export default class extends Module {
 	public readonly name = 'poll';
@@ -79,7 +79,7 @@ export default class extends Module {
 				choices,
 				expiredAfter: duration,
 				multiple: false,
-			}
+			},
 		});
 
 		// タイマーセット
@@ -103,8 +103,8 @@ export default class extends Module {
 	}
 
 	@autobind
-	private async timeoutCallback({ title, noteId }) {
-		const note: Note = await this.ai.api('notes/show', { noteId });
+	private async timeoutCallback({title, noteId}) {
+		const note: Note = await this.ai.api('notes/show', {noteId});
 
 		const choices = note.poll!.choices;
 
@@ -121,7 +121,7 @@ export default class extends Module {
 			}
 		}
 
-		const mostVotedChoices = choices.filter(choice => choice.votes === mostVotedChoice.votes);
+		const mostVotedChoices = choices.filter((choice) => choice.votes === mostVotedChoice.votes);
 
 		if (mostVotedChoice.votes === 0) {
 			this.ai.post({ // TODO: Extract serif
@@ -135,7 +135,7 @@ export default class extends Module {
 				renoteId: noteId,
 			});
 		} else {
-			const choices = mostVotedChoices.map(choice => `「${choice.text}」`).join('と');
+			const choices = mostVotedChoices.map((choice) => `「${choice.text}」`).join('と');
 			this.ai.post({ // TODO: Extract serif
 				cw: `${title}アンケートの結果発表です！`,
 				text: `結果は${mostVotedChoice.votes}票の${choices}でした！`,

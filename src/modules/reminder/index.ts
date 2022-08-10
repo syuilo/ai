@@ -2,8 +2,8 @@ import autobind from 'autobind-decorator';
 import * as loki from 'lokijs';
 import Module from '@/module';
 import Message from '@/message';
-import serifs, { getSerif } from '@/serifs';
-import { acct } from '@/utils/acct';
+import serifs, {getSerif} from '@/serifs';
+import {acct} from '@/utils/acct';
 import config from '@/config';
 
 const NOTIFY_INTERVAL = 1000 * 60 * 60 * 12;
@@ -24,7 +24,7 @@ export default class extends Module {
 	@autobind
 	public install() {
 		this.reminds = this.ai.getCollection('reminds', {
-			indices: ['userId', 'id']
+			indices: ['userId', 'id'],
 		});
 
 		return {
@@ -44,9 +44,9 @@ export default class extends Module {
 				userId: msg.userId,
 			});
 
-			const getQuoteLink = id => `[${id}](${config.host}/notes/${id})`;
+			const getQuoteLink = (id) => `[${id}](${config.host}/notes/${id})`;
 
-			msg.reply(serifs.reminder.reminds + '\n' + reminds.map(remind => `・${remind.thing ? remind.thing : getQuoteLink(remind.quoteId)}`).join('\n'));
+			msg.reply(serifs.reminder.reminds + '\n' + reminds.map((remind) => `・${remind.thing ? remind.thing : getQuoteLink(remind.quoteId)}`).join('\n'));
 			return true;
 		}
 
@@ -87,13 +87,13 @@ export default class extends Module {
 
 		// メンションをsubscribe
 		this.subscribeReply(remind!.id, msg.isDm, msg.isDm ? msg.userId : msg.id, {
-			id: remind!.id
+			id: remind!.id,
 		});
 
 		if (msg.quoteId) {
 			// 引用元をsubscribe
 			this.subscribeReply(remind!.id, false, msg.quoteId, {
-				id: remind!.id
+				id: remind!.id,
 			});
 		}
 
@@ -142,7 +142,7 @@ export default class extends Module {
 	@autobind
 	private async timeoutCallback(data) {
 		const remind = this.reminds.findOne({
-			id: data.id
+			id: data.id,
 		});
 		if (remind == null) return;
 
@@ -155,13 +155,13 @@ export default class extends Module {
 		let reply;
 		if (remind.isDm) {
 			this.ai.sendMessage(friend.userId, {
-				text: serifs.reminder.notifyWithThing(remind.thing, friend.name)
+				text: serifs.reminder.notifyWithThing(remind.thing, friend.name),
 			});
 		} else {
 			try {
 				reply = await this.ai.post({
 					renoteId: remind.thing == null && remind.quoteId ? remind.quoteId : remind.id,
-					text: acct(friend.doc.user) + ' ' + serifs.reminder.notify(friend.name)
+					text: acct(friend.doc.user) + ' ' + serifs.reminder.notify(friend.name),
 				});
 			} catch (err) {
 				// renote対象が消されていたらリマインダー解除
@@ -175,7 +175,7 @@ export default class extends Module {
 		}
 
 		this.subscribeReply(remind.id, remind.isDm, remind.isDm ? remind.userId : reply.id, {
-			id: remind.id
+			id: remind.id,
 		});
 
 		// タイマーセット

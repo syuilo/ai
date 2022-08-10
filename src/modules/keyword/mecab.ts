@@ -1,8 +1,8 @@
-import { spawn } from 'child_process';
+import {spawn} from 'child_process';
 import * as util from 'util';
 import * as stream from 'stream';
 import * as memoryStreams from 'memory-streams';
-import { EOL } from 'os';
+import {EOL} from 'os';
 
 const pipeline = util.promisify(stream.pipeline);
 

@@ -9,10 +9,10 @@
 import 'module-alias/register';
 
 import * as request from 'request-promise-native';
-import Reversi, { Color } from 'misskey-reversi';
+import Reversi, {Color} from 'misskey-reversi';
 import config from '@/config';
 import serifs from '@/serifs';
-import { User } from '@/misskey/user';
+import {User} from '@/misskey/user';
 
 function getUserName(user: User) {
 	return user.name || user.username;
@@ -22,7 +22,7 @@ const titles = [
 	'さん', 'サン', 'ｻﾝ', '㌠',
 	'ちゃん', 'チャン', 'ﾁｬﾝ',
 	'君', 'くん', 'クン', 'ｸﾝ',
-	'先生', 'せんせい', 'センセイ', 'ｾﾝｾｲ'
+	'先生', 'せんせい', 'センセイ', 'ｾﾝｾｲ',
 ];
 
 class Session {
@@ -63,11 +63,11 @@ class Session {
 
 	private get userName(): string {
 		const name = getUserName(this.user);
-		return `?[${name}](${config.host}/@${this.user.username})${titles.some(x => name.endsWith(x)) ? '' : 'さん'}`;
+		return `?[${name}](${config.host}/@${this.user.username})${titles.some((x) => name.endsWith(x)) ? '' : 'さん'}`;
 	}
 
 	private get strength(): number {
-		return this.form.find(i => i.id == 'strength').value;
+		return this.form.find((i) => i.id == 'strength').value;
 	}
 
 	private get isSettai(): boolean {
@@ -75,7 +75,7 @@ class Session {
 	}
 
 	private get allowPost(): boolean {
-		return this.form.find(i => i.id == 'publish').value;
+		return this.form.find((i) => i.id == 'publish').value;
 	}
 
 	private get url(): string {
@@ -88,36 +88,36 @@ class Session {
 
 	private onMessage = async (msg: any) => {
 		switch (msg.type) {
-			case '_init_': this.onInit(msg.body); break;
-			case 'updateForm': this.onUpdateForn(msg.body); break;
-			case 'started': this.onStarted(msg.body); break;
-			case 'ended': this.onEnded(msg.body); break;
-			case 'set': this.onSet(msg.body); break;
+		case '_init_': this.onInit(msg.body); break;
+		case 'updateForm': this.onUpdateForn(msg.body); break;
+		case 'started': this.onStarted(msg.body); break;
+		case 'ended': this.onEnded(msg.body); break;
+		case 'set': this.onSet(msg.body); break;
 		}
-	}
+	};
 
 	// 親プロセスからデータをもらう
 	private onInit = (msg: any) => {
 		this.game = msg.game;
 		this.form = msg.form;
 		this.account = msg.account;
-	}
+	};
 
 	/**
 	 * フォームが更新されたとき
 	 */
 	private onUpdateForn = (msg: any) => {
-		this.form.find(i => i.id == msg.id).value = msg.value;
-	}
+		this.form.find((i) => i.id == msg.id).value = msg.value;
+	};
 
 	/**
 	 * 対局が始まったとき
 	 */
-	private onStarted = (msg: any) =>  {
+	private onStarted = (msg: any) => {
 		this.game = msg;
 
 		// TLに投稿する
-		this.postGameStarted().then(note => {
+		this.postGameStarted().then((note) => {
 			this.startedNote = note;
 		});
 
@@ -125,14 +125,14 @@ class Session {
 		this.o = new Reversi(this.game.map, {
 			isLlotheo: this.game.isLlotheo,
 			canPutEverywhere: this.game.canPutEverywhere,
-			loopedBoard: this.game.loopedBoard
+			loopedBoard: this.game.loopedBoard,
 		});
 
-		this.maxTurn = this.o.map.filter(p => p === 'empty').length - this.o.board.filter(x => x != null).length;
+		this.maxTurn = this.o.map.filter((p) => p === 'empty').length - this.o.board.filter((x) => x != null).length;
 
-		//#region 隅の位置計算など
+		// #region 隅の位置計算など
 
-		//#region 隅
+		// #region 隅
 		this.o.map.forEach((pix, i) => {
 			if (pix == 'null') return;
 
@@ -162,15 +162,15 @@ class Session {
 				// -+-
 				//
 				(get(x - 1, y) == 'empty' && get(x + 1, y) == 'empty')
-			)
+			);
 
 			const isSumi = !isNotSumi;
 
 			if (isSumi) this.sumiIndexes.push(i);
 		});
-		//#endregion
+		// #endregion
 
-		//#region 隅の隣
+		// #region 隅の隣
 		this.o.map.forEach((pix, i) => {
 			if (pix == 'null') return;
 			if (this.sumiIndexes.includes(i)) return;
@@ -184,35 +184,35 @@ class Session {
 
 			const isSumiNear = (
 				check(x - 1, y - 1) || // 左上
-				check(x    , y - 1) || // 上
+				check(x, y - 1) || // 上
 				check(x + 1, y - 1) || // 右上
-				check(x + 1, y    ) || // 右
+				check(x + 1, y ) || // 右
 				check(x + 1, y + 1) || // 右下
-				check(x    , y + 1) || // 下
+				check(x, y + 1) || // 下
 				check(x - 1, y + 1) || // 左下
-				check(x - 1, y    )    // 左
-			)
+				check(x - 1, y ) // 左
+			);
 
 			if (isSumiNear) this.sumiNearIndexes.push(i);
 		});
-		//#endregion
+		// #endregion
 
-		//#endregion
+		// #endregion
 
 		this.botColor = this.game.user1Id == this.account.id && this.game.black == 1 || this.game.user2Id == this.account.id && this.game.black == 2;
 
 		if (this.botColor) {
 			this.think();
 		}
-	}
+	};
 
 	/**
 	 * 対局が終わったとき
 	 */
-	private onEnded = async (msg: any) =>  {
+	private onEnded = async (msg: any) => {
 		// ストリームから切断
 		process.send!({
-			type: 'ended'
+			type: 'ended',
 		});
 
 		let text: string;
@@ -248,19 +248,19 @@ class Session {
 		await this.post(text, this.startedNote);
 
 		process.exit();
-	}
+	};
 
 	/**
 	 * 打たれたとき
 	 */
-	private onSet = (msg: any) =>  {
+	private onSet = (msg: any) => {
 		this.o.put(msg.color, msg.pos);
 		this.currentTurn++;
 
 		if (msg.next === this.botColor) {
 			this.think();
 		}
-	}
+	};
 
 	/**
 	 * Botにとってある局面がどれだけ有利か静的に評価する
@@ -299,7 +299,7 @@ class Session {
 		if (this.isSettai) score = -score;
 
 		return score;
-	}
+	};
 
 	private think = () => {
 		console.log(`(${this.currentTurn}/${this.maxTurn}) Thinking...`);
@@ -344,9 +344,9 @@ class Session {
 				this.o.undo();
 
 				// 接待なら自分が負けた方が高スコア
-				return this.isSettai
-					? winner !== this.botColor ? score : -score
-					: winner === this.botColor ? score : -score;
+				return this.isSettai ?
+					winner !== this.botColor ? score : -score :
+					winner === this.botColor ? score : -score;
 			}
 
 			if (depth === maxDepth) {
@@ -391,7 +391,7 @@ class Session {
 		};
 
 		const cans = this.o.canPutSomewhere(this.botColor);
-		const scores = cans.map(p => dive(p));
+		const scores = cans.map((p) => dive(p));
 		const pos = cans[scores.indexOf(Math.max(...scores))];
 
 		console.log('Thinked:', pos);
@@ -400,21 +400,21 @@ class Session {
 		setTimeout(() => {
 			process.send!({
 				type: 'put',
-				pos
+				pos,
 			});
 		}, 500);
-	}
+	};
 
 	/**
 	 * 対局が始まったことをMisskeyに投稿します
 	 */
 	private postGameStarted = async () => {
-		const text = this.isSettai
-			? serifs.reversi.startedSettai(this.userName)
-			: serifs.reversi.started(this.userName, this.strength.toString());
+		const text = this.isSettai ?
+			serifs.reversi.startedSettai(this.userName) :
+			serifs.reversi.started(this.userName, this.strength.toString());
 
 		return await this.post(`${text}\n→[観戦する](${this.url})`);
-	}
+	};
 
 	/**
 	 * Misskeyに投稿します
@@ -425,7 +425,7 @@ class Session {
 			const body = {
 				i: config.i,
 				text: text,
-				visibility: 'home'
+				visibility: 'home',
 			} as any;
 
 			if (renote) {
@@ -434,7 +434,7 @@ class Session {
 
 			try {
 				const res = await request.post(`${config.host}/api/notes/create`, {
-					json: body
+					json: body,
 				});
 
 				return res.createdNote;
@@ -445,7 +445,7 @@ class Session {
 		} else {
 			return null;
 		}
-	}
+	};
 }
 
 new Session();

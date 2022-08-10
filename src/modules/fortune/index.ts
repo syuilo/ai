@@ -3,7 +3,7 @@ import Module from '@/module';
 import Message from '@/message';
 import serifs from '@/serifs';
 import * as seedrandom from 'seedrandom';
-import { genItem } from '@/vocabulary';
+import {genItem} from '@/vocabulary';
 
 export const blessing = [
 	'藍吉',
@@ -43,7 +43,7 @@ export default class extends Module {
 	@autobind
 	public install() {
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
 		};
 	}
 
@@ -56,7 +56,7 @@ export default class extends Module {
 			const omikuji = blessing[Math.floor(rng() * blessing.length)];
 			const item = genItem(rng);
 			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${item}`, {
-				cw: serifs.fortune.cw(msg.friend.name)
+				cw: serifs.fortune.cw(msg.friend.name),
 			});
 			return true;
 		} else {

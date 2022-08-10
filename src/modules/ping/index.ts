@@ -8,7 +8,7 @@ export default class extends Module {
 	@autobind
 	public install() {
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
 		};
 	}
 
@@ -18,14 +18,14 @@ export default class extends Module {
 			if (msg.text.includes('おい')) {
 				if (this.ai.isMaster(msg.userId)) {
 					msg.reply('はい。。。', {
-						immediate: true
+						immediate: true,
 					});
 				} else {
 					return false;
 				}
 			} else {
 				msg.reply('PONG!', {
-					immediate: true
+					immediate: true,
 				});
 			}
 			return true;

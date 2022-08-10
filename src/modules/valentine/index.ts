@@ -28,8 +28,8 @@ export default class extends Module {
 
 		const friends = this.ai.friends.find({} as any);
 
-		friends.forEach(f => {
-			const friend = new Friend(this.ai, { doc: f });
+		friends.forEach((f) => {
+			const friend = new Friend(this.ai, {doc: f});
 
 			// 親愛度が5以上必要
 			if (friend.love < 5) return;
@@ -44,7 +44,7 @@ export default class extends Module {
 			const text = serifs.valentine.chocolateForYou(friend.name);
 
 			this.ai.sendMessage(friend.userId, {
-				text: text
+				text: text,
 			});
 		});
 	}

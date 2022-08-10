@@ -2,8 +2,8 @@ import autobind from 'autobind-decorator';
 import Module from '@/module';
 import serifs from '@/serifs';
 import Message from '@/message';
-import { renderChart } from './render-chart';
-import { items } from '@/vocabulary';
+import {renderChart} from './render-chart';
+import {items} from '@/vocabulary';
 import config from '@/config';
 type chartType = 'userNotes'| 'notes' | 'followers' | 'random';
 
@@ -18,7 +18,7 @@ export default class extends Module {
 		setInterval(this.post, 1000 * 60 * 3);
 
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
 		};
 	}
 
@@ -38,7 +38,7 @@ export default class extends Module {
 		this.log('Posting...');
 		this.ai.post({
 			text: serifs.chart.post,
-			fileIds: [file.id]
+			fileIds: [file.id],
 		});
 	}
 
@@ -52,33 +52,33 @@ export default class extends Module {
 			const data = await this.ai.api('charts/user/notes', {
 				span: 'day',
 				limit: 30,
-				userId: params.user.id
+				userId: params.user.id,
 			});
 
 			chart = {
 				title: `@${params.user.username}さんの投稿数`,
 				datasets: [{
-					data: data.diffs.normal
+					data: data.diffs.normal,
 				}, {
-					data: data.diffs.reply
+					data: data.diffs.reply,
 				}, {
-					data: data.diffs.renote
-				}]
+					data: data.diffs.renote,
+				}],
 			};
 		} else if (type === 'followers') {
 			const data = await this.ai.api('charts/user/following', {
 				span: 'day',
 				limit: 30,
-				userId: params.user.id
+				userId: params.user.id,
 			});
 
 			chart = {
 				title: `@${params.user.username}さんのフォロワー数`,
 				datasets: [{
-					data: data.local.followers.total
+					data: data.local.followers.total,
 				}, {
-					data: data.remote.followers.total
-				}]
+					data: data.remote.followers.total,
+				}],
 			};
 		} else if (type === 'notes') {
 			const data = await this.ai.api('charts/notes', {
@@ -88,12 +88,12 @@ export default class extends Module {
 
 			chart = {
 				datasets: [{
-					data: data.local.diffs.normal
+					data: data.local.diffs.normal,
 				}, {
-					data: data.local.diffs.reply
+					data: data.local.diffs.reply,
 				}, {
-					data: data.local.diffs.renote
-				}]
+					data: data.local.diffs.renote,
+				}],
 			};
 		} else {
 			const suffixes = ['の売り上げ', 'の消費', 'の生産'];
@@ -102,10 +102,10 @@ export default class extends Module {
 			const diffRange = 150;
 			const datasetCount = 1 + Math.floor(Math.random() * 3);
 
-			let datasets: any[] = [];
+			const datasets: any[] = [];
 
 			for (let d = 0; d < datasetCount; d++) {
-				let values = [Math.random() * 1000];
+				const values = [Math.random() * 1000];
 
 				for (let i = 1; i < limit; i++) {
 					const prev = values[i - 1];
@@ -113,13 +113,13 @@ export default class extends Module {
 				}
 
 				datasets.push({
-					data: values
+					data: values,
 				});
 			}
 
 			chart = {
 				title: items[Math.floor(Math.random() * items.length)] + suffixes[Math.floor(Math.random() * suffixes.length)],
-				datasets: datasets
+				datasets: datasets,
 			};
 		}
 
@@ -129,7 +129,7 @@ export default class extends Module {
 		this.log('Image uploading...');
 		const file = await this.ai.upload(img, {
 			filename: 'chart.png',
-			contentType: 'image/png'
+			contentType: 'image/png',
 		});
 
 		return file;
@@ -148,14 +148,14 @@ export default class extends Module {
 		if (msg.includes(['投稿'])) type = 'userNotes';
 
 		const file = await this.genChart(type, {
-			user: msg.user
+			user: msg.user,
 		});
 
 		this.log('Replying...');
-		msg.reply(serifs.chart.foryou, { file });
+		msg.reply(serifs.chart.foryou, {file});
 
 		return {
-			reaction: 'like'
+			reaction: 'like',
 		};
 	}
 }

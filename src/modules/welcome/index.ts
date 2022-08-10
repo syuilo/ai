@@ -18,14 +18,14 @@ export default class extends Module {
 		if (note.isFirstNote) {
 			setTimeout(() => {
 				this.ai.api('notes/create', {
-					renoteId: note.id
+					renoteId: note.id,
 				});
 			}, 3000);
 
 			setTimeout(() => {
 				this.ai.api('notes/reactions/create', {
 					noteId: note.id,
-					reaction: 'congrats'
+					reaction: 'congrats',
 				});
 			}, 5000);
 		}

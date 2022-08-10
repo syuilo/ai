@@ -50,7 +50,7 @@ export default class extends Module {
 			isDm: msg.isDm,
 			msgId: msg.id,
 			userId: msg.friend.userId,
-			time: str
+			time: str,
 		});
 
 		return true;
@@ -63,12 +63,12 @@ export default class extends Module {
 		const text = serifs.timer.notify(data.time, friend.name);
 		if (data.isDm) {
 			this.ai.sendMessage(friend.userId, {
-				text: text
+				text: text,
 			});
 		} else {
 			this.ai.post({
 				replyId: data.msgId,
-				text: text
+				text: text,
 			});
 		}
 	}

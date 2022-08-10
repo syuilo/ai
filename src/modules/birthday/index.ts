@@ -30,11 +30,11 @@ export default class extends Module {
 		const today = `${zeroPadding(m + 1, 2)}-${zeroPadding(d, 2)}`;
 
 		const birthFriends = this.ai.friends.find({
-			'user.birthday': { '$regex': new RegExp('-' + today + '$') }
+			'user.birthday': {'$regex': new RegExp('-' + today + '$')},
 		} as any);
 
-		birthFriends.forEach(f => {
-			const friend = new Friend(this.ai, { doc: f });
+		birthFriends.forEach((f) => {
+			const friend = new Friend(this.ai, {doc: f});
 
 			// 親愛度が3以上必要
 			if (friend.love < 3) return;
@@ -49,7 +49,7 @@ export default class extends Module {
 			const text = serifs.birthday.happyBirthday(friend.name);
 
 			this.ai.sendMessage(friend.userId, {
-				text: text
+				text: text,
 			});
 		});
 	}

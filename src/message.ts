@@ -4,7 +4,7 @@ const delay = require('timeout-as-promise');
 
 import 藍 from '@/ai';
 import Friend from '@/friend';
-import { User } from '@/misskey/user';
+import {User} from '@/misskey/user';
 import includes from '@/utils/includes';
 import or from '@/utils/or';
 import config from '@/config';
@@ -60,12 +60,12 @@ export default class Message {
 		this.messageOrNote = messageOrNote;
 		this.isDm = isDm;
 
-		this.friend = new Friend(ai, { user: this.user });
+		this.friend = new Friend(ai, {user: this.user});
 
 		// メッセージなどに付いているユーザー情報は省略されている場合があるので完全なユーザー情報を持ってくる
 		this.ai.api('users/show', {
-			userId: this.userId
-		}).then(user => {
+			userId: this.userId,
+		}).then((user) => {
 			this.friend.updateUser(user);
 		});
 	}
@@ -88,7 +88,7 @@ export default class Message {
 		if (this.isDm) {
 			return await this.ai.sendMessage(this.messageOrNote.userId, {
 				text: text,
-				fileId: opts?.file?.id
+				fileId: opts?.file?.id,
 			});
 		} else {
 			return await this.ai.post({
@@ -96,7 +96,7 @@ export default class Message {
 				text: text,
 				fileIds: opts?.file ? [opts?.file.id] : undefined,
 				cw: opts?.cw,
-				renoteId: opts?.renote
+				renoteId: opts?.renote,
 			});
 		}
 	}

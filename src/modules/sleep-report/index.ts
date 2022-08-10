@@ -24,11 +24,11 @@ export default class extends Module {
 
 		if (sleepHours >= 1) {
 			this.ai.post({
-				text: serifs.sleepReport.report(Math.round(sleepHours))
+				text: serifs.sleepReport.report(Math.round(sleepHours)),
 			});
 		} else {
 			this.ai.post({
-				text: serifs.sleepReport.reportUtatane
+				text: serifs.sleepReport.reportUtatane,
 			});
 		}
 	}

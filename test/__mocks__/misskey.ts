@@ -12,12 +12,12 @@ export class Misskey {
 		this.server = http.createServer(app.callback());
 
 		const ws = new websocket.server({
-			httpServer: this.server
+			httpServer: this.server,
 		});
 
 		ws.on('request', async (request) => {
 			const q = request.resourceURL.query as ParsedUrlQuery;
-	
+
 			this.streaming = request.accept();
 		});
 
@@ -40,16 +40,16 @@ export class Misskey {
 	}
 
 	public async waitForMainChannelConnected() {
-		await this.waitForStreamingMessage(message => {
-			const { type, body } = message;
+		await this.waitForStreamingMessage((message) => {
+			const {type, body} = message;
 			if (type === 'connect') {
-				const { channel, id, params, pong } = body;
+				const {channel, id, params, pong} = body;
 
 				if (channel !== 'main') return;
 
 				if (pong) {
 					this.sendStreamingMessage('connected', {
-						id: id
+						id: id,
 					});
 				}
 
@@ -61,7 +61,7 @@ export class Misskey {
 	public sendStreamingMessage(type: string, payload: any) {
 		this.streaming.send(JSON.stringify({
 			type: type,
-			body: payload
+			body: payload,
 		}));
 	}
 }

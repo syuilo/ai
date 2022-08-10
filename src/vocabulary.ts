@@ -459,11 +459,11 @@ export const and = [
 ];
 
 export function genItem(seedOrRng?: (() => number) | string | number) {
-	const rng = seedOrRng
-		? typeof seedOrRng === 'function'
-			? seedOrRng
-			: seedrandom(seedOrRng.toString())
-		: Math.random;
+	const rng = seedOrRng ?
+		typeof seedOrRng === 'function' ?
+			seedOrRng :
+			seedrandom(seedOrRng.toString()) :
+		Math.random;
 
 	let item = '';
 	if (Math.floor(rng() * 5) !== 0) item += itemPrefixes[Math.floor(rng() * itemPrefixes.length)];

@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import { HandlerResult } from '@/ai';
+import {HandlerResult} from '@/ai';
 import Module from '@/module';
 import Message from '@/message';
-import serifs, { getSerif } from '@/serifs';
+import serifs, {getSerif} from '@/serifs';
 import getDate from '@/utils/get-date';
 
 export default class extends Module {
@@ -42,7 +42,7 @@ export default class extends Module {
 		if (msg.text == null) return false;
 
 		const incLove = () => {
-			//#region 1日に1回だけ親愛度を上げる
+			// #region 1日に1回だけ親愛度を上げる
 			const today = getDate();
 
 			const data = msg.friend.getPerModulesData(this);
@@ -53,7 +53,7 @@ export default class extends Module {
 			msg.friend.setPerModulesData(this, data);
 
 			msg.friend.incLove();
-			//#endregion
+			// #endregion
 		};
 
 		// 末尾のエクスクラメーションマーク
@@ -87,9 +87,9 @@ export default class extends Module {
 
 		if (msg.includes(['行ってくる', '行ってきます', 'いってくる', 'いってきます'])) {
 			msg.reply(
-				msg.friend.love >= 7
-					? serifs.core.itterassyai.love(msg.friend.name)
-					: serifs.core.itterassyai.normal(msg.friend.name));
+				msg.friend.love >= 7 ?
+					serifs.core.itterassyai.love(msg.friend.name) :
+					serifs.core.itterassyai.normal(msg.friend.name));
 			incLove();
 			return true;
 		}
@@ -97,8 +97,8 @@ export default class extends Module {
 		if (msg.includes(['ただいま'])) {
 			msg.reply(
 				msg.friend.love >= 15 ? serifs.core.okaeri.love2(msg.friend.name) :
-				msg.friend.love >= 7 ? getSerif(serifs.core.okaeri.love(msg.friend.name)) :
-				serifs.core.okaeri.normal(msg.friend.name));
+					msg.friend.love >= 7 ? getSerif(serifs.core.okaeri.love(msg.friend.name)) :
+						serifs.core.okaeri.normal(msg.friend.name));
 			incLove();
 			return true;
 		}
@@ -149,7 +149,7 @@ export default class extends Module {
 		// メッセージのみ
 		if (!msg.isDm) return true;
 
-		//#region 1日に1回だけ親愛度を上げる(嫌われてない場合のみ)
+		// #region 1日に1回だけ親愛度を上げる(嫌われてない場合のみ)
 		if (msg.friend.love >= 0) {
 			const today = getDate();
 
@@ -162,16 +162,16 @@ export default class extends Module {
 				msg.friend.incLove();
 			}
 		}
-		//#endregion
+		// #endregion
 
 		msg.reply(getSerif(
 			msg.friend.love >= 10 ? serifs.core.nadenade.love3 :
-			msg.friend.love >= 5 ? serifs.core.nadenade.love2 :
-			msg.friend.love <= -15 ? serifs.core.nadenade.hate4 :
-			msg.friend.love <= -10 ? serifs.core.nadenade.hate3 :
-			msg.friend.love <= -5 ? serifs.core.nadenade.hate2 :
-			msg.friend.love <= -1 ? serifs.core.nadenade.hate1 :
-			serifs.core.nadenade.normal
+				msg.friend.love >= 5 ? serifs.core.nadenade.love2 :
+					msg.friend.love <= -15 ? serifs.core.nadenade.hate4 :
+						msg.friend.love <= -10 ? serifs.core.nadenade.hate3 :
+							msg.friend.love <= -5 ? serifs.core.nadenade.hate2 :
+								msg.friend.love <= -1 ? serifs.core.nadenade.hate1 :
+									serifs.core.nadenade.normal,
 		));
 
 		return true;
@@ -186,8 +186,8 @@ export default class extends Module {
 
 		msg.reply(getSerif(
 			msg.friend.love >= 5 ? serifs.core.kawaii.love :
-			msg.friend.love <= -3 ? serifs.core.kawaii.hate :
-			serifs.core.kawaii.normal));
+				msg.friend.love <= -3 ? serifs.core.kawaii.hate :
+					serifs.core.kawaii.normal));
 
 		return true;
 	}
@@ -201,8 +201,8 @@ export default class extends Module {
 
 		msg.reply(
 			msg.friend.love >= 5 ? (msg.friend.name ? serifs.core.suki.love(msg.friend.name) : serifs.core.suki.normal) :
-			msg.friend.love <= -3 ? serifs.core.suki.hate :
-			serifs.core.suki.normal);
+				msg.friend.love <= -3 ? serifs.core.suki.hate :
+					serifs.core.suki.normal);
 
 		return true;
 	}
@@ -214,7 +214,7 @@ export default class extends Module {
 		// メッセージのみ
 		if (!msg.isDm) return true;
 
-		//#region 前のハグから1分経ってない場合は返信しない
+		// #region 前のハグから1分経ってない場合は返信しない
 		// これは、「ハグ」と言って「ぎゅー」と返信したとき、相手が
 		// それに対してさらに「ぎゅー」と返信するケースがあったため。
 		// そうするとその「ぎゅー」に対してもマッチするため、また
@@ -231,12 +231,12 @@ export default class extends Module {
 
 		data.lastHuggedAt = now;
 		msg.friend.setPerModulesData(this, data);
-		//#endregion
+		// #endregion
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.hug.love :
-			msg.friend.love <= -3 ? serifs.core.hug.hate :
-			serifs.core.hug.normal);
+				msg.friend.love <= -3 ? serifs.core.hug.hate :
+					serifs.core.hug.normal);
 
 		return true;
 	}
@@ -250,8 +250,8 @@ export default class extends Module {
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.humu.love :
-			msg.friend.love <= -3 ? serifs.core.humu.hate :
-			serifs.core.humu.normal);
+				msg.friend.love <= -3 ? serifs.core.humu.hate :
+					serifs.core.humu.normal);
 
 		return true;
 	}
@@ -265,8 +265,8 @@ export default class extends Module {
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.batou.love :
-			msg.friend.love <= -5 ? serifs.core.batou.hate :
-			serifs.core.batou.normal);
+				msg.friend.love <= -5 ? serifs.core.batou.hate :
+					serifs.core.batou.normal);
 
 		return true;
 	}
@@ -292,8 +292,8 @@ export default class extends Module {
 
 		msg.reply(
 			msg.friend.love >= 10 ? serifs.core.ote.love2 :
-			msg.friend.love >= 5 ? serifs.core.ote.love1 :
-			serifs.core.ote.normal);
+				msg.friend.love >= 5 ? serifs.core.ote.love1 :
+					serifs.core.ote.normal);
 
 		return true;
 	}
@@ -305,7 +305,7 @@ export default class extends Module {
 		msg.friend.decLove();
 
 		return {
-			reaction: 'angry'
+			reaction: 'angry',
 		};
 	}
 
@@ -316,7 +316,7 @@ export default class extends Module {
 		msg.friend.decLove();
 
 		return {
-			reaction: 'angry'
+			reaction: 'angry',
 		};
 	}
 
@@ -327,7 +327,7 @@ export default class extends Module {
 		msg.reply(serifs.core.shutdown);
 
 		return {
-			reaction: 'confused'
+			reaction: 'confused',
 		};
 	}
 }
