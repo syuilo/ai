@@ -1,6 +1,6 @@
-FROM node:16-bullseye
+FROM node:18.7-bullseye-slim
 
-RUN apt-get update && apt-get install -y tini build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+RUN apt-get update && apt-get install -y tini git build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
 ARG enable_mecab=1
 

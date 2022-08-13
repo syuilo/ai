@@ -1,0 +1,17 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"config:base",
+		"group:allNonMajor",
+		"group:definitelyTyped",
+		"group:nodeJs"
+	],
+	"labels": ["dependencies"],
+	"packageRules": [
+		{
+			"matchUpdateTypes": ["major"],
+			"addLabels": ["major update"]
+		}
+	],
+	"assignees": ["na2na-p"]
+}
