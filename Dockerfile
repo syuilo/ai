@@ -1,4 +1,4 @@
-FROM node:18.7-bullseye-slim
+FROM node:17.9.1-bullseye-slim
 
 RUN apt-get update && apt-get install -y tini git build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
