@@ -51,7 +51,7 @@
 		"@types/websocket": "1.0.5",
 		"@typescript-eslint/eslint-plugin": "5.33.0",
 		"@typescript-eslint/parser": "5.33.0",
-		"eslint": ">=5.16.0",
+		"eslint": "8.21.0",
 		"eslint-config-google": "0.14.0",
 		"jest": "26.6.3",
 		"koa": "2.13.4",
