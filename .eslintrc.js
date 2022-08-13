@@ -25,5 +25,8 @@ module.exports = {
 		'max-len': 'off',
 		'no-mixed-spaces-and-tabs': 'off',
 		'new-cap': 'off',
+		'camelcase': 'off',
+		'no-invalid-this': 'off',
+		'prefer-rest-params': 'off',
 	},
 };

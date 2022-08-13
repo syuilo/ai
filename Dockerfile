@@ -22,4 +22,4 @@ WORKDIR /ai
 RUN npm install && npm run build
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD npm start
+CMD node --experimental-fetch ./built
