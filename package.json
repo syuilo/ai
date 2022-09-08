@@ -20,7 +20,7 @@
 		"@types/uuid": "8.3.4",
 		"@types/ws": "8.5.3",
 		"autobind-decorator": "2.4.0",
-		"canvas": "2.10.0",
+		"canvas": "2.10.1",
 		"chalk": "4.1.2",
 		"jsdom": "20.0.0",
 		"lokijs": "1.5.12",
