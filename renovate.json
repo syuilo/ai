@@ -12,6 +12,5 @@
 			"matchUpdateTypes": ["major"],
 			"addLabels": ["major update"]
 		}
-	],
-	"assignees": ["na2na-p"]
+	]
 }
