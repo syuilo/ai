@@ -2,7 +2,6 @@ import autobind from 'autobind-decorator';
 import Module from '@/module';
 import Message from '@/message';
 import fetch from 'node-fetch';
-import {ReadStream} from 'fs';
 
 export default class extends Module {
 	public readonly name = 'summonCat';
@@ -39,7 +38,7 @@ export default class extends Module {
     	// https://aws.random.cat/meowにGETリクエストを送る
     	// fileに画像URLが返ってくる
     	const res = await fetch('https://api.thecatapi.com/v1/images/search');
-    	const json = await res.json();
+    	const json = await res.json() as any;
     	console.table(json);
     	const fileUri = json[0].url;
     	// 拡張子を取り除く
