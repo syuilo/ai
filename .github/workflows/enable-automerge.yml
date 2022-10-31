@@ -1,13 +1,14 @@
 name: Enable auto merge
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-    branches:
-      - main
-      - develop
-      - na2na
+  # pull_request:
+    # types:
+      # - opened
+      # - reopened
+    # branches:
+      # - main
+      # - develop
+      # - na2na
+    workflow_dispatch:
 
 jobs:
   enable-auto-merge:
