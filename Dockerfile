@@ -1,4 +1,4 @@
-FROM node:17.9.1-bullseye-slim
+FROM node:18.12.0-bullseye-slim
 
 RUN apt-get update && apt-get install -y tini git build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
@@ -20,7 +20,7 @@ RUN if [ $enable_mecab -ne 0 ]; then apt-get update \
 COPY . /ai
 
 WORKDIR /ai
-RUN npm install && npm run build
+RUN yarn install && yarn build
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD node --experimental-fetch ./built
+CMD yarn start
