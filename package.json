@@ -18,7 +18,7 @@
 		"@types/uuid": "8.3.1",
 		"@types/ws": "7.4.6",
 		"autobind-decorator": "2.4.0",
-		"canvas": "2.8.0",
+		"canvas": "2.10.2",
 		"chalk": "4.1.1",
 		"lokijs": "1.5.12",
 		"memory-streams": "0.1.3",
