@@ -17,6 +17,13 @@ export default class extends Module {
 	private async mentionHook(msg: Message) {
 		if (msg.text == null) return false;
 
+		if (msg.text.includes('3d4')) {
+			if (Math.random() < 0.03) {
+				msg.reply('そんなに334出したいの?');
+				return true;
+			}
+		}
+
 		const query = msg.text.match(/([0-9]+)[dD]([0-9]+)/);
 
 		if (query == null) return false;
