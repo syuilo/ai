@@ -39,6 +39,7 @@ import Earthquake from './modules/earthquake';
 import DicModule from './modules/dic';
 import MenuModule from './modules/menu';
 import GetColorModule from './modules/color';
+import ChatGPT from './modules/chatGPT';
 
 console.log('   __    ____  _____  ___ ');
 console.log('  /__\\  (_  _)(  _  )/ __)');
@@ -72,6 +73,7 @@ promiseRetry((retry) => {
 	new 藍(account, [
 		new CoreModule(),
 		new ReminderModule(),
+		new ChatGPT(),
 		new SummonCat(),
 		new EmojiModule(),
 		new EmojiReactModule(),

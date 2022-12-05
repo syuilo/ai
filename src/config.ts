@@ -14,6 +14,7 @@ type Config = {
 	mecabDic?: string;
 	memoryDir?: string;
 	earthQuakeMonitorPort?: number;
+	openAiApiKey?: string;
 };
 
 const config = require('../config.json');
