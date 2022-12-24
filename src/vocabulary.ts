@@ -200,6 +200,7 @@ export const itemPrefixes = [
 	'燃え盛る',
 	'高圧',
 	'異常',
+	'粗挽き',
 ];
 
 export const items = [
