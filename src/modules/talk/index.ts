@@ -146,9 +146,6 @@ export default class extends Module {
 	private nadenade(msg: Message): boolean {
 		if (!msg.includes(['なでなで'])) return false;
 
-		// メッセージのみ
-		if (!msg.isDm) return true;
-
 		//#region 1日に1回だけ親愛度を上げる(嫌われてない場合のみ)
 		if (msg.friend.love >= 0) {
 			const today = getDate();
@@ -181,9 +178,6 @@ export default class extends Module {
 	private kawaii(msg: Message): boolean {
 		if (!msg.includes(['かわいい', '可愛い'])) return false;
 
-		// メッセージのみ
-		if (!msg.isDm) return true;
-
 		msg.reply(getSerif(
 			msg.friend.love >= 5 ? serifs.core.kawaii.love :
 			msg.friend.love <= -3 ? serifs.core.kawaii.hate :
@@ -196,9 +190,6 @@ export default class extends Module {
 	private suki(msg: Message): boolean {
 		if (!msg.or(['好き', 'すき'])) return false;
 
-		// メッセージのみ
-		if (!msg.isDm) return true;
-
 		msg.reply(
 			msg.friend.love >= 5 ? (msg.friend.name ? serifs.core.suki.love(msg.friend.name) : serifs.core.suki.normal) :
 			msg.friend.love <= -3 ? serifs.core.suki.hate :
@@ -210,9 +201,6 @@ export default class extends Module {
 	@autobind
 	private hug(msg: Message): boolean {
 		if (!msg.or(['ぎゅ', 'むぎゅ', /^はぐ(し(て|よ|よう)?)?$/])) return false;
-
-		// メッセージのみ
-		if (!msg.isDm) return true;
 
 		//#region 前のハグから1分経ってない場合は返信しない
 		// これは、「ハグ」と言って「ぎゅー」と返信したとき、相手が
@@ -245,9 +233,6 @@ export default class extends Module {
 	private humu(msg: Message): boolean {
 		if (!msg.includes(['踏んで'])) return false;
 
-		// メッセージのみ
-		if (!msg.isDm) return true;
-
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.humu.love :
 			msg.friend.love <= -3 ? serifs.core.humu.hate :
@@ -259,9 +244,6 @@ export default class extends Module {
 	@autobind
 	private batou(msg: Message): boolean {
 		if (!msg.includes(['罵倒して', '罵って'])) return false;
-
-		// メッセージのみ
-		if (!msg.isDm) return true;
 
 		msg.reply(
 			msg.friend.love >= 5 ? serifs.core.batou.love :
@@ -275,9 +257,6 @@ export default class extends Module {
 	private itai(msg: Message): boolean {
 		if (!msg.or(['痛い', 'いたい']) && !msg.extractedText.endsWith('痛い')) return false;
 
-		// メッセージのみ
-		if (!msg.isDm) return true;
-
 		msg.reply(serifs.core.itai(msg.friend.name));
 
 		return true;
@@ -286,9 +265,6 @@ export default class extends Module {
 	@autobind
 	private ote(msg: Message): boolean {
 		if (!msg.or(['お手'])) return false;
-
-		// メッセージのみ
-		if (!msg.isDm) return true;
 
 		msg.reply(
 			msg.friend.love >= 10 ? serifs.core.ote.love2 :

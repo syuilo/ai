@@ -32,13 +32,12 @@ export default abstract class Module {
 	/**
 	 * コンテキストを生成し、ユーザーからの返信を待ち受けます
 	 * @param key コンテキストを識別するためのキー
-	 * @param isDm トークメッセージ上のコンテキストかどうか
 	 * @param id トークメッセージ上のコンテキストならばトーク相手のID、そうでないなら待ち受ける投稿のID
 	 * @param data コンテキストに保存するオプションのデータ
 	 */
 	@autobind
-	protected subscribeReply(key: string | null, isDm: boolean, id: string, data?: any) {
-		this.ai.subscribeReply(this, key, isDm, id, data);
+	protected subscribeReply(key: string | null, id: string, data?: any) {
+		this.ai.subscribeReply(this, key, id, data);
 	}
 
 	/**
