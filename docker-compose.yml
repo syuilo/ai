@@ -5,6 +5,7 @@ services:
       context: .
       args:
         - enable_mecab=1
+    platform: linux/amd64
     volumes:
       - './config.json:/ai/config.json:ro'
       - './font.ttf:/ai/font.ttf:ro'
