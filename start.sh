@@ -12,4 +12,9 @@ if grep keywordEnabled config.json | grep -q true; then
   fi
 fi
 
+if (grep chartEnabled config.json | grep -q true) && [ ! -f ./font.ttf ]; then
+  echo "You must put font.ttf if chartEnabled is true"
+  exit 1
+fi
+
 node ./built
