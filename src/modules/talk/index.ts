@@ -144,7 +144,7 @@ export default class extends Module {
 
 	@autobind
 	private nadenade(msg: Message): boolean {
-		if (!msg.includes(['なでなで'])) return false;
+		if (!msg.includes(['なでなで', 'にゃでにゃで'])) return false;
 
 		//#region 1日に1回だけ親愛度を上げる(嫌われてない場合のみ)
 		if (msg.friend.love >= 0) {
