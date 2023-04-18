@@ -446,6 +446,7 @@ export const items = [
 	'グレーチング',
 	'繝九Λ縺ｮ縺ｿ縺晄ｱ',
 	'スーパーカミオカンデ',
+	'デースケドガー',
 ];
 
 export const and = [
