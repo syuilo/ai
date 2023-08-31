@@ -372,8 +372,9 @@ export default class 藍 {
 	 */
 	@autobind
 	public sendMessage(userId: any, param: any) {
-		return this.api('messaging/messages/create', Object.assign({
-			userId: userId,
+		return this.post(Object.assign({
+			visibility: 'specified',
+			visibleUserIds: [userId],
 		}, param));
 	}
 
