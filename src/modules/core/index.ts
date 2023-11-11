@@ -66,22 +66,16 @@ export default class extends Module {
 		if (!msg.text.includes('って呼んで')) return false;
 		if (msg.text.startsWith('って呼んで')) return false;
 
-		const matchResult = msg.text.match(/^(.+?)って呼んで/)![1];
+		const name = msg.text.match(/^(.+?)って呼んで/)![1];
 
-		if (matchResult !== null) {
-			const name = matchResult[1];
+		if (name.length > 10) {
+			msg.reply(serifs.core.tooLong);
+			return true;
+		}
 
-			if (name.length > 10) {
-				msg.reply(serifs.core.tooLong);
-				return true;
-			}
-
-			if (!safeForInterpolate(name)) {
-				msg.reply(serifs.core.invalidName);
-				return true;
-			}
-		} else {
-			console.log("setName: 一致するものが見つかりませんでした")
+		if (!safeForInterpolate(name)) {
+			msg.reply(serifs.core.invalidName);
+			return true;
 		}
 
 		const withSan = titles.some(t => name.endsWith(t));
