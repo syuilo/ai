@@ -317,7 +317,7 @@ export default {
 	 * 音楽おすすめ
 	 */
 	recommendMusic: {
-		suggestMusic: musicUrl => `こんなのはどうでしょう？${musicUrl}`
+		suggestMusic: musicUrl => `こんなのはどうでしょう？\n${musicUrl}`
 	},
 
 	/**
