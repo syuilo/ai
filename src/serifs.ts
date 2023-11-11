@@ -314,6 +314,13 @@ export default {
 	},
 
 	/**
+	 * 音楽おすすめ
+	 */
+	recommendMusic: {
+		suggestMusic: musicUrl => `こんなのはどうでしょう？${musicUrl}`
+	},
+
+	/**
 	 * 占い
 	 */
 	fortune: {
