@@ -21,7 +21,7 @@ jobs:
           restore-keys: ${{ runner.os }}-npm-
       
       - name: Install node modules
-        run: npm ci
+        run: npm install
 
       - name: Build ai
         run: npm run build
