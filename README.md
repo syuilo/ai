@@ -1,3 +1,4 @@
+[![.github/workflows/main.yml](https://github.com/n1lsqn/ai/actions/workflows/main.yml/badge.svg)](https://github.com/n1lsqn/ai/actions/workflows/main.yml)
 <h1><p align="center"><img src="./ai.svg" alt="藍" height="200"></p></h1>
 <p align="center">An Ai for Misskey. <a href="./torisetu.md">About Ai</a></p>
 
