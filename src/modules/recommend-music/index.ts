@@ -85,7 +85,18 @@ const vocaloidUrls = [
 	'https://www.nicovideo.jp/watch/sm35761194',
 	'https://www.nicovideo.jp/watch/sm27529228',
 	'https://www.nicovideo.jp/watch/sm12098837',
-	'https://www.nicovideo.jp/watch/sm7164046'
+	'https://www.nicovideo.jp/watch/sm7164046',
+	'https://www.nicovideo.jp/watch/sm18623327',
+	'https://www.nicovideo.jp/watch/sm18623327',
+	'https://www.nicovideo.jp/watch/sm7138245',
+	'https://www.youtube.com/watch?v=LdnlHz3qGrQ',
+	'https://www.youtube.com/watch?v=2G9vU6LIme4',
+	'https://youtu.be/uAb7d7V7GMw?si=Xktq9dovh6YQmjga',
+	'https://www.nicovideo.jp/watch/sm18792060',
+	'https://sp.nicovideo.jp/watch/sm13304052',
+	'https://youtu.be/rPECSTqQPYg?si=mOaOvLhQNBTUagiK',
+	'https://www.nicovideo.jp/watch/sm11559163',
+	'https://www.nicovideo.jp/watch/sm17824282'
 	// **
 ]
 
