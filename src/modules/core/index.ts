@@ -86,7 +86,7 @@ export default class extends Module {
 
   	const name = matchResult[1];
 
-  	if (name.length > 20) {
+  	if (name.length > 30) {
     	console.error("Name length exceeds 10 characters.");
     	msg.reply(serifs.core.tooLong);
     	return true;
