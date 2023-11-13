@@ -73,7 +73,7 @@ export default class extends Module {
 			return true;
 		}
 
-		if (!safeForInterpolate(name)) {
+		if (safeForInterpolate(name)) {
 			msg.reply(serifs.core.invalidName);
 			return true;
 		}
