@@ -72,7 +72,7 @@ export default class extends Module {
 		
 		if (includes(note.text, ['なでなで'])) return react(':y6ymef3aio1q3iwchjx0rwf5:');
 		if (includes(note.text, ['なでて', '撫でて'])) return react(':blobcatpnd_onaka_nade:');
-		if (includes(note.text, ['眠い', '寝ようかな', 'ねようかな'])) return react(':ahutontabeteagemasyoune:');
+		if (includes(note.text, ['ねむい', '眠い', '寝ようかな', 'ねようかな'])) return react(':ahutontabeteagemasyoune:');
 		if (includes(note.text, ['さむい', '寒い'])) return react(':aa2luvzsqki2jnuq3emlaroc:');
 
 	}
