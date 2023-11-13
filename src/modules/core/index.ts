@@ -101,12 +101,12 @@ export default class extends Module {
   	const withSan = titles.some(t => name.endsWith(t));
 
   	if (withSan) {
-    	msg.friend.updateName(name);
+    	msg.friend.updateName(name.replace("@ai", ""));
     	msg.reply(serifs.core.setNameOk(name));
   	} else {
     	msg.reply(serifs.core.san).then(reply => {
       	this.subscribeReply(msg.userId, reply.id, {
-        	name: name
+					name: name.replace("@ai", "")
       	});
     	});
   	}
