@@ -38,7 +38,6 @@ export default class extends Module {
 	@autobind
 	private check() {
 		const average = (arr) => arr.reduce((a, b) => a + b) / arr.length;
-
 		const cpuPercentages = this.statsLogs.map(s => s && (s.cpu_usage || s.cpu) * 100 || 0);
 		const cpuPercentage = average(cpuPercentages);
 		if (cpuPercentage >= 70) {
