@@ -102,7 +102,8 @@ const vocaloidUrls = [
 	'https://www.nicovideo.jp/watch/sm13344892',
 	'https://www.nicovideo.jp/watch/sm3075492',
 	'https://www.nicovideo.jp/watch/sm12850213',
-	'https://www.nicovideo.jp/watch/sm10150980'
+	'https://www.nicovideo.jp/watch/sm10150980',
+	'https://www.youtube.com/watch?v=CoL42lnNtp8'
 	// **
 ]
 
