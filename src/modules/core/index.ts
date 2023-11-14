@@ -63,37 +63,31 @@ export default class extends Module {
 @autobind
 	private setName(msg: Message): boolean {
   	if (!msg.text) {
-    	console.error("Message text is empty or undefined.");
     	return false;
   	}
 
   	if (!msg.text.includes('って呼んで')) {
-    	console.error("Message text does not include 'って呼んで'.");
-    	return false;
+			return false;
   	}
 
   	if (msg.text.startsWith('って呼んで')) {
-    	console.error("Message text starts with 'って呼んで'.");
     	return false;
   	}
 
   	const matchResult = msg.text.match(/^(.+?)って呼んで/);
 
   	if (!matchResult) {
-    	console.error("Name not found in the message text.");
     	return false;
   	}
 
   	const name = matchResult[1];
 
   	if (name.length > 30) {
-    	console.error("Name length exceeds 10 characters.");
     	msg.reply(serifs.core.tooLong);
     	return true;
   	}
 
   	if (safeForInterpolate(name)) {
-    	console.error("Invalid name.");
     	msg.reply(serifs.core.invalidName);
     	return true;
   	}
