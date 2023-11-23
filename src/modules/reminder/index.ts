@@ -6,7 +6,7 @@ import serifs, { getSerif } from '@/serifs';
 import { acct } from '@/utils/acct';
 import config from '@/config';
 
-const NOTIFY_INTERVAL = 1000 * 60 * 60 * 12;
+const NOTIFY_INTERVAL = 1000 * 60 * 60 * 24;
 
 export default class extends Module {
 	public readonly name = 'reminder';
