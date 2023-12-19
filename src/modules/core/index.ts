@@ -63,37 +63,31 @@ export default class extends Module {
 @autobind
 	private setName(msg: Message): boolean {
   	if (!msg.text) {
-    	console.error("Message text is empty or undefined.");
     	return false;
   	}
 
   	if (!msg.text.includes('って呼んで')) {
-    	console.error("Message text does not include 'って呼んで'.");
-    	return false;
+			return false;
   	}
 
   	if (msg.text.startsWith('って呼んで')) {
-    	console.error("Message text starts with 'って呼んで'.");
     	return false;
   	}
 
   	const matchResult = msg.text.match(/^(.+?)って呼んで/);
 
   	if (!matchResult) {
-    	console.error("Name not found in the message text.");
     	return false;
   	}
 
   	const name = matchResult[1];
 
-  	if (name.length > 20) {
-    	console.error("Name length exceeds 10 characters.");
+  	if (name.length > 30) {
     	msg.reply(serifs.core.tooLong);
     	return true;
   	}
 
   	if (safeForInterpolate(name)) {
-    	console.error("Invalid name.");
     	msg.reply(serifs.core.invalidName);
     	return true;
   	}
@@ -101,12 +95,16 @@ export default class extends Module {
   	const withSan = titles.some(t => name.endsWith(t));
 
   	if (withSan) {
-    	msg.friend.updateName(name);
+			msg.friend.updateName(
+				name.replace("@ai", "")
+						.replace("@papi.n1l.dev", "")
+			);
     	msg.reply(serifs.core.setNameOk(name));
   	} else {
     	msg.reply(serifs.core.san).then(reply => {
       	this.subscribeReply(msg.userId, reply.id, {
-        	name: name
+					name: name.replace("@ai", "")
+										.replace("@papi.n1l.dev", "")
       	});
     	});
   	}
