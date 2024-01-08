@@ -383,7 +383,9 @@ export default {
 
 	checkCustomEmojis: {
 		post: (server_name, num) => `${server_name}に${num}件の絵文字が追加されました！`,
-		emojiPost: emoji => `:${emoji}:\n(\`${emoji}\`) #AddCustomEmojis`
+		emojiPost: emoji => `:${emoji}:\n(\`${emoji}\`) #AddCustomEmojis`,
+		postOnce: (server_name, num, text) => `${server_name}に${num}件の絵文字が追加されました！\n${text} #AddCustomEmojis`,
+		emojiOnce: emoji => `:${emoji}:(\`${emoji}\`)`
 	},
 
 	sleepReport: {

@@ -1,6 +1,6 @@
 type Config = {
 	host: string;
-	serverName: string;
+	serverName?: string;
 	i: string;
 	master?: string;
 	wsUrl: string;
@@ -10,7 +10,8 @@ type Config = {
 	notingEnabled: boolean;
 	chartEnabled: boolean;
 	serverMonitoring: boolean;
-	checkEmojisEnabled: boolean;
+	checkEmojisEnabled?: boolean;
+	checkEmojisAtOnce?: boolean;
 	mecab?: string;
 	mecabDic?: string;
 	memoryDir?: string;
