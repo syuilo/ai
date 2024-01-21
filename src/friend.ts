@@ -15,6 +15,7 @@ export type FriendDoc = {
 	perModulesData?: any;
 	married?: boolean;
 	transferCode?: string;
+	reversiStrength?: number | null;
 };
 
 export default class Friend {
@@ -151,6 +152,20 @@ export default class Friend {
 	@bindThis
 	public updateName(name: string) {
 		this.doc.name = name;
+		this.save();
+	}
+
+	@bindThis
+	public updateReversiStrength(strength: number | null) {
+		if (strength == null) {
+			this.doc.reversiStrength = null;
+			this.save();
+			return;
+		}
+
+		if (strength < 0) strength = 0;
+		if (strength > 5) strength = 5;
+		this.doc.reversiStrength = strength;
 		this.save();
 	}
 

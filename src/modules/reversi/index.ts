@@ -54,6 +54,10 @@ export default class extends Module {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.reversi.ok);
 
+				if (msg.includes(['接待'])) {
+					msg.friend.updateReversiStrength(0);
+				}
+
 				this.ai.api('reversi/match', {
 					userId: msg.userId
 				});
@@ -85,6 +89,13 @@ export default class extends Module {
 
 	@bindThis
 	private onReversiGameStart(game: any) {
+		let strength = 4;
+		const friend = this.ai.lookupFriend(game.user1Id !== this.ai.account.id ? game.user1Id : game.user2Id)!;
+		if (friend != null) {
+			strength = friend.doc.reversiStrength ?? 4;
+			friend.updateReversiStrength(null);
+		}
+
 		this.log(`enter reversi game room: ${game.id}`);
 
 		// ゲームストリームに接続
@@ -102,7 +113,7 @@ export default class extends Module {
 			id: 'strength',
 			type: 'radio',
 			label: '強さ',
-			value: 4,
+			value: strength,
 			items: [{
 				label: '接待',
 				value: 0

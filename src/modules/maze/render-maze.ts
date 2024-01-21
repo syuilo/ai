@@ -1,4 +1,4 @@
-import * as gen from 'random-seed';
+import gen from 'random-seed';
 import { createCanvas } from 'canvas';
 
 import { CellType } from './maze.js';
