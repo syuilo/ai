@@ -1,40 +1,38 @@
 // AiOS bootstrapper
 
-import 'module-alias/register';
+import chalk from 'chalk';
+import got from 'got';
+import promiseRetry from 'promise-retry';
 
-import * as chalk from 'chalk';
-import * as request from 'request-promise-native';
-const promiseRetry = require('promise-retry');
+import 藍 from './ai.js';
+import config from './config.js';
+import _log from './utils/log.js';
+import pkg from '../package.json' assert { type: 'json' };
 
-import 藍 from './ai';
-import config from './config';
-import _log from './utils/log';
-const pkg = require('../package.json');
-
-import CoreModule from './modules/core';
-import TalkModule from './modules/talk';
-import BirthdayModule from './modules/birthday';
-import ReversiModule from './modules/reversi';
-import PingModule from './modules/ping';
-import EmojiModule from './modules/emoji';
-import EmojiReactModule from './modules/emoji-react';
-import FortuneModule from './modules/fortune';
-import GuessingGameModule from './modules/guessing-game';
-import KazutoriModule from './modules/kazutori';
-import KeywordModule from './modules/keyword';
-import WelcomeModule from './modules/welcome';
-import TimerModule from './modules/timer';
-import DiceModule from './modules/dice';
-import ServerModule from './modules/server';
-import FollowModule from './modules/follow';
-import ValentineModule from './modules/valentine';
-import MazeModule from './modules/maze';
-import ChartModule from './modules/chart';
-import SleepReportModule from './modules/sleep-report';
-import NotingModule from './modules/noting';
-import PollModule from './modules/poll';
-import ReminderModule from './modules/reminder';
-import CheckCustomEmojisModule from './modules/check-custom-emojis';
+import CoreModule from './modules/core/index.js';
+import TalkModule from './modules/talk/index.js';
+import BirthdayModule from './modules/birthday/index.js';
+import ReversiModule from './modules/reversi/index.js';
+import PingModule from './modules/ping/index.js';
+import EmojiModule from './modules/emoji/index.js';
+import EmojiReactModule from './modules/emoji-react/index.js';
+import FortuneModule from './modules/fortune/index.js';
+import GuessingGameModule from './modules/guessing-game/index.js';
+import KazutoriModule from './modules/kazutori/index.js';
+import KeywordModule from './modules/keyword/index.js';
+import WelcomeModule from './modules/welcome/index.js';
+import TimerModule from './modules/timer/index.js';
+import DiceModule from './modules/dice/index.js';
+import ServerModule from './modules/server/index.js';
+import FollowModule from './modules/follow/index.js';
+import ValentineModule from './modules/valentine/index.js';
+import MazeModule from './modules/maze/index.js';
+import ChartModule from './modules/chart/index.js';
+import SleepReportModule from './modules/sleep-report/index.js';
+import NotingModule from './modules/noting/index.js';
+import PollModule from './modules/poll/index.js';
+import ReminderModule from './modules/reminder/index.js';
+import CheckCustomEmojisModule from './modules/check-custom-emojis/index.js';
 
 console.log('   __    ____  _____  ___ ');
 console.log('  /__\\  (_  _)(  _  )/ __)');
@@ -51,11 +49,11 @@ promiseRetry(retry => {
 	log(`Account fetching... ${chalk.gray(config.host)}`);
 
 	// アカウントをフェッチ
-	return request.post(`${config.apiUrl}/i`, {
+	return got.post(`${config.apiUrl}/i`, {
 		json: {
 			i: config.i
 		}
-	}).catch(retry);
+	}).json().catch(retry);
 }, {
 	retries: 3
 }).then(account => {

@@ -1,5 +1,5 @@
-import autobind from 'autobind-decorator';
-import 藍, { InstallerResult } from '@/ai';
+import { bindThis } from '@/decorators.js';
+import 藍, { InstallerResult } from '@/ai.js';
 
 export default abstract class Module {
 	public abstract readonly name: string;
@@ -24,7 +24,7 @@ export default abstract class Module {
 
 	public abstract install(): InstallerResult;
 
-	@autobind
+	@bindThis
 	protected log(msg: string) {
 		this.ai.log(`[${this.name}]: ${msg}`);
 	}
@@ -35,7 +35,7 @@ export default abstract class Module {
 	 * @param id トークメッセージ上のコンテキストならばトーク相手のID、そうでないなら待ち受ける投稿のID
 	 * @param data コンテキストに保存するオプションのデータ
 	 */
-	@autobind
+	@bindThis
 	protected subscribeReply(key: string | null, id: string, data?: any) {
 		this.ai.subscribeReply(this, key, id, data);
 	}
@@ -44,7 +44,7 @@ export default abstract class Module {
 	 * 返信の待ち受けを解除します
 	 * @param key コンテキストを識別するためのキー
 	 */
-	@autobind
+	@bindThis
 	protected unsubscribeReply(key: string | null) {
 		this.ai.unsubscribeReply(this, key);
 	}
@@ -55,17 +55,17 @@ export default abstract class Module {
 	 * @param delay ミリ秒
 	 * @param data オプションのデータ
 	 */
-	@autobind
+	@bindThis
 	public setTimeoutWithPersistence(delay: number, data?: any) {
 		this.ai.setTimeoutWithPersistence(this, delay, data);
 	}
 
-	@autobind
+	@bindThis
 	protected getData() {
 		return this.doc.data;
 	}
 
-	@autobind
+	@bindThis
 	protected setData(data: any) {
 		this.doc.data = data;
 		this.ai.moduleData.update(this.doc);

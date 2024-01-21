@@ -1,9 +1,9 @@
-import autobind from 'autobind-decorator';
-import 藍 from '@/ai';
-import IModule from '@/module';
-import getDate from '@/utils/get-date';
-import { User } from '@/misskey/user';
-import { genItem } from '@/vocabulary';
+import { bindThis } from '@/decorators.js';
+import 藍 from '@/ai.js';
+import IModule from '@/module.js';
+import getDate from '@/utils/get-date.js';
+import { User } from '@/misskey/user.js';
+import { genItem } from '@/vocabulary.js';
 
 export type FriendDoc = {
 	userId: string;
@@ -69,7 +69,7 @@ export default class Friend {
 		}
 	}
 
-	@autobind
+	@bindThis
 	public updateUser(user: Partial<User>) {
 		this.doc.user = {
 			...this.doc.user,
@@ -78,7 +78,7 @@ export default class Friend {
 		this.save();
 	}
 
-	@autobind
+	@bindThis
 	public getPerModulesData(module: IModule) {
 		if (this.doc.perModulesData == null) {
 			this.doc.perModulesData = {};
@@ -92,7 +92,7 @@ export default class Friend {
 		return this.doc.perModulesData[module.name];
 	}
 
-	@autobind
+	@bindThis
 	public setPerModulesData(module: IModule, data: any) {
 		if (this.doc.perModulesData == null) {
 			this.doc.perModulesData = {};
@@ -103,7 +103,7 @@ export default class Friend {
 		this.save();
 	}
 
-	@autobind
+	@bindThis
 	public incLove(amount = 1) {
 		const today = getDate();
 
@@ -127,7 +127,7 @@ export default class Friend {
 		this.ai.log(`💗 ${this.userId} +${amount}`);
 	}
 
-	@autobind
+	@bindThis
 	public decLove(amount = 1) {
 		// 親愛度MAXなら下げない
 		if (this.doc.love === 100) return;
@@ -148,18 +148,18 @@ export default class Friend {
 		this.ai.log(`💢 ${this.userId} -${amount}`);
 	}
 
-	@autobind
+	@bindThis
 	public updateName(name: string) {
 		this.doc.name = name;
 		this.save();
 	}
 
-	@autobind
+	@bindThis
 	public save() {
 		this.ai.friends.update(this.doc);
 	}
 
-	@autobind
+	@bindThis
 	public generateTransferCode(): string {
 		const code = genItem();
 
@@ -169,7 +169,7 @@ export default class Friend {
 		return code;
 	}
 
-	@autobind
+	@bindThis
 	public transferMemory(code: string): boolean {
 		const src = this.ai.friends.findOne({
 			transferCode: code

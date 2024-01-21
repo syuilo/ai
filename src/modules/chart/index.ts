@@ -1,15 +1,15 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import serifs from '@/serifs';
-import Message from '@/message';
-import { renderChart } from './render-chart';
-import { items } from '@/vocabulary';
-import config from '@/config';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
+import serifs from '@/serifs.js';
+import Message from '@/message.js';
+import { renderChart } from './render-chart.js';
+import { items } from '@/vocabulary.js';
+import config from '@/config.js';
 
 export default class extends Module {
 	public readonly name = 'chart';
 
-	@autobind
+	@bindThis
 	public install() {
 		if (config.chartEnabled === false) return {};
 
@@ -21,7 +21,7 @@ export default class extends Module {
 		};
 	}
 
-	@autobind
+	@bindThis
 	private async post() {
 		const now = new Date();
 		if (now.getHours() !== 23) return;
@@ -41,7 +41,7 @@ export default class extends Module {
 		});
 	}
 
-	@autobind
+	@bindThis
 	private async genChart(type, params?): Promise<any> {
 		this.log('Chart data fetching...');
 
@@ -134,7 +134,7 @@ export default class extends Module {
 		return file;
 	}
 
-	@autobind
+	@bindThis
 	private async mentionHook(msg: Message) {
 		if (!msg.includes(['チャート'])) {
 			return false;

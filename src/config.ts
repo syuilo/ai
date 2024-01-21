@@ -17,7 +17,7 @@ type Config = {
 	memoryDir?: string;
 };
 
-const config = require('../config.json');
+import config from '../config.json' assert { type: 'json' };
 
 config.wsUrl = config.host.replace('http', 'ws');
 config.apiUrl = config.host + '/api';

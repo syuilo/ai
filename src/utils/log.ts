@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
 export default function(msg: string) {
 	const now = new Date();

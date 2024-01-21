@@ -1,15 +1,15 @@
-import autobind from 'autobind-decorator';
-import Message from '@/message';
-import Module from '@/module';
-import serifs from '@/serifs';
-import { genItem } from '@/vocabulary';
-import config from '@/config';
-import { Note } from '@/misskey/note';
+import { bindThis } from '@/decorators.js';
+import Message from '@/message.js';
+import Module from '@/module.js';
+import serifs from '@/serifs.js';
+import { genItem } from '@/vocabulary.js';
+import config from '@/config.js';
+import { Note } from '@/misskey/note.js';
 
 export default class extends Module {
 	public readonly name = 'poll';
 
-	@autobind
+	@bindThis
 	public install() {
 		setInterval(() => {
 			if (Math.random() < 0.1) {
@@ -23,7 +23,7 @@ export default class extends Module {
 		};
 	}
 
-	@autobind
+	@bindThis
 	private async post() {
 		const duration = 1000 * 60 * 15;
 
@@ -89,7 +89,7 @@ export default class extends Module {
 		});
 	}
 
-	@autobind
+	@bindThis
 	private async mentionHook(msg: Message) {
 		if (!msg.or(['/poll']) || msg.user.username !== config.master) {
 			return false;
@@ -102,7 +102,7 @@ export default class extends Module {
 		return true;
 	}
 
-	@autobind
+	@bindThis
 	private async timeoutCallback({ title, noteId }) {
 		const note: Note = await this.ai.api('notes/show', { noteId });
 

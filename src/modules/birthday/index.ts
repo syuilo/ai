@@ -1,7 +1,7 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import Friend from '@/friend';
-import serifs from '@/serifs';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
+import Friend from '@/friend.js';
+import serifs from '@/serifs.js';
 
 function zeroPadding(num: number, length: number): string {
 	return ('0000000000' + num).slice(-length);
@@ -10,7 +10,7 @@ function zeroPadding(num: number, length: number): string {
 export default class extends Module {
 	public readonly name = 'birthday';
 
-	@autobind
+	@bindThis
 	public install() {
 		this.crawleBirthday();
 		setInterval(this.crawleBirthday, 1000 * 60 * 3);
@@ -21,7 +21,7 @@ export default class extends Module {
 	/**
 	 * 誕生日のユーザーがいないかチェック(いたら祝う)
 	 */
-	@autobind
+	@bindThis
 	private crawleBirthday() {
 		const now = new Date();
 		const m = now.getMonth();

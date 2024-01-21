@@ -1,18 +1,18 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import serifs from '@/serifs';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
+import serifs from '@/serifs.js';
 
 export default class extends Module {
 	public readonly name = 'sleepReport';
 
-	@autobind
+	@bindThis
 	public install() {
 		this.report();
 
 		return {};
 	}
 
-	@autobind
+	@bindThis
 	private report() {
 		const now = Date.now();
 

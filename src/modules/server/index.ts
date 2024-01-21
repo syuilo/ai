@@ -1,7 +1,7 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import serifs from '@/serifs';
-import config from '@/config';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
+import serifs from '@/serifs.js';
+import config from '@/config.js';
 
 export default class extends Module {
 	public readonly name = 'server';
@@ -16,7 +16,7 @@ export default class extends Module {
 	 */
 	private statsLogs: any[] = [];
 
-	@autobind
+	@bindThis
 	public install() {
 		if (!config.serverMonitoring) return {};
 
@@ -35,7 +35,7 @@ export default class extends Module {
 		return {};
 	}
 
-	@autobind
+	@bindThis
 	private check() {
 		const average = (arr) => arr.reduce((a, b) => a + b) / arr.length;
 
@@ -48,12 +48,12 @@ export default class extends Module {
 		}
 	}
 
-	@autobind
+	@bindThis
 	private async onStats(stats: any) {
 		this.recentStat = stats;
 	}
 
-	@autobind
+	@bindThis
 	private warn() {
 		//#region 前に警告したときから一旦落ち着いた状態を経験していなければ警告しない
 		// 常に負荷が高いようなサーバーで無限に警告し続けるのを防ぐため

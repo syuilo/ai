@@ -1,4 +1,4 @@
-import * as seedrandom from 'seedrandom';
+import seedrandom from 'seedrandom';
 
 export const itemPrefixes = [
 	'プラチナ製',
