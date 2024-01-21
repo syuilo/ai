@@ -3,7 +3,8 @@
 	"type": "module",
 	"main": "./built/index.js",
 	"scripts": {
-		"start": "nodemon ./built",
+		"start": "node ./built",
+		"start-daemon": "nodemon ./built",
 		"build": "tspc",
 		"test": "jest"
 	},

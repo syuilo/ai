@@ -107,6 +107,12 @@ class Session {
 	 */
 	private onStarted = (msg: any) =>  {
 		this.game = msg.game;
+		if (this.game.canPutEverywhere) { // 対応してない
+			process.send!({
+				type: 'ended'
+			});
+			process.exit();
+		}
 
 		// TLに投稿する
 		this.postGameStarted().then(note => {

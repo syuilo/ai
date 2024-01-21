@@ -161,6 +161,16 @@ export default class extends Module {
 		// ゲームストリームから情報が流れてきたらそのままバックエンドプロセスに伝える
 		gw.addListener('*', message => {
 			ai.send(message);
+
+			if (message.type === 'updateSettings') {
+				if (message.body.key === 'canPutEverywhere') {
+					if (message.body.value === true) {
+						gw.send('ready', false);
+					} else {
+						gw.send('ready', true);
+					}
+				}
+			}
 		});
 		//#endregion
 
