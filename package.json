@@ -38,38 +38,6 @@
 		"ws": "8.16.0"
 	},
 	"devDependencies": {
-		"@koa/router": "9.4.0",
-		"@types/jest": "26.0.23",
-		"@types/koa": "2.13.1",
-		"@types/koa__router": "8.0.4",
-		"@types/websocket": "1.0.10",
-		"jest": "26.6.3",
-		"koa": "2.13.1",
-		"koa-json-body": "5.3.0",
-		"ts-jest": "26.5.6",
-		"websocket": "1.0.34"
-	},
-	"_moduleAliases": {
-		"@": "built"
-	},
-	"jest": {
-		"testRegex": "/test/.*",
-		"moduleFileExtensions": [
-			"ts",
-			"js"
-		],
-		"transform": {
-			"^.+\\.ts$": "ts-jest"
-		},
-		"globals": {
-			"ts-jest": {
-				"tsConfig": "test/tsconfig.json"
-			}
-		},
-		"moduleNameMapper": {
-			"^@/(.+)": "<rootDir>/src/$1",
-			"^#/(.+)": "<rootDir>/test/$1"
-		}
 	},
 	"nodemonConfig": {
     "ignore": ["memory.json"]

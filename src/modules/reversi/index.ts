@@ -89,10 +89,10 @@ export default class extends Module {
 
 	@bindThis
 	private onReversiGameStart(game: any) {
-		let strength = 4;
+		let strength = 5;
 		const friend = this.ai.lookupFriend(game.user1Id !== this.ai.account.id ? game.user1Id : game.user2Id)!;
 		if (friend != null) {
-			strength = friend.doc.reversiStrength ?? 4;
+			strength = friend.doc.reversiStrength ?? 5;
 			friend.updateReversiStrength(null);
 		}
 
