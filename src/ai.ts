@@ -105,7 +105,7 @@ export default class 藍 {
 
 	@bindThis
 	public log(msg: string) {
-		log(chalk`[{magenta AiOS}]: ${msg}`);
+		log(`[${chalk.magenta('AiOS')}]: ${msg}`);
 	}
 
 	@bindThis
