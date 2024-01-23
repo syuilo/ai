@@ -1,5 +1,5 @@
-import * as gen from 'random-seed';
-import { CellType } from './maze';
+import gen from 'random-seed';
+import { CellType } from './maze.js';
 
 const cellVariants = {
 	void: {

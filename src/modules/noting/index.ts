@@ -1,13 +1,13 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import serifs from '@/serifs';
-import { genItem } from '@/vocabulary';
-import config from '@/config';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
+import serifs from '@/serifs.js';
+import { genItem } from '@/vocabulary.js';
+import config from '@/config.js';
 
 export default class extends Module {
 	public readonly name = 'noting';
 
-	@autobind
+	@bindThis
 	public install() {
 		if (config.notingEnabled === false) return {};
 
@@ -20,7 +20,7 @@ export default class extends Module {
 		return {};
 	}
 
-	@autobind
+	@bindThis
 	private post() {
 		const notes = [
 			...serifs.noting.notes,

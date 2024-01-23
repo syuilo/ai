@@ -1,18 +1,18 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import Message from '@/message';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
+import Message from '@/message.js';
 
 export default class extends Module {
 	public readonly name = 'ping';
 
-	@autobind
+	@bindThis
 	public install() {
 		return {
 			mentionHook: this.mentionHook
 		};
 	}
 
-	@autobind
+	@bindThis
 	private async mentionHook(msg: Message) {
 		if (msg.text && msg.text.includes('ping')) {
 			msg.reply('PONG!', {

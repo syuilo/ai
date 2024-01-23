@@ -1,10 +1,10 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
 
 export default class extends Module {
 	public readonly name = 'welcome';
 
-	@autobind
+	@bindThis
 	public install() {
 		const tl = this.ai.connection.useSharedConnection('localTimeline');
 
@@ -13,7 +13,7 @@ export default class extends Module {
 		return {};
 	}
 
-	@autobind
+	@bindThis
 	private onLocalNote(note: any) {
 		if (note.isFirstNote) {
 			setTimeout(() => {

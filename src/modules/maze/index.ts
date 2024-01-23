@@ -1,14 +1,14 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import serifs from '@/serifs';
-import { genMaze } from './gen-maze';
-import { renderMaze } from './render-maze';
-import Message from '@/message';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
+import serifs from '@/serifs.js';
+import { genMaze } from './gen-maze.js';
+import { renderMaze } from './render-maze.js';
+import Message from '@/message.js';
 
 export default class extends Module {
 	public readonly name = 'maze';
 
-	@autobind
+	@bindThis
 	public install() {
 		this.post();
 		setInterval(this.post, 1000 * 60 * 3);
@@ -18,7 +18,7 @@ export default class extends Module {
 		};
 	}
 
-	@autobind
+	@bindThis
 	private async post() {
 		const now = new Date();
 		if (now.getHours() !== 22) return;
@@ -38,7 +38,7 @@ export default class extends Module {
 		});
 	}
 
-	@autobind
+	@bindThis
 	private async genMazeFile(seed, size?): Promise<any> {
 		this.log('Maze generating...');
 		const maze = genMaze(seed, size);
@@ -55,7 +55,7 @@ export default class extends Module {
 		return file;
 	}
 
-	@autobind
+	@bindThis
 	private async mentionHook(msg: Message) {
 		if (msg.includes(['迷路'])) {
 			let size: string | null = null;

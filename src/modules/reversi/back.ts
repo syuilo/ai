@@ -6,13 +6,11 @@
  * 切断されてしまうので、別々のプロセスで行うようにします
  */
 
-import 'module-alias/register';
-
-import * as request from 'request-promise-native';
-import Reversi, { Color } from 'misskey-reversi';
-import config from '@/config';
-import serifs from '@/serifs';
-import { User } from '@/misskey/user';
+import got from 'got';
+import * as Reversi from './engine.js';
+import config from '@/config.js';
+import serifs from '@/serifs.js';
+import { User } from '@/misskey/user.js';
 
 function getUserName(user) {
 	return user.name || user.username;
@@ -29,8 +27,10 @@ class Session {
 	private account: User;
 	private game: any;
 	private form: any;
-	private o: Reversi;
-	private botColor: Color;
+	private engine: Reversi.Game;
+	private botColor: Reversi.Color;
+
+	private appliedOps: string[] = [];
 
 	/**
 	 * 隅周辺のインデックスリスト(静的評価に利用)
@@ -79,7 +79,7 @@ class Session {
 	}
 
 	private get url(): string {
-		return `${config.host}/games/reversi/${this.game.id}`;
+		return `${config.host}/reversi/g/${this.game.id}`;
 	}
 
 	constructor() {
@@ -89,10 +89,9 @@ class Session {
 	private onMessage = async (msg: any) => {
 		switch (msg.type) {
 			case '_init_': this.onInit(msg.body); break;
-			case 'updateForm': this.onUpdateForn(msg.body); break;
 			case 'started': this.onStarted(msg.body); break;
 			case 'ended': this.onEnded(msg.body); break;
-			case 'set': this.onSet(msg.body); break;
+			case 'log': this.onLog(msg.body); break;
 		}
 	}
 
@@ -104,17 +103,16 @@ class Session {
 	}
 
 	/**
-	 * フォームが更新されたとき
-	 */
-	private onUpdateForn = (msg: any) => {
-		this.form.find(i => i.id == msg.id).value = msg.value;
-	}
-
-	/**
 	 * 対局が始まったとき
 	 */
 	private onStarted = (msg: any) =>  {
-		this.game = msg;
+		this.game = msg.game;
+		if (this.game.canPutEverywhere) { // 対応してない
+			process.send!({
+				type: 'ended'
+			});
+			process.exit();
+		}
 
 		// TLに投稿する
 		this.postGameStarted().then(note => {
@@ -122,24 +120,24 @@ class Session {
 		});
 
 		// リバーシエンジン初期化
-		this.o = new Reversi(this.game.map, {
+		this.engine = new Reversi.Game(this.game.map, {
 			isLlotheo: this.game.isLlotheo,
 			canPutEverywhere: this.game.canPutEverywhere,
 			loopedBoard: this.game.loopedBoard
 		});
 
-		this.maxTurn = this.o.map.filter(p => p === 'empty').length - this.o.board.filter(x => x != null).length;
+		this.maxTurn = this.engine.map.filter(p => p === 'empty').length - this.engine.board.filter(x => x != null).length;
 
 		//#region 隅の位置計算など
 
 		//#region 隅
-		this.o.map.forEach((pix, i) => {
+		this.engine.map.forEach((pix, i) => {
 			if (pix == 'null') return;
 
-			const [x, y] = this.o.transformPosToXy(i);
+			const [x, y] = this.engine.posToXy(i);
 			const get = (x, y) => {
-				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 'null';
-				return this.o.mapDataGet(this.o.transformXyToPos(x, y));
+				if (x < 0 || y < 0 || x >= this.engine.mapWidth || y >= this.engine.mapHeight) return 'null';
+				return this.engine.mapDataGet(this.engine.xyToPos(x, y));
 			};
 
 			const isNotSumi = (
@@ -171,15 +169,15 @@ class Session {
 		//#endregion
 
 		//#region 隅の隣
-		this.o.map.forEach((pix, i) => {
+		this.engine.map.forEach((pix, i) => {
 			if (pix == 'null') return;
 			if (this.sumiIndexes.includes(i)) return;
 
-			const [x, y] = this.o.transformPosToXy(i);
+			const [x, y] = this.engine.posToXy(i);
 
 			const check = (x, y) => {
-				if (x < 0 || y < 0 || x >= this.o.mapWidth || y >= this.o.mapHeight) return 0;
-				return this.sumiIndexes.includes(this.o.transformXyToPos(x, y));
+				if (x < 0 || y < 0 || x >= this.engine.mapWidth || y >= this.engine.mapHeight) return 0;
+				return this.sumiIndexes.includes(this.engine.xyToPos(x, y));
 			};
 
 			const isSumiNear = (
@@ -253,12 +251,22 @@ class Session {
 	/**
 	 * 打たれたとき
 	 */
-	private onSet = (msg: any) =>  {
-		this.o.put(msg.color, msg.pos);
-		this.currentTurn++;
+	private onLog = (log: any) => {
+		if (log.id == null || !this.appliedOps.includes(log.id)) {
+			switch (log.operation) {
+				case 'put': {
+					this.engine.putStone(log.pos);
+					this.currentTurn++;
 
-		if (msg.next === this.botColor) {
-			this.think();
+					if (this.engine.turn === this.botColor) {
+						this.think();
+					}
+					break;
+				}
+	
+				default:
+					break;
+			}
 		}
 	}
 
@@ -268,10 +276,10 @@ class Session {
 	 * TODO: 接待時はまるっと処理の中身を変え、とにかく相手が隅を取っていること優先な評価にする
 	 */
 	private staticEval = () => {
-		let score = this.o.canPutSomewhere(this.botColor).length;
+		let score = this.engine.getPuttablePlaces(this.botColor).length;
 
 		for (const index of this.sumiIndexes) {
-			const stone = this.o.board[index];
+			const stone = this.engine.board[index];
 
 			if (stone === this.botColor) {
 				score += 1000; // 自分が隅を取っていたらスコアプラス
@@ -283,7 +291,7 @@ class Session {
 		// TODO: ここに (隅以外の確定石の数 * 100) をスコアに加算する処理を入れる
 
 		for (const index of this.sumiNearIndexes) {
-			const stone = this.o.board[index];
+			const stone = this.engine.board[index];
 
 			if (stone === this.botColor) {
 				score -= 10; // 自分が隅の周辺を取っていたらスコアマイナス(危険なので)
@@ -319,13 +327,13 @@ class Session {
 		 */
 		const dive = (pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
 			// 試し打ち
-			this.o.put(this.o.turn, pos);
+			this.engine.putStone(pos);
 
-			const isBotTurn = this.o.turn === this.botColor;
+			const isBotTurn = this.engine.turn === this.botColor;
 
 			// 勝った
-			if (this.o.turn === null) {
-				const winner = this.o.winner;
+			if (this.engine.turn === null) {
+				const winner = this.engine.winner;
 
 				// 勝つことによる基本スコア
 				const base = 10000;
@@ -334,14 +342,14 @@ class Session {
 
 				if (this.game.isLlotheo) {
 					// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
-					score = this.o.winner ? base - (this.o.blackCount * 100) : base - (this.o.whiteCount * 100);
+					score = this.engine.winner ? base - (this.engine.blackCount * 100) : base - (this.engine.whiteCount * 100);
 				} else {
 					// 勝ちは勝ちでも、より相手の石を少なくした方が美しい勝ちだと判定する
-					score = this.o.winner ? base + (this.o.blackCount * 100) : base + (this.o.whiteCount * 100);
+					score = this.engine.winner ? base + (this.engine.blackCount * 100) : base + (this.engine.whiteCount * 100);
 				}
 
 				// 巻き戻し
-				this.o.undo();
+				this.engine.undo();
 
 				// 接待なら自分が負けた方が高スコア
 				return this.isSettai
@@ -354,11 +362,11 @@ class Session {
 				const score = this.staticEval();
 
 				// 巻き戻し
-				this.o.undo();
+				this.engine.undo();
 
 				return score;
 			} else {
-				const cans = this.o.canPutSomewhere(this.o.turn);
+				const cans = this.engine.getPuttablePlaces(this.engine.turn);
 
 				let value = isBotTurn ? -Infinity : Infinity;
 				let a = alpha;
@@ -384,24 +392,34 @@ class Session {
 				}
 
 				// 巻き戻し
-				this.o.undo();
+				this.engine.undo();
 
 				return value;
 			}
 		};
 
-		const cans = this.o.canPutSomewhere(this.botColor);
+		const cans = this.engine.getPuttablePlaces(this.botColor);
 		const scores = cans.map(p => dive(p));
 		const pos = cans[scores.indexOf(Math.max(...scores))];
 
 		console.log('Thinked:', pos);
 		console.timeEnd('think');
 
+		this.engine.putStone(pos);
+		this.currentTurn++;
+
 		setTimeout(() => {
+			const id = Math.random().toString(36).slice(2);
 			process.send!({
-				type: 'put',
-				pos
+				type: 'putStone',
+				pos,
+				id
 			});
+			this.appliedOps.push(id);
+
+			if (this.engine.turn === this.botColor) {
+				this.think();
+			}
 		}, 500);
 	}
 
@@ -433,9 +451,9 @@ class Session {
 			}
 
 			try {
-				const res = await request.post(`${config.host}/api/notes/create`, {
+				const res = await got.post(`${config.host}/api/notes/create`, {
 					json: body
-				});
+				}).json();
 
 				return res.createdNote;
 			} catch (e) {
