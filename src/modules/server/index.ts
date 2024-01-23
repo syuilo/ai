@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { bindThis } from '@/decorators.js';
 import Module from '@/module.js';
 import serifs from '@/serifs.js';

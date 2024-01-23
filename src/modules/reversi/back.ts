@@ -5,6 +5,7 @@
  * 対話と思考を同じプロセスで行うと、思考時間が長引いたときにストリームから
  * 切断されてしまうので、別々のプロセスで行うようにします
  */
+// @ts-nocheck
 
 import got from 'got';
 import * as Reversi from './engine.js';

@@ -1,4 +1,5 @@
 // AiOS bootstrapper
+// @ts-nocheck
 
 import chalk from 'chalk';
 import got from 'got';

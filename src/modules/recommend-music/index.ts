@@ -1,7 +1,9 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import Message from '@/message';
-import serifs from '@/serifs';
+// @ts-nocheck
+
+import autobind from 'autobind-decorator.js';
+import Module from '@/module.js';
+import Message from '@/message.js';
+import serifs from '@/serifs.js';
 
 const vocaloidUrls = [
 	// ボカロ

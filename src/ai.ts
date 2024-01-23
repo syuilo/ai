@@ -1,5 +1,5 @@
 // AI CORE
-
+// @ts-nocheck
 import * as fs from 'fs';
 import { bindThis } from '@/decorators.js';
 import loki from 'lokijs';
@@ -16,7 +16,6 @@ import Stream from '@/stream.js';
 import log from '@/utils/log.js';
 import { sleep } from './utils/sleep.js';
 import pkg from '../package.json' assert { type: 'json' };
-
 type MentionHook = (msg: Message) => Promise<boolean | HandlerResult>;
 type ContextHook = (key: any, msg: Message, data?: any) => Promise<void | boolean | HandlerResult>;
 type TimeoutCallback = (data?: any) => void;

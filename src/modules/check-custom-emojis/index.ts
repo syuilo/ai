@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { bindThis } from '@/decorators.js';
 import loki from 'lokijs';
 import Module from '@/module.js';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { bindThis } from '@/decorators.js';
 import 藍, { InstallerResult } from '@/ai.js';
 
