@@ -3,7 +3,7 @@ import loki from 'lokijs';
 import Module from '@/module.js';
 import Message from '@/message.js';
 import serifs from '@/serifs.js';
-import { User } from '@/misskey/user.js';
+import type { User } from '@/misskey/user.js';
 import { acct } from '@/utils/acct.js';
 
 type Game = {

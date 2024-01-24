@@ -10,7 +10,7 @@ import got from 'got';
 import * as Reversi from './engine.js';
 import config from '@/config.js';
 import serifs from '@/serifs.js';
-import { User } from '@/misskey/user.js';
+import type { User } from '@/misskey/user.js';
 
 function getUserName(user) {
 	return user.name || user.username;
@@ -263,7 +263,7 @@ class Session {
 					}
 					break;
 				}
-	
+
 				default:
 					break;
 			}

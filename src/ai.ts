@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { bindThis } from '@/decorators.js';
 import loki from 'lokijs';
 import got from 'got';
+import { FormData, File } from 'formdata-node';
 import chalk from 'chalk';
 import { v4 as uuid } from 'uuid';
 
@@ -11,7 +12,7 @@ import config from '@/config.js';
 import Module from '@/module.js';
 import Message from '@/message.js';
 import Friend, { FriendDoc } from '@/friend.js';
-import { User } from '@/misskey/user.js';
+import type { User } from '@/misskey/user.js';
 import Stream from '@/stream.js';
 import log from '@/utils/log.js';
 import { sleep } from './utils/sleep.js';
@@ -343,17 +344,14 @@ export default class 藍 {
 	 * ファイルをドライブにアップロードします
 	 */
 	@bindThis
-	public async upload(file: Buffer | fs.ReadStream, meta: any) {
+	public async upload(file: Buffer | fs.ReadStream, meta: { filename: string, contentType: string }) {
+		const form = new FormData();
+		form.set('i', config.i);
+		form.set('file', new File([file], meta.filename, { type: meta.contentType }));
+
 		const res = await got.post({
 			url: `${config.apiUrl}/drive/files/create`,
-			formData: {
-				i: config.i,
-				file: {
-					value: file,
-					options: meta
-				}
-			},
-			json: true
+			body: form
 		}).json();
 		return res;
 	}

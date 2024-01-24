@@ -2,7 +2,7 @@ import { bindThis } from '@/decorators.js';
 import 藍 from '@/ai.js';
 import IModule from '@/module.js';
 import getDate from '@/utils/get-date.js';
-import { User } from '@/misskey/user.js';
+import type { User } from '@/misskey/user.js';
 import { genItem } from '@/vocabulary.js';
 
 export type FriendDoc = {

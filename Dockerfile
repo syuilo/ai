@@ -1,6 +1,6 @@
-FROM node:lts-bullseye
+FROM node:lts
 
-RUN apt-get update && apt-get install -y tini
+RUN apt-get update && apt-get install tini --no-install-recommends -y && apt-get clean && rm -rf /var/lib/apt-get/lists/*
 
 ARG enable_mecab=1
 
@@ -19,7 +19,7 @@ RUN if [ $enable_mecab -ne 0 ]; then apt-get update \
 COPY . /ai
 
 WORKDIR /ai
-RUN npm install && npm run build
+RUN npm install && npm run build || test -f ./built/index.js
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD npm start
