@@ -4,7 +4,7 @@ import Module from '@/module.js';
 import serifs from '@/serifs.js';
 import { genItem } from '@/vocabulary.js';
 import config from '@/config.js';
-import { Note } from '@/misskey/note.js';
+import type { Note } from '@/misskey/note.js';
 
 export default class extends Module {
 	public readonly name = 'poll';

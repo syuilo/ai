@@ -3,7 +3,7 @@ import chalk from 'chalk';
 
 import 藍 from '@/ai.js';
 import Friend from '@/friend.js';
-import { User } from '@/misskey/user.js';
+import type { User } from '@/misskey/user.js';
 import includes from '@/utils/includes.js';
 import or from '@/utils/or.js';
 import config from '@/config.js';
