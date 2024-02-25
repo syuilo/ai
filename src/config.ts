@@ -12,6 +12,8 @@ type Config = {
 	serverMonitoring: boolean;
 	checkEmojisEnabled?: boolean;
 	checkEmojisAtOnce?: boolean;
+	geminiProApiKey?: string;
+	prompt?: string;
 	mecab?: string;
 	mecabDic?: string;
 	memoryDir?: string;
