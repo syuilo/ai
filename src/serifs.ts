@@ -388,6 +388,11 @@ export default {
 		emojiOnce: emoji => `:${emoji}:(\`${emoji}\`)`
 	},
 
+	aichat: {
+		nothing: type => `あぅ... ${type}のAPIキーが登録されてないみたいです`,
+		post: (text, type) => `${text} (${type}) #aichat`,
+	},
+
 	sleepReport: {
 		report: hours => `んぅ、${hours}時間くらい寝ちゃってたみたいです`,
 		reportUtatane: 'ん... うたた寝しちゃってました',
