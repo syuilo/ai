@@ -1,9 +1,9 @@
-import autobind from 'autobind-decorator';
-import * as loki from 'lokijs';
-import Module from '@/module';
-import serifs from '@/serifs';
-import config from '@/config';
-import Message from '@/message';
+import { bindThis } from '@/decorators.js';
+import loki from 'lokijs';
+import Module from '@/module.js';
+import serifs from '@/serifs.js';
+import config from '@/config.js';
+import Message from '@/message.js';
 
 export default class extends Module {
 	public readonly name = 'checkCustomEmojis';
@@ -13,7 +13,7 @@ export default class extends Module {
 		updatedAt: number;
 	}>;
 
-	@autobind
+	@bindThis
 	public install() {
 		if (!config.checkEmojisEnabled) return {};
 		this.lastEmoji = this.ai.getCollection('lastEmoji', {
@@ -28,7 +28,7 @@ export default class extends Module {
 		};
 	}
 
-	@autobind
+	@bindThis
 	private timeCheck() {
 		const now = new Date();
 		if (now.getHours() !== 23) return;
@@ -42,7 +42,7 @@ export default class extends Module {
 		this.post();
 	}
 
-	@autobind
+	@bindThis
 	private async post() {
 		this.log('Start to Check CustomEmojis.');
 		const lastEmoji = this.lastEmoji.find({});
@@ -99,7 +99,7 @@ export default class extends Module {
 		this.log('Check CustomEmojis finished!');
 	}
 
-	@autobind
+	@bindThis
 	private async checkCumstomEmojis(lastId : any) {
 		this.log('CustomEmojis fetching...');
 		let emojisData;
@@ -140,7 +140,7 @@ export default class extends Module {
 		return emojisData;
 	}
 
-	@autobind
+	@bindThis
 	private async mentionHook(msg: Message) {
 		if (!msg.includes(['カスタムえもじチェック','カスタムえもじを調べて','カスタムえもじを確認'])) {
 			return false;
@@ -155,7 +155,7 @@ export default class extends Module {
 		};
 	}
 
-	@autobind
+	@bindThis
 	private async sleep(ms: number) {
 		return new Promise((res) => setTimeout(res, ms));
 	}

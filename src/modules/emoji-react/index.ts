@@ -1,18 +1,18 @@
-import autobind from 'autobind-decorator';
+import { bindThis } from '@/decorators.js';
 import { parse } from 'twemoji-parser';
-const delay = require('timeout-as-promise');
 
-import { Note } from '@/misskey/note';
-import Module from '@/module';
-import Stream from '@/stream';
-import includes from '@/utils/includes';
+import type { Note } from '@/misskey/note.js';
+import Module from '@/module.js';
+import Stream from '@/stream.js';
+import includes from '@/utils/includes.js';
+import { sleep } from '@/utils/sleep.js';
 
 export default class extends Module {
 	public readonly name = 'emoji-react';
 
 	private htl: ReturnType<Stream['useSharedConnection']>;
 
-	@autobind
+	@bindThis
 	public install() {
 		this.htl = this.ai.connection.useSharedConnection('homeTimeline');
 		this.htl.on('note', this.onNote);
@@ -20,7 +20,7 @@ export default class extends Module {
 		return {};
 	}
 
-	@autobind
+	@bindThis
 	private async onNote(note: Note) {
 		if (note.reply != null) return;
 		if (note.text == null) return;
@@ -28,7 +28,7 @@ export default class extends Module {
 
 		const react = async (reaction: string, immediate = false) => {
 			if (!immediate) {
-				await delay(1500);
+				await sleep(1500);
 			}
 			this.ai.api('notes/reactions/create', {
 				noteId: note.id,

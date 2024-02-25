@@ -1,7 +1,7 @@
-import autobind from 'autobind-decorator';
-import Module from '@/module';
-import Message from '@/message';
-import serifs from '@/serifs';
+import { bindThis } from '@/decorators.js';
+import Module from '@/module.js';
+import Message from '@/message.js';
+import serifs from '@/serifs.js';
 
 const hands = [
 	'👏',
@@ -129,14 +129,14 @@ const faces = [
 export default class extends Module {
 	public readonly name = 'emoji';
 
-	@autobind
+	@bindThis
 	public install() {
 		return {
 			mentionHook: this.mentionHook
 		};
 	}
 
-	@autobind
+	@bindThis
 	private async mentionHook(msg: Message) {
 		if (msg.includes(['顔文字', '絵文字', 'emoji', '福笑い'])) {
 			const hand = hands[Math.floor(Math.random() * hands.length)];

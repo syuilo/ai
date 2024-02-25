@@ -1,26 +1,45 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig",
 	"compilerOptions": {
-		"noEmitOnError": true,
-		"noImplicitAny": false,
-		"noImplicitReturns": true,
-		"noImplicitThis": true,
-		"noFallthroughCasesInSwitch": true,
+		"target": "ES2022",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"rootDir": "./src",
+		"outDir": "./built/",
+		"removeComments": true,
+		"resolveJsonModule": true,
+		"strict": true,
+		"strictFunctionTypes": true,
 		"strictNullChecks": true,
 		"experimentalDecorators": true,
-		"sourceMap": false,
-		"target": "es2020",
-		"module": "commonjs",
-		"removeComments": false,
-		"noLib": false,
-		"outDir": "built",
-		"rootDir": "src",
-		"baseUrl": ".",
+		"noImplicitReturns": true,
+		"noImplicitAny": false,
+		"esModuleInterop": true,
+		"typeRoots": [
+			"./node_modules/@types"
+		],
+		"lib": [
+			"esnext",
+			"dom"
+		],
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["./src/*"]
 		},
+		"plugins": [
+      // Transform paths in output .js files
+      { "transform": "typescript-transform-paths" },
+
+      // Transform paths in output .d.ts files (Include this line if you output declarations files)
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
 	},
-	"compileOnSave": false,
 	"include": [
-		"./src/**/*.ts"
-	]
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules"
+	],
 }
