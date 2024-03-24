@@ -8,6 +8,7 @@ import includes from '@/utils/includes.js';
 import or from '@/utils/or.js';
 import config from '@/config.js';
 import { sleep } from '@/utils/sleep.js';
+import { Note } from './misskey/note.js';
 
 export default class Message {
 	private ai: 藍;
@@ -68,13 +69,27 @@ export default class Message {
 		});
 	}
 
+	public async reply(text: string, opts?: {
+		file?: any;
+		cw?: string;
+		renote?: string;
+		immediate?: boolean;
+	}): Promise<Note>;
+
+	public async reply(text: string | null, opts?: {
+		file?: any;
+		cw?: string;
+		renote?: string;
+		immediate?: boolean;
+	}): Promise<void>;
+
 	@bindThis
 	public async reply(text: string | null, opts?: {
 		file?: any;
 		cw?: string;
 		renote?: string;
 		immediate?: boolean;
-	}) {
+	}): Promise<Note | void> {
 		if (text == null) return;
 
 		this.ai.log(`>>> Sending reply to ${chalk.underline(this.id)}`);
