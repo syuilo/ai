@@ -61,7 +61,7 @@ export default class Message {
 		this.friend = new Friend(ai, { user: this.user });
 
 		// メッセージなどに付いているユーザー情報は省略されている場合があるので完全なユーザー情報を持ってくる
-		this.ai.api('users/show', {
+		this.ai.api<User>('users/show', {
 			userId: this.userId
 		}).then(user => {
 			this.friend.updateUser(user);

@@ -34,6 +34,7 @@ import NotingModule from './modules/noting/index.js';
 import PollModule from './modules/poll/index.js';
 import ReminderModule from './modules/reminder/index.js';
 import CheckCustomEmojisModule from './modules/check-custom-emojis/index.js';
+import { User } from './misskey/user.js';
 
 console.log('   __    ____  _____  ___ ');
 console.log('  /__\\  (_  _)(  _  )/ __)');
@@ -61,7 +62,7 @@ promiseRetry(retry => {
 		json: {
 			i: config.i
 		}
-	}).json().catch(retry);
+	}).json<User>().catch(retry);
 }, {
 	retries: 3
 }).then(account => {

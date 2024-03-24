@@ -17,6 +17,7 @@ import Stream from '@/stream.js';
 import log from '@/utils/log.js';
 import { sleep } from './utils/sleep.js';
 import pkg from '../package.json' assert { type: 'json' };
+import { Note } from './misskey/note.js';
 
 type MentionHook = (msg: Message) => Promise<boolean | HandlerResult>;
 type ContextHook = (key: any, msg: Message, data?: any) => Promise<void | boolean | HandlerResult>;
@@ -361,7 +362,7 @@ export default class 藍 {
 	 */
 	@bindThis
 	public async post(param: any) {
-		const res = await this.api('notes/create', param);
+		const res = await this.api<{ createdNote: Note }>('notes/create', param);
 		return res.createdNote;
 	}
 
@@ -380,13 +381,13 @@ export default class 藍 {
 	 * APIを呼び出します
 	 */
 	@bindThis
-	public api(endpoint: string, param?: any) {
+	public api<ReturnType = unknown>(endpoint: string, param?: any) {
 		this.log(`API: ${endpoint}`);
 		return got.post(`${config.apiUrl}/${endpoint}`, {
 			json: Object.assign({
 				i: config.i
 			}, param)
-		}).json();
+		}).json<ReturnType>();
 	};
 
 	/**

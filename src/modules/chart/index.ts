@@ -6,6 +6,27 @@ import { renderChart } from './render-chart.js';
 import { items } from '@/vocabulary.js';
 import config from '@/config.js';
 
+type UserNotes = {
+	diffs: {
+		normal: number[],
+		reply: number[],
+		renote: number[]
+	}
+};
+
+type LocalRemotePair<T> = {
+	local: T,
+	remote: T
+};
+
+type UserFollowing = LocalRemotePair<{
+	followers: {
+		total: number[]
+	}
+}>;
+
+type Notes = LocalRemotePair<UserNotes>
+
 export default class extends Module {
 	public readonly name = 'chart';
 
@@ -48,7 +69,7 @@ export default class extends Module {
 		let chart;
 
 		if (type === 'userNotes') {
-			const data = await this.ai.api('charts/user/notes', {
+			const data = await this.ai.api<UserNotes>('charts/user/notes', {
 				span: 'day',
 				limit: 30,
 				userId: params.user.id
@@ -65,7 +86,7 @@ export default class extends Module {
 				}]
 			};
 		} else if (type === 'followers') {
-			const data = await this.ai.api('charts/user/following', {
+			const data = await this.ai.api<UserFollowing>('charts/user/following', {
 				span: 'day',
 				limit: 30,
 				userId: params.user.id
@@ -80,7 +101,7 @@ export default class extends Module {
 				}]
 			};
 		} else if (type === 'notes') {
-			const data = await this.ai.api('charts/notes', {
+			const data = await this.ai.api<Notes>('charts/notes', {
 				span: 'day',
 				limit: 30,
 			});
