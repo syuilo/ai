@@ -17,9 +17,16 @@ type Config = {
 	memoryDir?: string;
 };
 
-import config from '../config.json' assert { type: 'json' };
+import uncheckedConfig from '../config.json' assert { type: 'json' };
+
+function validate(config: unknown): Config {
+	// TODO: as を使わずにしっかりと検証を行う
+	return config as Config;
+}
+
+const config = validate(uncheckedConfig);
 
 config.wsUrl = config.host.replace('http', 'ws');
 config.apiUrl = config.host + '/api';
 
-export default config as Config;
+export default config;

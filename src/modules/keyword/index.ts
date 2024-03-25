@@ -5,6 +5,12 @@ import config from '@/config.js';
 import serifs from '@/serifs.js';
 import { mecab } from './mecab.js';
 
+type LocalTimeline = {
+	userId: string;
+	text: string | null;
+	cw: string | null;
+}[];
+
 function kanaToHira(str: string) {
 	return str.replace(/[\u30a1-\u30f6]/g, match => {
 		const chr = match.charCodeAt(0) - 0x60;
@@ -35,7 +41,7 @@ export default class extends Module {
 
 	@bindThis
 	private async learn() {
-		const tl = await this.ai.api('notes/local-timeline', {
+		const tl = await this.ai.api<LocalTimeline>('notes/local-timeline', {
 			limit: 30
 		});
 
@@ -47,7 +53,8 @@ export default class extends Module {
 		let keywords: string[][] = [];
 
 		for (const note of interestedNotes) {
-			const tokens = await mecab(note.text, config.mecab, config.mecabDic);
+			// TODO: note.text に null チェックが必要?
+			const tokens = await mecab(note.text as string, config.mecab, config.mecabDic);
 			const keywordsInThisNote = tokens.filter(token => token[2] == '固有名詞' && token[8] != null);
 			keywords = keywords.concat(keywordsInThisNote);
 		}
