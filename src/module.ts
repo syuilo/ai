@@ -4,11 +4,11 @@ import 藍, { InstallerResult } from '@/ai.js';
 export default abstract class Module {
 	public abstract readonly name: string;
 
-	protected ai: 藍;
+	private maybeAi?: 藍;
 	private doc: any;
 
 	public init(ai: 藍) {
-		this.ai = ai;
+		this.maybeAi = ai;
 
 		this.doc = this.ai.moduleData.findOne({
 			module: this.name
@@ -23,6 +23,13 @@ export default abstract class Module {
 	}
 
 	public abstract install(): InstallerResult;
+
+	protected get ai(): 藍 {
+		if (this.maybeAi == null) {
+			throw new TypeError('This module has not been initialized');
+		}
+		return this.maybeAi;
+	}
 
 	@bindThis
 	protected log(msg: string) {
