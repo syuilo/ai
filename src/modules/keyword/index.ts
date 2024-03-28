@@ -1,9 +1,10 @@
 import { bindThis } from '@/decorators.js';
 import loki from 'lokijs';
-import Module from '@/module.js';
+import Module, { InstalledModule } from '@/module.js';
 import config from '@/config.js';
 import serifs from '@/serifs.js';
 import { mecab } from './mecab.js';
+import 藍 from '@/ai.js';
 
 type LocalTimeline = {
 	userId: string;
@@ -21,22 +22,28 @@ function kanaToHira(str: string) {
 export default class extends Module {
 	public readonly name = 'keyword';
 
+	@bindThis
+	public install(ai: 藍) {
+		if (config.keywordEnabled) {
+			new Installed(this, ai);
+		}
+		return {};
+	}
+}
+
+class Installed extends InstalledModule {
 	private learnedKeywords: loki.Collection<{
 		keyword: string;
 		learnedAt: number;
 	}>;
 
-	@bindThis
-	public install() {
-		if (!config.keywordEnabled) return {};
-
+	constructor(module: Module, ai: 藍) {
+		super(module, ai);
 		this.learnedKeywords = this.ai.getCollection('_keyword_learnedKeywords', {
 			indices: ['userId']
 		});
 
 		setInterval(this.learn, 1000 * 60 * 60);
-
-		return {};
 	}
 
 	@bindThis

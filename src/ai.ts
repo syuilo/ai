@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import { v4 as uuid } from 'uuid';
 
 import config from '@/config.js';
-import Module from '@/module.js';
+import Module, { InstalledModule } from '@/module.js';
 import Message from '@/message.js';
 import Friend, { FriendDoc } from '@/friend.js';
 import type { User } from '@/misskey/user.js';
@@ -38,6 +38,11 @@ export type Meta = {
 	lastWakingAt: number;
 };
 
+export type ModuleDataDoc<Data = any> = {
+	module: string;
+	data: Data;
+}
+
 /**
  * 藍
  */
@@ -46,7 +51,7 @@ export default interface 藍 extends Ai {
 	lastSleepedAt: number;
 
 	friends: loki.Collection<FriendDoc>;
-	moduleData: loki.Collection<any>;
+	moduleData: loki.Collection<ModuleDataDoc>;
 }
 
 /**
@@ -60,6 +65,7 @@ export class Ai {
 	private mentionHooks: MentionHook[] = [];
 	private contextHooks: { [moduleName: string]: ContextHook } = {};
 	private timeoutCallbacks: { [moduleName: string]: TimeoutCallback } = {};
+	public installedModules: { [moduleName: string]: InstalledModule } = {};
 	public db: loki;
 	public lastSleepedAt?: number;
 
@@ -204,7 +210,7 @@ export class Ai {
 		this.modules.forEach(m => {
 			this.log(`Installing ${chalk.cyan.italic(m.name)}\tmodule...`);
 			m.init(this);
-			const res = m.install();
+			const res = m.install(this);
 			if (res != null) {
 				if (res.mentionHook) this.mentionHooks.push(res.mentionHook);
 				if (res.contextHook) this.contextHooks[m.name] = res.contextHook;

@@ -1,10 +1,11 @@
 import { bindThis } from '@/decorators.js';
 import loki from 'lokijs';
-import Module from '@/module.js';
+import Module, { InstalledModule } from '@/module.js';
 import Message from '@/message.js';
 import serifs from '@/serifs.js';
 import type { User } from '@/misskey/user.js';
 import { acct } from '@/utils/acct.js';
+import 藍, { InstallerResult } from '@/ai.js';
 
 type Game = {
 	votes: {
@@ -25,23 +26,28 @@ const limitMinutes = 10;
 export default class extends Module {
 	public readonly name = 'kazutori';
 
+	@bindThis
+	public install(ai: 藍) {
+		return new Installed(this, ai);
+	}
+}
+
+class Installed extends InstalledModule {
+
 	private games: loki.Collection<Game>;
 
-	@bindThis
-	public install() {
+	constructor(module: Module, ai: 藍) {
+		super(module, ai);
 		this.games = this.ai.getCollection('kazutori');
 
 		this.crawleGameEnd();
 		setInterval(this.crawleGameEnd, 1000);
 
-		return {
-			mentionHook: this.mentionHook,
-			contextHook: this.contextHook
-		};
+		return this;
 	}
 
 	@bindThis
-	private async mentionHook(msg: Message) {
+	public async mentionHook(msg: Message) {
 		if (!msg.includes(['数取り'])) return false;
 
 		const games = this.games.find({});
@@ -83,7 +89,7 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async contextHook(key: any, msg: Message) {
+	public async contextHook(key: any, msg: Message) {
 		if (msg.text == null) return {
 			reaction: 'hmm'
 		};

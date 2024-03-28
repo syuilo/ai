@@ -1,31 +1,35 @@
 import { bindThis } from '@/decorators.js';
 import loki from 'lokijs';
-import Module from '@/module.js';
+import Module, { InstalledModule } from '@/module.js';
 import serifs from '@/serifs.js';
 import config from '@/config.js';
 import Message from '@/message.js';
+import 藍 from '@/ai.js';
 
 export default class extends Module {
 	public readonly name = 'checkCustomEmojis';
 
+	@bindThis
+	public install(ai: 藍) {
+		if (!config.checkEmojisEnabled) return {};
+		return new Installed(this, ai);
+	}
+}
+
+class Installed extends InstalledModule {
 	private lastEmoji: loki.Collection<{
 		id: string;
 		updatedAt: number;
 	}>;
 
-	@bindThis
-	public install() {
-		if (!config.checkEmojisEnabled) return {};
+	constructor(module: Module, ai: 藍) {
+		super(module, ai);
 		this.lastEmoji = this.ai.getCollection('lastEmoji', {
 			indices: ['id']
 		});
 
 		this.timeCheck();
 		setInterval(this.timeCheck, 1000 * 60 * 3);
-
-		return {
-			mentionHook: this.mentionHook
-		};
 	}
 
 	@bindThis
@@ -141,7 +145,7 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async mentionHook(msg: Message) {
+	public async mentionHook(msg: Message) {
 		if (!msg.includes(['カスタムえもじチェック','カスタムえもじを調べて','カスタムえもじを確認'])) {
 			return false;
 		} else {
