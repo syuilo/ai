@@ -17,8 +17,13 @@ type Config = {
 	memoryDir?: string;
 };
 
+import chalk from 'chalk';
 import uncheckedConfig from '../config.json' assert { type: 'json' };
-import log from '@/utils/log.js';
+import { warn } from '@/utils/log.js';
+
+function warnWithPrefix(msg: string): void {
+	warn(`[Config]: ${chalk.red(msg)}`);
+}
 
 class Type<T> {
 	public static readonly string = new Type<string>('string');
@@ -38,7 +43,7 @@ class Type<T> {
 function checkProperty<K extends keyof Config>(config: Object, key: K, type: Type<Config[K]>): config is { [J in K]: Config[K] } {
 	const result = key in config && type.check(config[key as string]);
 	if (!result) {
-		log(`config.json: Property ${key}: ${type.name} required`);
+		warnWithPrefix(`config.json: Property '${key}': ${type.name} required`);
 	}
 	return result;
 }
@@ -49,7 +54,7 @@ function checkOptionalProperty<K extends keyof Config>(config: Object, key: K, t
 	}
 	const result = type.check(config[key as string]);
 	if (!result) {
-		log(`config.json: The type of property ${key} must be ${type.name}`);
+		warnWithPrefix(`config.json: The type of property '${key}' must be ${type.name}`);
 	}
 	return result;
 }
@@ -60,7 +65,7 @@ function setProperty<K extends keyof Config>(config: Object, key: K, value: Conf
 
 function validate(config: unknown): Config {
 	if (!(config instanceof Object)) {
-		log('config.json: Root object required');
+		warnWithPrefix('config.json: Root object required');
 	} else if (
 		checkProperty(config, 'host', Type.string) &&
 		checkOptionalProperty(config, 'serverName', Type.string) &&
