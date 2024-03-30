@@ -46,32 +46,21 @@ export type ModuleDataDoc<Data = any> = {
 /**
  * 藍
  */
-export default interface 藍 extends Ai {
-	connection: Stream;
-	lastSleepedAt: number;
-
-	friends: loki.Collection<FriendDoc>;
-	moduleData: loki.Collection<ModuleDataDoc>;
-}
-
-/**
- * 起動中の藍
- */
-export class Ai {
+export default class 藍 {
 	public readonly version = pkg._v;
 	public account: User;
-	public connection?: Stream;
+	public connection: Stream;
 	public modules: Module[] = [];
 	private mentionHooks: MentionHook[] = [];
 	private contextHooks: { [moduleName: string]: ContextHook } = {};
 	private timeoutCallbacks: { [moduleName: string]: TimeoutCallback } = {};
 	public installedModules: { [moduleName: string]: InstalledModule } = {};
 	public db: loki;
-	public lastSleepedAt?: number;
+	public lastSleepedAt: number;
 
-	private meta?: loki.Collection<Meta>;
+	private meta: loki.Collection<Meta>;
 
-	private contexts?: loki.Collection<{
+	private contexts: loki.Collection<{
 		noteId?: string;
 		userId?: string;
 		module: string;
@@ -79,7 +68,7 @@ export class Ai {
 		data?: any;
 	}>;
 
-	private timers?: loki.Collection<{
+	private timers: loki.Collection<{
 		id: string;
 		module: string;
 		insertedAt: number;
@@ -87,20 +76,16 @@ export class Ai {
 		data?: any;
 	}>;
 
-	public friends?: loki.Collection<FriendDoc>;
-	public moduleData?: loki.Collection<any>;
-
-	private ready: boolean = false;
+	public friends: loki.Collection<FriendDoc>;
+	public moduleData: loki.Collection<any>;
 
 	/**
 	 * 藍インスタンスを生成します
 	 * @param account 藍として使うアカウント
 	 * @param modules モジュール。先頭のモジュールほど高優先度
 	 */
-	constructor(account: User, modules: Module[]) {
-		this.account = account;
-		this.modules = modules;
-
+	@bindThis
+	public static start(account: User, modules: Module[]) {
 		let memoryDir = '.';
 		if (config.memoryDir) {
 			memoryDir = config.memoryDir;
@@ -109,7 +94,7 @@ export class Ai {
 
 		this.log(`Lodaing the memory from ${file}...`);
 
-		this.db = new loki(file, {
+		const db = new loki(file, {
 			autoload: true,
 			autosave: true,
 			autosaveInterval: 1000,
@@ -118,7 +103,7 @@ export class Ai {
 					this.log(chalk.red(`Failed to load the memory: ${err}`));
 				} else {
 					this.log(chalk.green('The memory loaded successfully'));
-					this.run();
+					new 藍(account, modules, db);
 				}
 			}
 		});
@@ -126,11 +111,19 @@ export class Ai {
 
 	@bindThis
 	public log(msg: string) {
-		log(`[${chalk.magenta('AiOS')}]: ${msg}`);
+		藍.log(msg);
 	}
 
 	@bindThis
-	private run() {
+	public static log(msg: string) {
+		log(`[${chalk.magenta('AiOS')}]: ${msg}`);
+	}
+
+	private constructor(account: User, modules: Module[], db: loki) {
+		this.account = account;
+		this.modules = modules;
+		this.db = db;
+
 		//#region Init DB
 		this.meta = this.getCollection('meta', {});
 
@@ -156,9 +149,6 @@ export class Ai {
 
 		// Init stream
 		this.connection = new Stream();
-
-		// この時点から藍インスタンスに
-		this.setReady();
 
 		//#region Main stream
 		const mainStream = this.connection.useSharedConnection('main');
@@ -228,39 +218,11 @@ export class Ai {
 	}
 
 	/**
-	 * 準備が完了したフラグを立てる。
-	 */
-	private setReady(): asserts this is 藍 {
-		// 呼び出すタイミングが正しいか検証
-		if (
-			this.connection == null ||
-			this.lastSleepedAt == null ||
-			this.meta == null ||
-			this.contexts == null ||
-			this.timers == null ||
-			this.friends == null ||
-			this.moduleData == null
-		) {
-			throw new TypeError('Cannot set ready');
-		}
-
-		this.ready = true;
-	}
-
-	public requireReady(): asserts this is 藍 {
-		if (!this.ready) {
-			throw new TypeError('Ai am not ready!');
-		}
-	}
-
-	/**
 	 * ユーザーから話しかけられたとき
 	 * (メンション、リプライ、トークのメッセージ)
 	 */
 	@bindThis
 	private async onReceiveMessage(msg: Message): Promise<void> {
-		this.requireReady();
-
 		this.log(chalk.gray(`<<< An message received: ${chalk.underline(msg.id)}`));
 
 		// Ignore message if the user is a bot
@@ -272,7 +234,7 @@ export class Ai {
 		const isNoContext = msg.replyId == null;
 
 		// Look up the context
-		const context = isNoContext ? null : this.contexts!.findOne({
+		const context = isNoContext ? null : this.contexts.findOne({
 			noteId: msg.replyId
 		});
 
@@ -328,8 +290,6 @@ export class Ai {
 
 	@bindThis
 	private onNotification(notification: any) {
-		this.requireReady();
-
 		switch (notification.type) {
 			// リアクションされたら親愛度を少し上げる
 			// TODO: リアクション取り消しをよしなにハンドリングする
@@ -346,14 +306,12 @@ export class Ai {
 
 	@bindThis
 	private crawleTimer() {
-		this.requireReady();
-
-		const timers = this.timers!.find();
+		const timers = this.timers.find();
 		for (const timer of timers) {
 			// タイマーが時間切れかどうか
 			if (Date.now() - (timer.insertedAt + timer.delay) >= 0) {
 				this.log(`Timer expired: ${timer.module} ${timer.id}`);
-				this.timers!.remove(timer);
+				this.timers.remove(timer);
 				this.timeoutCallbacks[timer.module](timer.data);
 			}
 		}
@@ -384,8 +342,6 @@ export class Ai {
 
 	@bindThis
 	public lookupFriend(userId: User['id']): Friend | null {
-		this.requireReady();
-
 		const doc = this.friends.findOne({
 			userId: userId
 		});
@@ -455,8 +411,7 @@ export class Ai {
 	 */
 	@bindThis
 	public subscribeReply(module: Module, key: string | null, id: string, data?: any) {
-		this.requireReady();
-		this.contexts!.insertOne({
+		this.contexts.insertOne({
 			noteId: id,
 			module: module.name,
 			key: key,
@@ -471,8 +426,7 @@ export class Ai {
 	 */
 	@bindThis
 	public unsubscribeReply(module: Module, key: string | null) {
-		this.requireReady();
-		this.contexts!.findAndRemove({
+		this.contexts.findAndRemove({
 			key: key,
 			module: module.name
 		});
@@ -487,10 +441,8 @@ export class Ai {
 	 */
 	@bindThis
 	public setTimeoutWithPersistence(module: Module, delay: number, data?: any) {
-		this.requireReady();
-
 		const id = uuid();
-		this.timers!.insertOne({
+		this.timers.insertOne({
 			id: id,
 			module: module.name,
 			insertedAt: Date.now(),
@@ -529,11 +481,6 @@ export class Ai {
 			rec[k] = v;
 		}
 
-		this.meta!.update(rec);
+		this.meta.update(rec);
 	}
 }
-
-// FIXME:
-// JS にコンパイルされたコードでインターフェイスであるはずの藍がインポートされてしまうので、
-// 同名のクラスを定義することで実行時エラーが出ないようにしている
-export default class 藍 {}
