@@ -455,10 +455,6 @@ export default class 藍 {
 
 	@bindThis
 	public getMeta() {
-		if (this.meta == null) {
-			throw new TypeError('meta has not been set');
-		}
-
 		const rec = this.meta.findOne();
 
 		if (rec) {
