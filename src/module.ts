@@ -75,10 +75,16 @@ export default abstract class Module {
 	 */
 	@bindThis
 	protected getData() {
-		const doc = this.ai.moduleData.findOne({
+		let doc = this.ai.moduleData.findOne({
 			module: this.name
 		});
-		return doc?.data;
+		if (doc == null) {
+			doc = this.ai.moduleData.insertOne({
+				module: this.name,
+				data: {}
+			});
+		}
+		return doc.data;
 	}
 
 	/**
@@ -124,7 +130,7 @@ export abstract class InstalledModule<M extends Module = Module, Data = any> imp
 			this.doc = doc;
 		}
 
-		ai.installedModules[module.name] = this;
+		module.installed = this;
 	}
 
 	@bindThis
