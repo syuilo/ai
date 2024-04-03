@@ -18,8 +18,10 @@ type Config = {
 };
 
 import chalk from 'chalk';
-import uncheckedConfig from '../config.json' assert { type: 'json' };
+import fs from "fs";
 import { warn } from '@/utils/log.js';
+
+const uncheckedConfig = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
 function warnWithPrefix(msg: string): void {
 	warn(`[Config]: ${chalk.red(msg)}`);
