@@ -1,16 +1,24 @@
 import { bindThis } from '@/decorators.js';
 import loki from 'lokijs';
-import Module from '@/module.js';
+import Module, { InstalledModule } from '@/module.js';
 import Message from '@/message.js';
 import serifs, { getSerif } from '@/serifs.js';
 import { acct } from '@/utils/acct.js';
 import config from '@/config.js';
+import 藍 from '@/ai.js';
 
 const NOTIFY_INTERVAL = 1000 * 60 * 60 * 12;
 
 export default class extends Module {
 	public readonly name = 'reminder';
 
+	@bindThis
+	public install(ai: 藍) {
+		return new Installed(this, ai);
+	}
+}
+
+class Installed extends InstalledModule {
 	private reminds: loki.Collection<{
 		userId: string;
 		id: string;
@@ -20,21 +28,15 @@ export default class extends Module {
 		createdAt: number;
 	}>;
 
-	@bindThis
-	public install() {
+	constructor(module: Module, ai: 藍) {
+		super(module, ai);
 		this.reminds = this.ai.getCollection('reminds', {
 			indices: ['userId', 'id']
 		});
-
-		return {
-			mentionHook: this.mentionHook,
-			contextHook: this.contextHook,
-			timeoutCallback: this.timeoutCallback,
-		};
 	}
 
 	@bindThis
-	private async mentionHook(msg: Message) {
+	public async mentionHook(msg: Message) {
 		let text = msg.extractedText.toLowerCase();
 		if (!text.startsWith('remind') && !text.startsWith('todo')) return false;
 
@@ -99,7 +101,7 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async contextHook(key: any, msg: Message, data: any) {
+	public async contextHook(key: any, msg: Message, data: any) {
 		if (msg.text == null) return;
 
 		const remind = this.reminds.findOne({
@@ -129,7 +131,7 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async timeoutCallback(data) {
+	public async timeoutCallback(data) {
 		const remind = this.reminds.findOne({
 			id: data.id
 		});
@@ -147,7 +149,7 @@ export default class extends Module {
 				renoteId: remind.thing == null && remind.quoteId ? remind.quoteId : remind.id,
 				text: acct(friend.doc.user) + ' ' + serifs.reminder.notify(friend.name)
 			});
-		} catch (err) {
+		} catch (err: any) {
 			// renote対象が消されていたらリマインダー解除
 			if (err.statusCode === 400) {
 				this.unsubscribeReply(remind.thing == null && remind.quoteId ? remind.quoteId : remind.id);

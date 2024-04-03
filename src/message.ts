@@ -8,6 +8,7 @@ import includes from '@/utils/includes.js';
 import or from '@/utils/or.js';
 import config from '@/config.js';
 import { sleep } from '@/utils/sleep.js';
+import { Note } from '@/misskey/note.js';
 
 export default class Message {
 	private ai: 藍;
@@ -61,12 +62,26 @@ export default class Message {
 		this.friend = new Friend(ai, { user: this.user });
 
 		// メッセージなどに付いているユーザー情報は省略されている場合があるので完全なユーザー情報を持ってくる
-		this.ai.api('users/show', {
+		this.ai.api<User>('users/show', {
 			userId: this.userId
 		}).then(user => {
 			this.friend.updateUser(user);
 		});
 	}
+
+	public async reply(text: string, opts?: {
+		file?: any;
+		cw?: string;
+		renote?: string;
+		immediate?: boolean;
+	}): Promise<Note>;
+
+	public async reply(text: string | null, opts?: {
+		file?: any;
+		cw?: string;
+		renote?: string;
+		immediate?: boolean;
+	}): Promise<void>;
 
 	@bindThis
 	public async reply(text: string | null, opts?: {
@@ -74,7 +89,7 @@ export default class Message {
 		cw?: string;
 		renote?: string;
 		immediate?: boolean;
-	}) {
+	}): Promise<Note | void> {
 		if (text == null) return;
 
 		this.ai.log(`>>> Sending reply to ${chalk.underline(this.id)}`);

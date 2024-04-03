@@ -1,35 +1,42 @@
 import { bindThis } from '@/decorators.js';
 import loki from 'lokijs';
-import Module from '@/module.js';
+import Module, { InstalledModule } from '@/module.js';
 import Message from '@/message.js';
 import serifs from '@/serifs.js';
+import 藍, { InstallerResult } from '@/ai.js';
+
+type Guesses = loki.Collection<{
+	userId: string;
+	secret: number;
+	tries: number[];
+	isEnded: boolean;
+	startedAt: number;
+	endedAt: number | null;
+}>
 
 export default class extends Module {
 	public readonly name = 'guessingGame';
 
-	private guesses: loki.Collection<{
-		userId: string;
-		secret: number;
-		tries: number[];
-		isEnded: boolean;
-		startedAt: number;
-		endedAt: number | null;
-	}>;
-
 	@bindThis
-	public install() {
-		this.guesses = this.ai.getCollection('guessingGame', {
+	public install(ai: 藍) {
+		const guesses = ai.getCollection('guessingGame', {
 			indices: ['userId']
 		});
 
-		return {
-			mentionHook: this.mentionHook,
-			contextHook: this.contextHook
-		};
+		return new Installed(this, ai, guesses);
+	}
+}
+
+class Installed extends InstalledModule implements InstallerResult {
+	private guesses: Guesses;
+
+	constructor(module: Module, ai: 藍, guesses: Guesses) {
+		super(module, ai);
+		this.guesses = guesses;
 	}
 
 	@bindThis
-	private async mentionHook(msg: Message) {
+	public async mentionHook(msg: Message) {
 		if (!msg.includes(['数当て', '数あて'])) return false;
 
 		const exist = this.guesses.findOne({
@@ -56,7 +63,7 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async contextHook(key: any, msg: Message) {
+	public async contextHook(key: any, msg: Message) {
 		if (msg.text == null) return;
 
 		const exist = this.guesses.findOne({
@@ -114,14 +121,14 @@ export default class extends Module {
 		if (end) {
 			exist.isEnded = true;
 			exist.endedAt = Date.now();
-			this.unsubscribeReply(key);
+			this.ai.unsubscribeReply(this.module, key);
 		}
 
 		this.guesses.update(exist);
 
 		msg.reply(text).then(reply => {
 			if (!end) {
-				this.subscribeReply(msg.userId, reply.id);
+				this.ai.subscribeReply(this.module, msg.userId, reply.id);
 			}
 		});
 	}

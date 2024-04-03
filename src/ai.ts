@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import { v4 as uuid } from 'uuid';
 
 import config from '@/config.js';
-import Module from '@/module.js';
+import Module, { InstalledModule } from '@/module.js';
 import Message from '@/message.js';
 import Friend, { FriendDoc } from '@/friend.js';
 import type { User } from '@/misskey/user.js';
@@ -17,6 +17,7 @@ import Stream from '@/stream.js';
 import log from '@/utils/log.js';
 import { sleep } from './utils/sleep.js';
 import pkg from '../package.json' assert { type: 'json' };
+import { Note } from '@/misskey/note.js';
 
 type MentionHook = (msg: Message) => Promise<boolean | HandlerResult>;
 type ContextHook = (key: any, msg: Message, data?: any) => Promise<void | boolean | HandlerResult>;
@@ -36,6 +37,11 @@ export type InstallerResult = {
 export type Meta = {
 	lastWakingAt: number;
 };
+
+export type ModuleDataDoc<Data = any> = {
+	module: string;
+	data: Data;
+}
 
 /**
  * 藍
@@ -77,10 +83,8 @@ export default class 藍 {
 	 * @param account 藍として使うアカウント
 	 * @param modules モジュール。先頭のモジュールほど高優先度
 	 */
-	constructor(account: User, modules: Module[]) {
-		this.account = account;
-		this.modules = modules;
-
+	@bindThis
+	public static start(account: User, modules: Module[]) {
 		let memoryDir = '.';
 		if (config.memoryDir) {
 			memoryDir = config.memoryDir;
@@ -89,7 +93,7 @@ export default class 藍 {
 
 		this.log(`Lodaing the memory from ${file}...`);
 
-		this.db = new loki(file, {
+		const db = new loki(file, {
 			autoload: true,
 			autosave: true,
 			autosaveInterval: 1000,
@@ -98,7 +102,7 @@ export default class 藍 {
 					this.log(chalk.red(`Failed to load the memory: ${err}`));
 				} else {
 					this.log(chalk.green('The memory loaded successfully'));
-					this.run();
+					new 藍(account, modules, db);
 				}
 			}
 		});
@@ -106,11 +110,19 @@ export default class 藍 {
 
 	@bindThis
 	public log(msg: string) {
-		log(`[${chalk.magenta('AiOS')}]: ${msg}`);
+		藍.log(msg);
 	}
 
 	@bindThis
-	private run() {
+	private static log(msg: string) {
+		log(`[${chalk.magenta('AiOS')}]: ${msg}`);
+	}
+
+	private constructor(account: User, modules: Module[], db: loki) {
+		this.account = account;
+		this.modules = modules;
+		this.db = db;
+
 		//#region Init DB
 		this.meta = this.getCollection('meta', {});
 
@@ -187,7 +199,7 @@ export default class 藍 {
 		this.modules.forEach(m => {
 			this.log(`Installing ${chalk.cyan.italic(m.name)}\tmodule...`);
 			m.init(this);
-			const res = m.install();
+			const res = m.install(this);
 			if (res != null) {
 				if (res.mentionHook) this.mentionHooks.push(res.mentionHook);
 				if (res.contextHook) this.contextHooks[m.name] = res.contextHook;
@@ -361,7 +373,7 @@ export default class 藍 {
 	 */
 	@bindThis
 	public async post(param: any) {
-		const res = await this.api('notes/create', param);
+		const res = await this.api<{ createdNote: Note }>('notes/create', param);
 		return res.createdNote;
 	}
 
@@ -380,13 +392,13 @@ export default class 藍 {
 	 * APIを呼び出します
 	 */
 	@bindThis
-	public api(endpoint: string, param?: any) {
+	public api<ReturnType = unknown>(endpoint: string, param?: any) {
 		this.log(`API: ${endpoint}`);
 		return got.post(`${config.apiUrl}/${endpoint}`, {
 			json: Object.assign({
 				i: config.i
 			}, param)
-		}).json();
+		}).json<ReturnType>();
 	};
 
 	/**

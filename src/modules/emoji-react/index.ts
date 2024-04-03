@@ -3,19 +3,16 @@ import { parse } from 'twemoji-parser';
 
 import type { Note } from '@/misskey/note.js';
 import Module from '@/module.js';
-import Stream from '@/stream.js';
 import includes from '@/utils/includes.js';
 import { sleep } from '@/utils/sleep.js';
 
 export default class extends Module {
 	public readonly name = 'emoji-react';
 
-	private htl: ReturnType<Stream['useSharedConnection']>;
-
 	@bindThis
 	public install() {
-		this.htl = this.ai.connection.useSharedConnection('homeTimeline');
-		this.htl.on('note', this.onNote);
+		const htl = this.ai.connection.useSharedConnection('homeTimeline');
+		htl.on('note', this.onNote);
 
 		return {};
 	}

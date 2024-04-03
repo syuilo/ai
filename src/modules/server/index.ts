@@ -1,24 +1,34 @@
 import { bindThis } from '@/decorators.js';
-import Module from '@/module.js';
+import Module, { InstalledModule } from '@/module.js';
 import serifs from '@/serifs.js';
 import config from '@/config.js';
+import 藍 from '@/ai.js';
 
 export default class extends Module {
 	public readonly name = 'server';
 
+	@bindThis
+	public install(ai: 藍) {
+		if (config.serverMonitoring) {
+			new Installed(this, ai);
+		}
+		return {};
+	}
+}
+
+class Installed extends InstalledModule {
 	private connection?: any;
 	private recentStat: any;
 	private warned = false;
-	private lastWarnedAt: number;
+	private lastWarnedAt?: number;
 
 	/**
 	 * 1秒毎のログ1分間分
 	 */
 	private statsLogs: any[] = [];
 
-	@bindThis
-	public install() {
-		if (!config.serverMonitoring) return {};
+	constructor(module: Module, ai: 藍) {
+		super(module, ai);
 
 		this.connection = this.ai.connection.useSharedConnection('serverStats');
 		this.connection.on('stats', this.onStats);
@@ -31,8 +41,6 @@ export default class extends Module {
 		setInterval(() => {
 			this.check();
 		}, 3000);
-
-		return {};
 	}
 
 	@bindThis

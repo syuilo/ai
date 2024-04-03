@@ -11,6 +11,7 @@ import * as Reversi from './engine.js';
 import config from '@/config.js';
 import serifs from '@/serifs.js';
 import type { User } from '@/misskey/user.js';
+import { Note } from '@/misskey/note.js';
 
 function getUserName(user) {
 	return user.name || user.username;
@@ -24,11 +25,35 @@ const titles = [
 ];
 
 class Session {
-	private account: User;
+	private maybeAccount?: User;
 	private game: any;
 	private form: any;
-	private engine: Reversi.Game;
-	private botColor: Reversi.Color;
+	private maybeEngine?: Reversi.Game;
+	private maybeBotColor?: Reversi.Color;
+
+	private get account(): User {
+		const maybeAccount = this.maybeAccount;
+		if (maybeAccount == null) {
+			throw new Error('Have not received "_init_" message');
+		}
+		return maybeAccount;
+	}
+
+	private get engine(): Reversi.Game {
+		const maybeEngine = this.maybeEngine;
+		if (maybeEngine == null) {
+			throw new Error('Have not received "started" message');
+		}
+		return maybeEngine;
+	}
+
+	private get botColor(): Reversi.Color {
+		const maybeBotColor = this.maybeBotColor;
+		if (maybeBotColor == null) {
+			throw new Error('Have not received "started" message');
+		}
+		return maybeBotColor;
+	}
 
 	private appliedOps: string[] = [];
 
@@ -100,7 +125,7 @@ class Session {
 	private onInit = (msg: any) => {
 		this.game = msg.game;
 		this.form = msg.form;
-		this.account = msg.account;
+		this.maybeAccount = msg.account;
 	}
 
 	/**
@@ -121,7 +146,7 @@ class Session {
 		});
 
 		// リバーシエンジン初期化
-		this.engine = new Reversi.Game(this.game.map, {
+		this.maybeEngine = new Reversi.Game(this.game.map, {
 			isLlotheo: this.game.isLlotheo,
 			canPutEverywhere: this.game.canPutEverywhere,
 			loopedBoard: this.game.loopedBoard
@@ -198,7 +223,7 @@ class Session {
 
 		//#endregion
 
-		this.botColor = this.game.user1Id == this.account.id && this.game.black == 1 || this.game.user2Id == this.account.id && this.game.black == 2;
+		this.maybeBotColor = this.game.user1Id == this.account.id && this.game.black == 1 || this.game.user2Id == this.account.id && this.game.black == 2;
 
 		if (this.botColor) {
 			this.think();
@@ -454,7 +479,7 @@ class Session {
 			try {
 				const res = await got.post(`${config.host}/api/notes/create`, {
 					json: body
-				}).json();
+				}).json<{ createdNote: Note }>();
 
 				return res.createdNote;
 			} catch (e) {
