@@ -9,7 +9,7 @@ RUN if [ $enable_mecab -ne 0 ]; then apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt-get/lists/* \
   && cd /opt \
-  && git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git \
+  && git clone --depth 1 https://github.com/yokomotod/mecab-ipadic-neologd.git \
   && cd /opt/mecab-ipadic-neologd \
   && ./bin/install-mecab-ipadic-neologd -n -y \
   && rm -rf /opt/mecab-ipadic-neologd \
