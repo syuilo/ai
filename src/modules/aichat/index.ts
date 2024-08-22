@@ -18,6 +18,7 @@ type Base64Image = {
 };
 const GEMINI_15_FLASH_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 const GEMINI_15_PRO_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
+const PLAMO_API = 'https://platform.preferredai.jp/api/completion/v1/chat/completions';
 
 export default class extends Module {
 	public readonly name = 'aichat';
@@ -86,6 +87,47 @@ export default class extends Module {
 	}
 
 	@bindThis
+	private async genTextByPLaMo(aiChat: AiChat) {
+		this.log('Generate Text By PLaMo...');
+
+		let options = {
+			url: aiChat.api,
+			headers: {
+				Authorization: 'Bearer ' + aiChat.key
+			},
+			json: {
+				model: 'plamo-beta',
+				messages: [
+					{role: 'system', content: aiChat.prompt},
+					{role: 'user', content: aiChat.question},
+				],
+			},
+		};
+		this.log(JSON.stringify(options));
+		let res_data:any = null;
+		try {
+			res_data = await got.post(options,
+				{parseJson: res => JSON.parse(res)}).json();
+			this.log(JSON.stringify(res_data));
+			if (res_data.hasOwnProperty('choices')) {
+				if (res_data.choices.length > 0) {
+					if (res_data.choices[0].hasOwnProperty('message')) {
+						if (res_data.choices[0].message.hasOwnProperty('content')) {
+							return res_data.choices[0].message.content;
+						}
+					}
+				}
+			}
+		} catch (err: unknown) {
+			this.log('Error By Call PLaMo');
+			if (err instanceof Error) {
+				this.log(`${err.name}\n${err.message}\n${err.stack}`);
+			}
+		}
+		return null;
+	}
+
+	@bindThis
 	private async note2base64Image(notesId: string) {
 		const noteData = await this.ai.api('notes/show', { noteId: notesId });
 		let fileType: string | undefined,thumbnailUrl: string | undefined;
@@ -129,6 +171,8 @@ export default class extends Module {
 			type = 'chatgpt4';
 		} else if (msg.includes([kigo + 'chatgpt'])) {
 			type = 'chatgpt3.5';
+		} else if (msg.includes([kigo + 'plamo'])) {
+			type = 'plamo';
 		}
 		const question = msg.extractedText
 							.toLowerCase()
@@ -160,7 +204,23 @@ export default class extends Module {
 				}
 				text = await this.genTextByGemini(aiChat, base64Image);
 				break;
-			default:
+
+			case 'PLaMo':
+				// PLaMoの場合、APIキーが必須
+				if (!config.pLaMoApiKey) {
+					msg.reply(serifs.aichat.nothing(type));
+					return false;
+				}
+				aiChat = {
+					question: question,
+					prompt: prompt,
+					api: PLAMO_API,
+					key: config.pLaMoApiKey
+				};
+				text = await this.genTextByPLaMo(aiChat);
+				break;
+
+				default:
 				msg.reply(serifs.aichat.nothing(type));
 				return false;
 		}
