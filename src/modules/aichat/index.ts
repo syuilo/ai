@@ -16,8 +16,8 @@ type Base64Image = {
 	type: string;
 	base64: string;
 };
-const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-const GEMINI_VISION_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent';
+const GEMINI_15_FLASH_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_15_PRO_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
 
 export default class extends Module {
 	public readonly name = 'aichat';
@@ -131,6 +131,7 @@ export default class extends Module {
 			type = 'chatgpt3.5';
 		}
 		const question = msg.extractedText
+							.toLowerCase()
 							.replace(this.name, '')
 							.replace(kigo + type, '')
 							.trim();
@@ -142,6 +143,7 @@ export default class extends Module {
 		}
 		switch(type) {
 			case 'gemini':
+				// geminiの場合、APIキーが必須
 				if (!config.geminiProApiKey) {
 					msg.reply(serifs.aichat.nothing(type));
 					return false;
@@ -150,11 +152,11 @@ export default class extends Module {
 				aiChat = {
 					question: question,
 					prompt: prompt,
-					api: GEMINI_API,
+					api: GEMINI_15_PRO_API,
 					key: config.geminiProApiKey
 				};
-				if (base64Image !== null) {
-					aiChat.api = GEMINI_VISION_API;
+				if (msg.includes([kigo + 'gemini-flash'])) {
+					aiChat.api = GEMINI_15_FLASH_API;
 				}
 				text = await this.genTextByGemini(aiChat, base64Image);
 				break;
@@ -165,7 +167,7 @@ export default class extends Module {
 
 		if (text == null) {
 			this.log('The result is invalid. It seems that tokens and other items need to be reviewed.')
-			msg.reply(serifs.aichat.nothing(type));
+			msg.reply(serifs.aichat.error(type));
 			return false;
 		}
 
