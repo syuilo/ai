@@ -34,6 +34,7 @@ import NotingModule from './modules/noting/index.js';
 import PollModule from './modules/poll/index.js';
 import ReminderModule from './modules/reminder/index.js';
 import CheckCustomEmojisModule from './modules/check-custom-emojis/index.js';
+import AiChatModule from './modules/aichat/index.js';
 
 console.log('   __    ____  _____  ___ ');
 console.log('  /__\\  (_  _)(  _  )/ __)');
@@ -96,6 +97,7 @@ promiseRetry(retry => {
 		new PollModule(),
 		new ReminderModule(),
 		new CheckCustomEmojisModule(),
+		new AiChatModule(),
 	]);
 }).catch(e => {
 	log(chalk.red('Failed to fetch the account'));
