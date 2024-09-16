@@ -174,10 +174,11 @@ export default class extends Module {
 		} else if (msg.includes([kigo + 'plamo'])) {
 			type = 'plamo';
 		}
+		const reName = RegExp(this.name, "i");
+		const reKigoType = RegExp(kigo + type, "i");
 		const question = msg.extractedText
-							.toLowerCase()
-							.replace(this.name, '')
-							.replace(kigo + type, '')
+							.replace(reName, '')
+							.replace(reKigoType, '')
 							.trim();
 
 		let text:string, aiChat:AiChat;
