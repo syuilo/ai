@@ -3,6 +3,7 @@ import Module from '@/module.js';
 import serifs from '@/serifs.js';
 import Message from '@/message.js';
 import config from '@/config.js';
+import Friend from '@/friend.js';
 import urlToBase64 from '@/utils/url2base64.js';
 import got from 'got';
 import loki from 'lokijs';
@@ -36,17 +37,39 @@ const GEMINI_15_FLASH_API = 'https://generativelanguage.googleapis.com/v1beta/mo
 const GEMINI_15_PRO_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
 const PLAMO_API = 'https://platform.preferredai.jp/api/completion/v1/chat/completions';
 
-const TIMEOUT_TIME = 1000 * 60 * 60 * 0.5;
+const RANDOMTALK_DEFAULT_PROBABILITY = 0.02;// デフォルトのrandomTalk確率
+const TIMEOUT_TIME = 1000 * 60 * 60 * 0.5;// aichatの返信を監視する時間
+const RANDOMTALK_DEFAULT_INTERVAL = 1000 * 60 * 60 * 12;// デフォルトのrandomTalk間隔
 
 export default class extends Module {
 	public readonly name = 'aichat';
 	private aichatHist: loki.Collection<AiChatHist>;
+	private randomTalkProbability: number = RANDOMTALK_DEFAULT_PROBABILITY;
+	private randomTalkIntervalMinutes: number = RANDOMTALK_DEFAULT_INTERVAL;
 
 	@bindThis
 	public install() {
 		this.aichatHist = this.ai.getCollection('aichatHist', {
 			indices: ['postId']
 		});
+
+		// 確率は設定されていればそちらを採用(設定がなければデフォルトを採用)
+		if (config.aichatRandomTalkProbability != undefined && !Number.isNaN(Number.parseFloat(config.aichatRandomTalkProbability))) {
+			this.randomTalkProbability = Number.parseFloat(config.aichatRandomTalkProbability);
+		}
+		// ランダムトーク間隔(分)は設定されていればそちらを採用(設定がなければデフォルトを採用)
+		if (config.aichatRandomTalkIntervalMinutes != undefined && !Number.isNaN(Number.parseInt(config.aichatRandomTalkIntervalMinutes))) {
+			this.randomTalkIntervalMinutes = 1000 * 60 * Number.parseInt(config.aichatRandomTalkIntervalMinutes);
+		}
+		this.log('aichatRandomTalkEnabled:' + config.aichatRandomTalkEnabled);
+		this.log('randomTalkProbability:' + this.randomTalkProbability);
+		this.log('randomTalkIntervalMinutes:' + (this.randomTalkIntervalMinutes / (60 * 1000)));
+
+		// 定期的にデータを取得しaichatRandomTalkを行う
+		if (config.aichatRandomTalkEnabled) {
+			setInterval(this.aichatRandomTalk, this.randomTalkIntervalMinutes);
+		}
+
 		return {
 			mentionHook: this.mentionHook,
 			contextHook: this.contextHook,
@@ -201,6 +224,21 @@ export default class extends Module {
 			this.log('AiChat requested');
 		}
 
+		// msg.idをもとにnotes/conversationを呼び出し、会話中のidかチェック
+		const conversationData = await this.ai.api('notes/conversation', { noteId: msg.id });
+
+		// aichatHistに該当のポストが見つかった場合は会話中のためmentionHoonkでは対応しない
+		let exist : AiChatHist | null = null;
+		if (conversationData != undefined) {
+			for (const message of conversationData) {
+				exist = this.aichatHist.findOne({
+					postId: message.id
+				});
+				// 見つかった場合はそれを利用
+				if (exist != null) return false;
+			}
+		}
+
 		// タイプを決定
 		let type = TYPE_GEMINI;
 		if (msg.includes([KIGO + TYPE_GEMINI])) {
@@ -279,6 +317,78 @@ export default class extends Module {
 	}
 
 	@bindThis
+	private async aichatRandomTalk() {
+		this.log('AiChat(randomtalk) started');
+		const tl = await this.ai.api('notes/local-timeline', {
+			limit: 30
+		});
+		const interestedNotes = tl.filter(note =>
+			note.userId !== this.ai.account.id &&
+			note.text != null &&
+			note.replyId == null &&
+			note.renoteId == null &&
+			note.cw == null &&
+			!note.user.isBot
+		);
+
+		// 対象が存在しない場合は処理終了
+		if (interestedNotes == undefined || interestedNotes.length == 0) return false;
+
+		// ランダムに選択
+		const choseNote = interestedNotes[Math.floor(Math.random() * interestedNotes.length)];
+
+		// msg.idをもとにnotes/conversationを呼び出し、会話中のidかチェック
+		const conversationData = await this.ai.api('notes/conversation', { noteId: choseNote.id });
+
+		// aichatHistに該当のポストが見つかった場合は会話中のためaichatRandomTalkでは対応しない
+		let exist : AiChatHist | null = null;
+		if (conversationData != undefined) {
+			for (const message of conversationData) {
+				exist = this.aichatHist.findOne({
+					postId: message.id
+				});
+				if (exist != null) return false;
+			}
+		}
+
+		// 確率をクリアし、親愛度が指定以上、かつ、Botでない場合のみ実行
+		if (Math.random() < this.randomTalkProbability) {
+			this.log('AiChat(randomtalk) targeted: ' + choseNote.id);
+		} else {
+			this.log('AiChat(randomtalk) is end.');
+			return false;
+		}
+		const friend: Friend | null = this.ai.lookupFriend(choseNote.userId);
+		if (friend == null || friend.love < 7) {
+			this.log('AiChat(randomtalk) end.Because there was not enough affection.');
+			return false;
+		} else if (choseNote.user.isBot) {
+			this.log('AiChat(randomtalk) end.Because message author is bot.');
+			return false;
+		}
+
+		const current : AiChatHist = {
+			postId: choseNote.id,
+			createdAt: Date.now(),// 適当なもの
+			type: TYPE_GEMINI
+		};
+		// AIに問い合わせ
+		let targetedMessage = choseNote;
+		if (choseNote.extractedText == undefined) {
+			const data = await this.ai.api('notes/show', { noteId: choseNote.id });
+			targetedMessage = new Message(this.ai, data);
+		}
+		const result = await this.handleAiChat(current, targetedMessage);
+
+		if (result) {
+			return {
+				reaction: 'like'
+			};
+		}
+		return false;
+	}
+
+	@bindThis
 	private async handleAiChat(exist: AiChatHist, msg: Message) {
 		let text: string, aiChat: AiChat;
 		let prompt: string = '';
@@ -287,7 +397,10 @@ export default class extends Module {
 		}
 		const reName = RegExp(this.name, "i");
 		const reKigoType = RegExp(KIGO + exist.type, "i");
-		const question = msg.extractedText
+		const extractedText = msg.extractedText;
+		if (extractedText == undefined || extractedText.length == 0) return false;
+
+		const question = extractedText
 							.replace(reName, '')
 							.replace(reKigoType, '')
 							.trim();
