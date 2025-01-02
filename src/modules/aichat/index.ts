@@ -5,28 +5,52 @@ import Message from '@/message.js';
 import config from '@/config.js';
 import urlToBase64 from '@/utils/url2base64.js';
 import got from 'got';
+import loki from 'lokijs';
 
 type AiChat = {
 	question: string;
 	prompt: string;
 	api: string;
 	key: string;
+	history?: { role: string; content: string }[];
 };
 type Base64Image = {
 	type: string;
 	base64: string;
 };
+type AiChatHist = {
+	postId: string;
+	createdAt: number;
+	type: string;
+	api?: string;
+	history?: {
+		role: string;
+		content: string;
+	}[];
+};
+
+const KIGO = '&';
+const TYPE_GEMINI = 'gemini';
+const TYPE_PLAMO = 'plamo';
 const GEMINI_15_FLASH_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 const GEMINI_15_PRO_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
 const PLAMO_API = 'https://platform.preferredai.jp/api/completion/v1/chat/completions';
 
+const TIMEOUT_TIME = 1000 * 60 * 60 * 0.5;
+
 export default class extends Module {
 	public readonly name = 'aichat';
+	private aichatHist: loki.Collection<AiChatHist>;
 
 	@bindThis
 	public install() {
+		this.aichatHist = this.ai.getCollection('aichatHist', {
+			indices: ['postId']
+		});
 		return {
-			mentionHook: this.mentionHook
+			mentionHook: this.mentionHook,
+			contextHook: this.contextHook,
+			timeoutCallback: this.timeoutCallback,
 		};
 	}
 
@@ -34,13 +58,15 @@ export default class extends Module {
 	private async genTextByGemini(aiChat: AiChat, image:Base64Image|null) {
 		this.log('Generate Text By Gemini...');
 		let parts: ({ text: string; inline_data?: undefined; } | { inline_data: { mime_type: string; data: string; }; text?: undefined; })[];
-		if (image === null) {
+		const systemInstruction : {role: string; parts: [{text: string}]} = {role: 'system', parts: [{text: aiChat.prompt}]};
+
+		if (!image) {
 			// 画像がない場合、メッセージのみで問い合わせ
-			parts = [{text: aiChat.prompt + aiChat.question}];
+			parts = [{text: aiChat.question}];
 		} else {
 			// 画像が存在する場合、画像を添付して問い合わせ
 			parts = [
-				{ text: aiChat.prompt + aiChat.question },
+				{ text: aiChat.question },
 				{
 					inline_data: {
 						mime_type: image.type,
@@ -49,20 +75,31 @@ export default class extends Module {
 				},
 			];
 		}
+
+		// 履歴を追加
+		let contents: ({ role: string; parts: ({ text: string; inline_data?: undefined; } | { inline_data: { mime_type: string; data: string; }; text?: undefined; })[]}[]) = [];
+		if (aiChat.history != null) {
+			aiChat.history.forEach(entry => {
+				contents.push({ role : entry.role, parts: [{text: entry.content}]});
+			});
+		}
+		contents.push({role: 'user', parts: parts});
+
 		let options = {
 			url: aiChat.api,
 			searchParams: {
 				key: aiChat.key,
 			},
 			json: {
-				contents: {parts: parts}
+				contents: contents,
+				systemInstruction: systemInstruction,
 			},
 		};
 		this.log(JSON.stringify(options));
 		let res_data:any = null;
 		try {
 			res_data = await got.post(options,
-				{parseJson: res => JSON.parse(res)}).json();
+				{parseJson: (res: string) => JSON.parse(res)}).json();
 			this.log(JSON.stringify(res_data));
 			if (res_data.hasOwnProperty('candidates')) {
 				if (res_data.candidates.length > 0) {
@@ -70,7 +107,8 @@ export default class extends Module {
 						if (res_data.candidates[0].content.hasOwnProperty('parts')) {
 							if (res_data.candidates[0].content.parts.length > 0) {
 								if (res_data.candidates[0].content.parts[0].hasOwnProperty('text')) {
-									return res_data.candidates[0].content.parts[0].text;
+									const responseText = res_data.candidates[0].content.parts[0].text;
+									return responseText;
 								}
 							}
 						}
@@ -107,7 +145,7 @@ export default class extends Module {
 		let res_data:any = null;
 		try {
 			res_data = await got.post(options,
-				{parseJson: res => JSON.parse(res)}).json();
+				{parseJson: (res: string) => JSON.parse(res)}).json();
 			this.log(JSON.stringify(res_data));
 			if (res_data.hasOwnProperty('choices')) {
 				if (res_data.choices.length > 0) {
@@ -163,80 +201,186 @@ export default class extends Module {
 			this.log('AiChat requested');
 		}
 
-		const kigo = '&';
-		let type = 'gemini';
-		if (msg.includes([kigo + 'gemini'])) {
-			type = 'gemini';
-		} else if (msg.includes([kigo + 'chatgpt4'])) {
+		// タイプを決定
+		let type = TYPE_GEMINI;
+		if (msg.includes([KIGO + TYPE_GEMINI])) {
+			type = TYPE_GEMINI;
+		} else if (msg.includes([KIGO + 'chatgpt4'])) {
 			type = 'chatgpt4';
-		} else if (msg.includes([kigo + 'chatgpt'])) {
+		} else if (msg.includes([KIGO + 'chatgpt'])) {
 			type = 'chatgpt3.5';
-		} else if (msg.includes([kigo + 'plamo'])) {
-			type = 'plamo';
+		} else if (msg.includes([KIGO + TYPE_PLAMO])) {
+			type = TYPE_PLAMO;
+		}
+		const current : AiChatHist = {
+			postId: msg.id,
+			createdAt: Date.now(),// 適当なもの
+			type: type
+		};
+		// AIに問い合わせ
+		const result = await this.handleAiChat(current, msg);
+
+		if (result) {
+			return {
+				reaction: 'like'
+			};
+		}
+		return false;
+	}
+
+	@bindThis
+	private async contextHook(key: any, msg: Message) {
+		this.log('contextHook...');
+		if (msg.text == null) return false;
+
+		// msg.idをもとにnotes/conversationを呼び出し、該当のidかチェック
+		const conversationData = await this.ai.api('notes/conversation', { noteId: msg.id });
+
+		// 結果がnullやサイズ0の場合は終了
+		if (conversationData == null || conversationData.length == 0 ) {
+			this.log('conversationData is nothing.');
+			return false;
+		}
+
+		// aichatHistに該当のポストが見つからない場合は終了
+		let exist : AiChatHist | null = null;
+		for (const message of conversationData) {
+			exist = this.aichatHist.findOne({
+				postId: message.id
+			});
+			// 見つかった場合はそれを利用
+			if (exist != null) break;
+		}
+		if (exist == null) {
+			this.log('conversationData is not found.');
+			return false;
+		}
+
+		// 見つかった場合はunsubscribe&removeし、回答。今回のでsubscribe,insert,timeout設定
+		this.log('unsubscribeReply & remove.');
+		this.log(exist.type + ':' + exist.postId);
+		if (exist.history) {
+			for (const his of exist.history) {
+				this.log(his.role + ':' + his.content);
+			}
+		}
+		this.unsubscribeReply(key);
+		this.aichatHist.remove(exist);
+
+		// AIに問い合わせ
+		const result = await this.handleAiChat(exist, msg);
+
+		if (result) {
+			return {
+				reaction: 'like'
+			};
+		}
+		return false;
+	}
+
+	@bindThis
+	private async handleAiChat(exist: AiChatHist, msg: Message) {
+		let text: string, aiChat: AiChat;
+		let prompt: string = '';
+		if (config.prompt) {
+			prompt = config.prompt;
 		}
 		const reName = RegExp(this.name, "i");
-		const reKigoType = RegExp(kigo + type, "i");
+		const reKigoType = RegExp(KIGO + exist.type, "i");
 		const question = msg.extractedText
 							.replace(reName, '')
 							.replace(reKigoType, '')
 							.trim();
-
-		let text:string, aiChat:AiChat;
-		let prompt:string = '';
-		if (config.prompt) {
-			prompt = config.prompt;
-		}
-		switch(type) {
-			case 'gemini':
+		switch (exist.type) {
+			case TYPE_GEMINI:
 				// geminiの場合、APIキーが必須
 				if (!config.geminiProApiKey) {
-					msg.reply(serifs.aichat.nothing(type));
+					msg.reply(serifs.aichat.nothing(exist.type));
 					return false;
 				}
-				const base64Image:Base64Image|null = await this.note2base64Image(msg.id);
+				const base64Image: Base64Image | null = await this.note2base64Image(msg.id);
 				aiChat = {
 					question: question,
 					prompt: prompt,
 					api: GEMINI_15_PRO_API,
-					key: config.geminiProApiKey
+					key: config.geminiProApiKey,
+					history: exist.history
 				};
-				if (msg.includes([kigo + 'gemini-flash'])) {
+				if (msg.includes([KIGO + 'gemini-flash']) || (exist.api && exist.api === GEMINI_15_FLASH_API)) {
 					aiChat.api = GEMINI_15_FLASH_API;
 				}
 				text = await this.genTextByGemini(aiChat, base64Image);
 				break;
 
-			case 'PLaMo':
+			case TYPE_PLAMO:
 				// PLaMoの場合、APIキーが必須
 				if (!config.pLaMoApiKey) {
-					msg.reply(serifs.aichat.nothing(type));
+					msg.reply(serifs.aichat.nothing(exist.type));
 					return false;
 				}
 				aiChat = {
-					question: question,
+					question: msg.text,
 					prompt: prompt,
 					api: PLAMO_API,
-					key: config.pLaMoApiKey
+					key: config.pLaMoApiKey,
+					history: exist.history
 				};
 				text = await this.genTextByPLaMo(aiChat);
 				break;
 
-				default:
-				msg.reply(serifs.aichat.nothing(type));
+			default:
+				msg.reply(serifs.aichat.nothing(exist.type));
 				return false;
 		}
 
 		if (text == null) {
 			this.log('The result is invalid. It seems that tokens and other items need to be reviewed.')
-			msg.reply(serifs.aichat.error(type));
+			msg.reply(serifs.aichat.error(exist.type));
 			return false;
 		}
 
 		this.log('Replying...');
-		msg.reply(serifs.aichat.post(text, type));
+		msg.reply(serifs.aichat.post(text, exist.type)).then(reply => {
+			// 履歴に登録
+			if (!exist.history) {
+				exist.history = [];
+			}
+			exist.history.push({ role: 'user', content: question });
+			exist.history.push({ role: 'model', content: text });
+			// 履歴が10件を超えた場合、古いものを削除
+			if (exist.history.length > 10) {
+				exist.history.shift();
+			}
+			this.aichatHist.insertOne({
+				postId: reply.id,
+				createdAt: Date.now(),
+				type: exist.type,
+				api: aiChat.api,
+				history: exist.history
+			});
 
-		return {
-			reaction: 'like'
-		};
+			this.log('Subscribe&Set Timer...');
+
+			// メンションをsubscribe
+			this.subscribeReply(reply.id, reply.id);
+
+			// タイマーセット
+			this.setTimeoutWithPersistence(TIMEOUT_TIME, {
+				id: reply.id
+			});
+		});
+		return true;
+	}
+
+	@bindThis
+	private async timeoutCallback({id}) {
+		this.log('timeoutCallback...');
+		const exist = this.aichatHist.findOne({
+			postId: id
+		});
+		this.unsubscribeReply(id);
+		if (exist != null) {
+			this.aichatHist.remove(exist);
+		}
 	}
 }
