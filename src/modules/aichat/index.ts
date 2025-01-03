@@ -33,6 +33,7 @@ type AiChatHist = {
 const KIGO = '&';
 const TYPE_GEMINI = 'gemini';
 const TYPE_PLAMO = 'plamo';
+
 const GEMINI_15_FLASH_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 const GEMINI_15_PRO_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
 const PLAMO_API = 'https://platform.preferredai.jp/api/completion/v1/chat/completions';
@@ -123,6 +124,7 @@ export default class extends Module {
 		try {
 			res_data = await got.post(options,
 				{parseJson: (res: string) => JSON.parse(res)}).json();
+				{parseJson: res => JSON.parse(res)}).json();
 			this.log(JSON.stringify(res_data));
 			if (res_data.hasOwnProperty('candidates')) {
 				if (res_data.candidates.length > 0) {
