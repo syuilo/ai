@@ -385,7 +385,8 @@ export default {
 		post: (server_name, num) => `${server_name}に${num}件の絵文字が追加されました！`,
 		emojiPost: emoji => `:${emoji}:\n(\`${emoji}\`) #AddCustomEmojis`,
 		postOnce: (server_name, num, text) => `${server_name}に${num}件の絵文字が追加されました！\n${text} #AddCustomEmojis`,
-		emojiOnce: emoji => `:${emoji}:(\`${emoji}\`)`
+		emojiOnce: emoji => `:${emoji}:(\`${emoji}\`)`,
+		nothing: '絵文字を確認しましたが、なにも追加されていないみたいです',
 	},
 
 	aichat: {
