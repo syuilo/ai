@@ -32,9 +32,12 @@ type AiChatHist = {
 
 const KIGO = '&';
 const TYPE_GEMINI = 'gemini';
+const GEMINI_PRO = 'gemini-pro';
+const GEMINI_FLASH = 'gemini-flash';
 const TYPE_PLAMO = 'plamo';
 
-const GEMINI_15_FLASH_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_20_FLASH_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
+// const GEMINI_15_FLASH_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 const GEMINI_15_PRO_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
 const PLAMO_API = 'https://platform.preferredai.jp/api/completion/v1/chat/completions';
 
@@ -397,10 +400,19 @@ export default class extends Module {
 		if (config.prompt) {
 			prompt = config.prompt;
 		}
-		const reName = RegExp(this.name, "i");
-		const reKigoType = RegExp(KIGO + exist.type, "i");
+		const reName = RegExp(this.name, 'i');
+		let reKigoType = RegExp(KIGO + exist.type, 'i');
 		const extractedText = msg.extractedText;
 		if (extractedText == undefined || extractedText.length == 0) return false;
+
+		// Gemini API用にAPIのURLと置き換え用タイプを変更
+		if (msg.includes([KIGO + GEMINI_FLASH])) {
+			exist.api = GEMINI_20_FLASH_API;
+			reKigoType = RegExp(KIGO + GEMINI_FLASH, 'i');
+		} else if (msg.includes([KIGO + GEMINI_PRO])) {
+			exist.api = GEMINI_15_PRO_API;
+			reKigoType = RegExp(KIGO + GEMINI_PRO, 'i');
+		}
 
 		const question = extractedText
 							.replace(reName, '')
@@ -417,12 +429,12 @@ export default class extends Module {
 				aiChat = {
 					question: question,
 					prompt: prompt,
-					api: GEMINI_15_PRO_API,
+					api: GEMINI_20_FLASH_API,
 					key: config.geminiProApiKey,
 					history: exist.history
 				};
-				if (msg.includes([KIGO + 'gemini-flash']) || (exist.api && exist.api === GEMINI_15_FLASH_API)) {
-					aiChat.api = GEMINI_15_FLASH_API;
+				if (exist.api) {
+					aiChat.api = exist.api
 				}
 				text = await this.genTextByGemini(aiChat, base64Image);
 				break;
