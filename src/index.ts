@@ -8,7 +8,7 @@ import promiseRetry from 'promise-retry';
 import 藍 from './ai.js';
 import config from './config.js';
 import _log from './utils/log.js';
-import pkg from '../package.json' assert { type: 'json' };
+import pkg from '../package.json' with { type: 'json' };
 
 import CoreModule from './modules/core/index.js';
 import TalkModule from './modules/talk/index.js';

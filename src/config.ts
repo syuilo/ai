@@ -23,7 +23,7 @@ type Config = {
 	memoryDir?: string;
 };
 
-import config from '../config.json' assert { type: 'json' };
+import config from '../config.json' with { type: 'json' };
 
 config.wsUrl = config.host.replace('http', 'ws');
 config.apiUrl = config.host + '/api';
