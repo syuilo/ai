@@ -127,7 +127,6 @@ export default class extends Module {
 		try {
 			res_data = await got.post(options,
 				{parseJson: (res: string) => JSON.parse(res)}).json();
-				{parseJson: res => JSON.parse(res)}).json();
 			this.log(JSON.stringify(res_data));
 			if (res_data.hasOwnProperty('candidates')) {
 				if (res_data.candidates.length > 0) {
