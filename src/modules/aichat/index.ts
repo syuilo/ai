@@ -113,11 +113,10 @@ export default class extends Module {
 			month: '2-digit',
 			day: '2-digit',
 			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit'
+			minute: '2-digit'
 		});
 		// 設定のプロンプトに加え、現在時刻を渡す
-		let systemInstructionText = aiChat.prompt + "。また、現在日時は" + now + "である(他の日時は無効とすること)。";
+		let systemInstructionText = aiChat.prompt + "。また、現在日時は" + now + "であり、これは回答の参考にし、時刻を聞かれるまで時刻情報は提供しないこと(なお、他の日時は無効とすること)。";
 		// 名前を伝えておく
 		if (aiChat.friendName != undefined) {
 			systemInstructionText += "なお、会話相手の名前は" + aiChat.friendName + "とする。";
