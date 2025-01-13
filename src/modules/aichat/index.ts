@@ -106,7 +106,18 @@ export default class extends Module {
 	private async genTextByGemini(aiChat: AiChat, files:base64File[]) {
 		this.log('Generate Text By Gemini...');
 		let parts: GeminiParts = [];
-		const systemInstruction: GeminiSystemInstruction = {role: 'system', parts: [{text: aiChat.prompt}]};
+		const now = new Date().toLocaleString('ja-JP', {
+			timeZone: 'Asia/Tokyo',
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit'
+		});
+		// 設定のプロンプトに加え、現在時刻を渡す
+		let systemInstructionText = aiChat.prompt + "。また、現在日時は" + now + "である(他の日時は無効とすること)。";
+		const systemInstruction: GeminiSystemInstruction = {role: 'system', parts: [{text: systemInstructionText}]};
 
 		parts = [{text: aiChat.question}];
 		// ファイルが存在する場合、画像を添付して問い合わせ
