@@ -14,6 +14,7 @@ type AiChat = {
 	api: string;
 	key: string;
 	history?: { role: string; content: string }[];
+	friendName?: string;
 };
 type base64File = {
 	type: string;
@@ -117,6 +118,10 @@ export default class extends Module {
 		});
 		// 設定のプロンプトに加え、現在時刻を渡す
 		let systemInstructionText = aiChat.prompt + "。また、現在日時は" + now + "である(他の日時は無効とすること)。";
+		// 名前を伝えておく
+		if (aiChat.friendName != undefined) {
+			systemInstructionText += "なお、会話相手の名前は" + aiChat.friendName + "とする。";
+		}
 		const systemInstruction: GeminiSystemInstruction = {role: 'system', parts: [{text: systemInstructionText}]};
 
 		parts = [{text: aiChat.question}];
@@ -458,6 +463,20 @@ export default class extends Module {
 			reKigoType = RegExp(KIGO + GEMINI_PRO, 'i');
 		}
 
+		const friend: Friend | null = this.ai.lookupFriend(msg.userId);
+		this.log("msg.userId:"+msg.userId);
+		let friendName: string | undefined;
+		if (friend != null && friend.name != null) {
+			friendName = friend.name;
+			this.log("friend.name:" + friend.name);
+		} else if (msg.user.name) {
+			friendName = msg.user.name;
+			this.log("msg.user.username:" + msg.user.username);
+		} else {
+			friendName = msg.user.username;
+			this.log("msg.user.username:" + msg.user.username);
+		}
+
 		const question = extractedText
 							.replace(reName, '')
 							.replace(reKigoType, '')
@@ -475,7 +494,8 @@ export default class extends Module {
 					prompt: prompt,
 					api: GEMINI_20_FLASH_API,
 					key: config.geminiProApiKey,
-					history: exist.history
+					history: exist.history,
+					friendName: friendName
 				};
 				if (exist.api) {
 					aiChat.api = exist.api
@@ -494,7 +514,8 @@ export default class extends Module {
 					prompt: prompt,
 					api: PLAMO_API,
 					key: config.pLaMoApiKey,
-					history: exist.history
+					history: exist.history,
+					friendName: friendName
 				};
 				text = await this.genTextByPLaMo(aiChat);
 				break;
@@ -527,7 +548,8 @@ export default class extends Module {
 				createdAt: Date.now(),
 				type: exist.type,
 				api: aiChat.api,
-				history: exist.history
+				history: exist.history,
+				friendName: friendName
 			});
 
 			this.log('Subscribe&Set Timer...');
