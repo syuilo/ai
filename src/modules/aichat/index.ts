@@ -14,11 +14,33 @@ type AiChat = {
 	api: string;
 	key: string;
 	history?: { role: string; content: string }[];
+	friendName?: string;
 };
-type Base64Image = {
+type base64File = {
 	type: string;
 	base64: string;
+	url?: string;
 };
+type GeminiParts = {
+	inlineData?: {
+		mimeType: string;
+		data: string;
+	};
+	fileData?: {
+		mimeType: string;
+		fileUri: string;
+	};
+	text?: string;
+}[];
+type GeminiSystemInstruction = {
+	role: string;
+	parts: [{text: string}]
+};
+type GeminiContents = {
+	role: string;
+	parts: GeminiParts;
+};
+
 type AiChatHist = {
 	postId: string;
 	createdAt: number;
@@ -82,32 +104,48 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async genTextByGemini(aiChat: AiChat, image:Base64Image|null) {
+	private async genTextByGemini(aiChat: AiChat, files:base64File[]) {
 		this.log('Generate Text By Gemini...');
-		let parts: ({ text: string; inline_data?: undefined; } | { inline_data: { mime_type: string; data: string; }; text?: undefined; })[];
-		const systemInstruction : {role: string; parts: [{text: string}]} = {role: 'system', parts: [{text: aiChat.prompt}]};
+		let parts: GeminiParts = [];
+		const now = new Date().toLocaleString('ja-JP', {
+			timeZone: 'Asia/Tokyo',
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+		// 設定のプロンプトに加え、現在時刻を渡す
+		let systemInstructionText = aiChat.prompt + "。また、現在日時は" + now + "であり、これは回答の参考にし、時刻を聞かれるまで時刻情報は提供しないこと(なお、他の日時は無効とすること)。";
+		// 名前を伝えておく
+		if (aiChat.friendName != undefined) {
+			systemInstructionText += "なお、会話相手の名前は" + aiChat.friendName + "とする。";
+		}
+		const systemInstruction: GeminiSystemInstruction = {role: 'system', parts: [{text: systemInstructionText}]};
 
-		if (!image) {
-			// 画像がない場合、メッセージのみで問い合わせ
-			parts = [{text: aiChat.question}];
-		} else {
-			// 画像が存在する場合、画像を添付して問い合わせ
-			parts = [
-				{ text: aiChat.question },
-				{
-					inline_data: {
-						mime_type: image.type,
-						data: image.base64,
-					},
-				},
-			];
+		parts = [{text: aiChat.question}];
+		// ファイルが存在する場合、画像を添付して問い合わせ
+		if (files.length >= 1) {
+			for (const file of files){
+				parts.push(
+					{
+						inlineData: {
+							mimeType: file.type,
+							data: file.base64,
+						},
+					}
+				);
+			}
 		}
 
 		// 履歴を追加
-		let contents: ({ role: string; parts: ({ text: string; inline_data?: undefined; } | { inline_data: { mime_type: string; data: string; }; text?: undefined; })[]}[]) = [];
+		let contents: GeminiContents[] = [];
 		if (aiChat.history != null) {
 			aiChat.history.forEach(entry => {
-				contents.push({ role : entry.role, parts: [{text: entry.content}]});
+				contents.push({
+					role : entry.role,
+					parts: [{text: entry.content}],
+				});
 			});
 		}
 		contents.push({role: 'user', parts: parts});
@@ -193,31 +231,42 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async note2base64Image(notesId: string) {
+	private async note2base64File(notesId: string) {
 		const noteData = await this.ai.api('notes/show', { noteId: notesId });
-		let fileType: string | undefined,thumbnailUrl: string | undefined;
+		let files:base64File[] = [];
+		let fileType: string | undefined, filelUrl: string | undefined;
 		if (noteData !== null && noteData.hasOwnProperty('files')) {
-			if (noteData.files.length > 0) {
-				if (noteData.files[0].hasOwnProperty('type')) {
-					fileType = noteData.files[0].type;
+			for (let i = 0; i < noteData.files.length; i++) {
+				if (noteData.files[i].hasOwnProperty('type')) {
+					fileType = noteData.files[i].type;
+					if (noteData.files[i].hasOwnProperty('name')) {
+						// 拡張子で挙動を変えようと思ったが、text/plainしかMisskeyで変になってGemini対応してるものがない？
+						// let extention = noteData.files[i].name.split('.').pop();
+						if (fileType === 'application/octet-stream' || fileType === 'application/xml') {
+							fileType = 'text/plain';
+						}
+					}
 				}
-				if (noteData.files[0].hasOwnProperty('thumbnailUrl')) {
-					thumbnailUrl = noteData.files[0].thumbnailUrl;
+				if (noteData.files[i].hasOwnProperty('thumbnailUrl') && noteData.files[i].thumbnailUrl) {
+					filelUrl = noteData.files[i].thumbnailUrl;
+				} else if (noteData.files[i].hasOwnProperty('url') && noteData.files[i].url) {
+					filelUrl = noteData.files[i].url;
 				}
-			}
-			if (fileType !== undefined && thumbnailUrl !== undefined) {
-				try {
-					const image = await urlToBase64(thumbnailUrl);
-					const base64Image:Base64Image = {type: fileType, base64: image};
-					return base64Image;
-				} catch (err: unknown) {
-					if (err instanceof Error) {
-						this.log(`${err.name}\n${err.message}\n${err.stack}`);
+				if (fileType !== undefined && filelUrl !== undefined) {
+					try {
+						this.log('filelUrl:'+filelUrl);
+						const file = await urlToBase64(filelUrl);
+						const base64file:base64File = {type: fileType, base64: file};
+						files.push(base64file);
+					} catch (err: unknown) {
+						if (err instanceof Error) {
+							this.log(`${err.name}\n${err.message}\n${err.stack}`);
+						}
 					}
 				}
 			}
 		}
-		return null;
+		return files;
 	}
 
 	@bindThis
@@ -238,7 +287,6 @@ export default class extends Module {
 				exist = this.aichatHist.findOne({
 					postId: message.id
 				});
-				// 見つかった場合はそれを利用
 				if (exist != null) return false;
 			}
 		}
@@ -259,6 +307,20 @@ export default class extends Module {
 			createdAt: Date.now(),// 適当なもの
 			type: type
 		};
+		// 引用している場合、情報を取得しhistoryとして与える
+		if (msg.quoteId) {
+			const quotedNote = await this.ai.api("notes/show", {
+				noteId: msg.quoteId,
+			});
+			current.history = [
+				{
+					role: "user",
+					content:
+						"ユーザーが与えた前情報である、引用された文章: " +
+						quotedNote.text,
+				},
+			];
+		}
 		// AIに問い合わせ
 		const result = await this.handleAiChat(current, msg);
 
@@ -332,6 +394,7 @@ export default class extends Module {
 			note.replyId == null &&
 			note.renoteId == null &&
 			note.cw == null &&
+			note.files.length == 0 &&
 			!note.user.isBot
 		);
 
@@ -413,6 +476,20 @@ export default class extends Module {
 			reKigoType = RegExp(KIGO + GEMINI_PRO, 'i');
 		}
 
+		const friend: Friend | null = this.ai.lookupFriend(msg.userId);
+		this.log("msg.userId:"+msg.userId);
+		let friendName: string | undefined;
+		if (friend != null && friend.name != null) {
+			friendName = friend.name;
+			this.log("friend.name:" + friend.name);
+		} else if (msg.user.name) {
+			friendName = msg.user.name;
+			this.log("msg.user.username:" + msg.user.username);
+		} else {
+			friendName = msg.user.username;
+			this.log("msg.user.username:" + msg.user.username);
+		}
+
 		const question = extractedText
 							.replace(reName, '')
 							.replace(reKigoType, '')
@@ -424,18 +501,19 @@ export default class extends Module {
 					msg.reply(serifs.aichat.nothing(exist.type));
 					return false;
 				}
-				const base64Image: Base64Image | null = await this.note2base64Image(msg.id);
+				const base64Files: base64File[] = await this.note2base64File(msg.id);
 				aiChat = {
 					question: question,
 					prompt: prompt,
 					api: GEMINI_20_FLASH_API,
 					key: config.geminiProApiKey,
-					history: exist.history
+					history: exist.history,
+					friendName: friendName
 				};
 				if (exist.api) {
 					aiChat.api = exist.api
 				}
-				text = await this.genTextByGemini(aiChat, base64Image);
+				text = await this.genTextByGemini(aiChat, base64Files);
 				break;
 
 			case TYPE_PLAMO:
@@ -449,7 +527,8 @@ export default class extends Module {
 					prompt: prompt,
 					api: PLAMO_API,
 					key: config.pLaMoApiKey,
-					history: exist.history
+					history: exist.history,
+					friendName: friendName
 				};
 				text = await this.genTextByPLaMo(aiChat);
 				break;
@@ -482,7 +561,8 @@ export default class extends Module {
 				createdAt: Date.now(),
 				type: exist.type,
 				api: aiChat.api,
-				history: exist.history
+				history: exist.history,
+				friendName: friendName
 			});
 
 			this.log('Subscribe&Set Timer...');
