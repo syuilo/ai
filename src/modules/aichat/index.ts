@@ -382,6 +382,7 @@ export default class extends Module {
 			note.replyId == null &&
 			note.renoteId == null &&
 			note.cw == null &&
+			note.files.length == 0 &&
 			!note.user.isBot
 		);
 
