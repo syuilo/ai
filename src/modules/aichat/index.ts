@@ -15,10 +15,31 @@ type AiChat = {
 	key: string;
 	history?: { role: string; content: string }[];
 };
-type Base64Image = {
+type base64File = {
 	type: string;
 	base64: string;
+	url?: string;
 };
+type GeminiParts = {
+	inlineData?: {
+		mimeType: string;
+		data: string;
+	};
+	fileData?: {
+		mimeType: string;
+		fileUri: string;
+	};
+	text?: string;
+}[];
+type GeminiSystemInstruction = {
+	role: string;
+	parts: [{text: string}]
+};
+type GeminiContents = {
+	role: string;
+	parts: GeminiParts;
+};
+
 type AiChatHist = {
 	postId: string;
 	createdAt: number;
@@ -82,32 +103,34 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async genTextByGemini(aiChat: AiChat, image:Base64Image|null) {
+	private async genTextByGemini(aiChat: AiChat, files:base64File[]) {
 		this.log('Generate Text By Gemini...');
-		let parts: ({ text: string; inline_data?: undefined; } | { inline_data: { mime_type: string; data: string; }; text?: undefined; })[];
-		const systemInstruction : {role: string; parts: [{text: string}]} = {role: 'system', parts: [{text: aiChat.prompt}]};
+		let parts: GeminiParts = [];
+		const systemInstruction: GeminiSystemInstruction = {role: 'system', parts: [{text: aiChat.prompt}]};
 
-		if (!image) {
-			// 画像がない場合、メッセージのみで問い合わせ
-			parts = [{text: aiChat.question}];
-		} else {
-			// 画像が存在する場合、画像を添付して問い合わせ
-			parts = [
-				{ text: aiChat.question },
-				{
-					inline_data: {
-						mime_type: image.type,
-						data: image.base64,
-					},
-				},
-			];
+		parts = [{text: aiChat.question}];
+		// ファイルが存在する場合、画像を添付して問い合わせ
+		if (files.length >= 1) {
+			for (const file of files){
+				parts.push(
+					{
+						inlineData: {
+							mimeType: file.type,
+							data: file.base64,
+						},
+					}
+				);
+			}
 		}
 
 		// 履歴を追加
-		let contents: ({ role: string; parts: ({ text: string; inline_data?: undefined; } | { inline_data: { mime_type: string; data: string; }; text?: undefined; })[]}[]) = [];
+		let contents: GeminiContents[] = [];
 		if (aiChat.history != null) {
 			aiChat.history.forEach(entry => {
-				contents.push({ role : entry.role, parts: [{text: entry.content}]});
+				contents.push({
+					role : entry.role,
+					parts: [{text: entry.content}],
+				});
 			});
 		}
 		contents.push({role: 'user', parts: parts});
@@ -193,31 +216,42 @@ export default class extends Module {
 	}
 
 	@bindThis
-	private async note2base64Image(notesId: string) {
+	private async note2base64File(notesId: string) {
 		const noteData = await this.ai.api('notes/show', { noteId: notesId });
-		let fileType: string | undefined,thumbnailUrl: string | undefined;
+		let files:base64File[] = [];
+		let fileType: string | undefined, filelUrl: string | undefined;
 		if (noteData !== null && noteData.hasOwnProperty('files')) {
-			if (noteData.files.length > 0) {
-				if (noteData.files[0].hasOwnProperty('type')) {
-					fileType = noteData.files[0].type;
+			for (let i = 0; i < noteData.files.length; i++) {
+				if (noteData.files[i].hasOwnProperty('type')) {
+					fileType = noteData.files[i].type;
+					if (noteData.files[i].hasOwnProperty('name')) {
+						// 拡張子で挙動を変えようと思ったが、text/plainしかMisskeyで変になってGemini対応してるものがない？
+						// let extention = noteData.files[i].name.split('.').pop();
+						if (fileType === 'application/octet-stream' || fileType === 'application/xml') {
+							fileType = 'text/plain';
+						}
+					}
 				}
-				if (noteData.files[0].hasOwnProperty('thumbnailUrl')) {
-					thumbnailUrl = noteData.files[0].thumbnailUrl;
+				if (noteData.files[i].hasOwnProperty('thumbnailUrl') && noteData.files[i].thumbnailUrl) {
+					filelUrl = noteData.files[i].thumbnailUrl;
+				} else if (noteData.files[i].hasOwnProperty('url') && noteData.files[i].url) {
+					filelUrl = noteData.files[i].url;
 				}
-			}
-			if (fileType !== undefined && thumbnailUrl !== undefined) {
-				try {
-					const image = await urlToBase64(thumbnailUrl);
-					const base64Image:Base64Image = {type: fileType, base64: image};
-					return base64Image;
-				} catch (err: unknown) {
-					if (err instanceof Error) {
-						this.log(`${err.name}\n${err.message}\n${err.stack}`);
+				if (fileType !== undefined && filelUrl !== undefined) {
+					try {
+						this.log('filelUrl:'+filelUrl);
+						const file = await urlToBase64(filelUrl);
+						const base64file:base64File = {type: fileType, base64: file};
+						files.push(base64file);
+					} catch (err: unknown) {
+						if (err instanceof Error) {
+							this.log(`${err.name}\n${err.message}\n${err.stack}`);
+						}
 					}
 				}
 			}
 		}
-		return null;
+		return files;
 	}
 
 	@bindThis
@@ -424,7 +458,7 @@ export default class extends Module {
 					msg.reply(serifs.aichat.nothing(exist.type));
 					return false;
 				}
-				const base64Image: Base64Image | null = await this.note2base64Image(msg.id);
+				const base64Files: base64File[] = await this.note2base64File(msg.id);
 				aiChat = {
 					question: question,
 					prompt: prompt,
@@ -435,7 +469,7 @@ export default class extends Module {
 				if (exist.api) {
 					aiChat.api = exist.api
 				}
-				text = await this.genTextByGemini(aiChat, base64Image);
+				text = await this.genTextByGemini(aiChat, base64Files);
 				break;
 
 			case TYPE_PLAMO:
