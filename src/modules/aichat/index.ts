@@ -288,7 +288,6 @@ export default class extends Module {
 				exist = this.aichatHist.findOne({
 					postId: message.id
 				});
-				// 見つかった場合はそれを利用
 				if (exist != null) return false;
 			}
 		}
@@ -309,6 +308,20 @@ export default class extends Module {
 			createdAt: Date.now(),// 適当なもの
 			type: type
 		};
+		// 引用している場合、情報を取得しhistoryとして与える
+		if (msg.quoteId) {
+			const quotedNote = await this.ai.api("notes/show", {
+				noteId: msg.quoteId,
+			});
+			current.history = [
+				{
+					role: "user",
+					content:
+						"ユーザーが与えた前情報である、引用された文章: " +
+						quotedNote.text,
+				},
+			];
+		}
 		// AIに問い合わせ
 		const result = await this.handleAiChat(current, msg);
 
