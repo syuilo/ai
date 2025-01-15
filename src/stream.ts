@@ -72,14 +72,14 @@ export default class Stream extends EventEmitter {
 		this.state = 'connected';
 		this.emit('_connected_');
 
-		// バッファーを処理
+		// Process the buffer
 		const _buffer = [...this.buffer]; // Shallow copy
 		this.buffer = []; // Clear buffer
 		for (const data of _buffer) {
 			this.send(data); // Resend each buffered messages
 		}
 
-		// チャンネル再接続
+		// Reconnect the channel
 		if (isReconnect) {
 			this.sharedConnectionPools.forEach(p => {
 				p.connect();
@@ -137,7 +137,7 @@ export default class Stream extends EventEmitter {
 			body: payload
 		};
 
-		// まだ接続が確立されていなかったらバッファリングして次に接続した時に送信する
+		// If the connection is not established yet, buffer it and send it the next time a connection is established.
 		if (this.state != 'connected') {
 			this.buffer.push(data);
 			return;
@@ -179,7 +179,7 @@ class Pool {
 
 		this.users++;
 
-		// タイマー解除
+		// Cancel the timer
 		if (this.disposeTimerId) {
 			clearTimeout(this.disposeTimerId);
 			this.disposeTimerId = null;
@@ -192,8 +192,7 @@ class Pool {
 
 		// そのコネクションの利用者が誰もいなくなったら
 		if (this.users === 0) {
-			// また直ぐに再利用される可能性があるので、一定時間待ち、
-			// 新たな利用者が現れなければコネクションを切断する
+		// Since there is a possibility that the connection will be reused soon, wait a certain amount of time, and if no new users appear, close the connection.
 			this.disposeTimerId = setTimeout(() => {
 				this.disconnect();
 			}, 3000);
