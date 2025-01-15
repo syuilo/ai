@@ -24,7 +24,7 @@ export default class extends Module {
 	private async onNote(note: Note) {
 		if (note.reply != null) return;
 		if (note.text == null) return;
-		if (note.text.includes('@')) return; // (自分または他人問わず)メンションっぽかったらreject
+		if (note.text.includes('@')) return; // Reject if it looks like a mention (whether of yourself or someone else)
 
 		const react = async (reaction: string, immediate = false) => {
 			if (!immediate) {
@@ -38,7 +38,7 @@ export default class extends Module {
 
 		const customEmojis = note.text.match(/:([^\n:]+?):/g);
 		if (customEmojis) {
-			// カスタム絵文字が複数種類ある場合はキャンセル
+			// Cancel if there are multiple custom emojis
 			if (!customEmojis.every((val, i, arr) => val === arr[0])) return;
 
 			this.log(`Custom emoji detected - ${customEmojis[0]}`);
@@ -48,7 +48,7 @@ export default class extends Module {
 
 		const emojis = parse(note.text).map(x => x.text);
 		if (emojis.length > 0) {
-			// 絵文字が複数種類ある場合はキャンセル
+			// Cancel if there are multiple emojis
 			if (!emojis.every((val, i, arr) => val === arr[0])) return;
 
 			this.log(`Emoji detected - ${emojis[0]}`);
@@ -64,10 +64,10 @@ export default class extends Module {
 			return react(reaction);
 		}
 
-		if (includes(note.text, ['ぴざ'])) return react('🍕');
-		if (includes(note.text, ['ぷりん'])) return react('🍮');
-		if (includes(note.text, ['寿司', 'sushi']) || note.text === 'すし') return react('🍣');
+		if (includes(note.text, ['pizza'])) return react('🍕');
+		if (includes(note.text, ['Pudding'])) return react('🍮');
+		if (includes(note.text, ['sushi', 'sushi']) || note.text === 'Sushi') return react('🍣');
 
-		if (includes(note.text, ['藍'])) return react('🙌');
+		if (includes(note.text, ['Indigo'])) return react('🙌');
 	}
 }
