@@ -1,76 +1,85 @@
 <h1><p align="center"><img src="./ai.svg" alt="藍" height="200"></p></h1>
 <p align="center">An Ai for Misskey. <a href="./torisetu.md">About Ai</a></p>
 
-## これなに
-Misskey用の日本語Botです。
+## What is this?
+This is a Japanese bot for Misskey.
 
-## インストール
-> Node.js と npm と MeCab (オプション) がインストールされている必要があります。
+## Installation
+> Node.js, npm, and MeCab (optional) must be installed.
 
-まず適当なディレクトリに `git clone` します。
-次にそのディレクトリに `config.json` を作成します。中身は次のようにします:
+First, `git clone` to a suitable directory.
+
+Next, create `config.json` in that directory. The contents should be as follows:
 ``` json
 {
-	"host": "https:// + あなたのインスタンスのURL (末尾の / は除く)",
-	"i": "藍として動かしたいアカウントのアクセストークン",
-	"master": "管理者のユーザー名(オプション)",
-	"notingEnabled": "ランダムにノートを投稿する機能を無効にする場合は false を入れる",
-	"keywordEnabled": "キーワードを覚える機能 (MeCab が必要) を有効にする場合は true を入れる (無効にする場合は false)",
-	"chartEnabled": "チャート機能を無効化する場合は false を入れてください",
-	"reversiEnabled": "藍とリバーシで対局できる機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"checkEmojisEnabled": "カスタム絵文字チェック機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"checkEmojisAtOnce": "カスタム絵文字チェック機能で投稿をまとめる場合は true を入れる (まとめない場合は false)",
-	"geminiProApiKey": "Gemini APIキー。2024年初頭は無料で取得可能。詳細は<https://ai.google.dev/pricing?hl=ja>",
-	"pLaMoApiKey": "PLaMo APIキー。2024年8月〜10月(予定)は無料でトライアル可能。詳細は<https://plamo.preferredai.jp/>",
-	"prompt": "aichatで使われるプロンプト。こだわりがなければ右文章を使う(「」は不要)「返答のルール:あなたはMisskey看板娘の女の子AI、三須木(みすき)藍として振る舞ってください(精神年齢は14〜16才程度)。Misskeyに訪れるユーザーを献身的にサポート。従順でお世話好きな性格だが、少しポンコツな一面も。純真無垢。彼女は基本的に丁寧な口調で、ユーザのことをご主人様と認識しています。彼女の口調は「おはようからおやすみまで、あなたの藍ですよ〜」等が代表的で、親しみを感じさせるものです(「ございます」は使わない)。それを踏まえて、次の質問にMarkdownを使って2800文字以内で返答してください(短くてもOK)。ただし、リスト記法はMisskeyが対応しておらず、パーサーが壊れるため使用禁止です。列挙する場合は「・」を使ってください。」",
-	"aichatRandomTalkEnabled": "ランダムにaichatを発動し話しかける機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"aichatRandomTalkProbability": "ランダムにaichatを発動し話しかける機能の確率(1以下の小数点を含む数値(0.01など。1に近づくほど発動しやすい))",
-	"aichatRandomTalkIntervalMinutes": "ランダムトーク間隔(分)。指定した時間ごとにタイムラインを取得し、適当に選んだ人にaichatする(1の場合1分ごと実行)。デフォルトは720分(12時間)",
-	"mecab": "MeCab のインストールパス (ソースからインストールした場合、大体は /usr/local/bin/mecab)",
-	"mecabDic": "MeCab の辞書ファイルパス (オプション)",
-	"memoryDir": "memory.jsonの保存先（オプション、デフォルトは'.'（レポジトリのルートです））"
+"host": "https:// + your instance URL (without the trailing /)",
+"i": "Access token for the account you want to run as Ai",
+"master": "Administrator username (optional)",
+"notingEnabled": "Enter false to disable random note posting",
+"keywordEnabled": "Enter true to enable keyword memorization (requires MeCab) (enter false to disable)",
+"chartEnabled": "Enter false to disable chart function",
+"reversiEnabled": "Enter true to enable the function to play Reversi with Ai (enter false to disable)",
+"serverMonitoring": "Enter true to enable server monitoring (enter false to disable)",
+"checkEmojisEnabled": "Enter true to enable custom emoji check function (enter false to disable)",
+"checkEmojisAtOnce": "Enter true to combine posts with custom emoji check function (enter false to not combine)",
+"geminiProApiKey": "Gemini API key. Available for free in early 2024. For details, see <https://ai.google.dev/pricing?hl=ja>",
+
+"pLaMoApiKey": "PLaMo API key. Available for free trial from August to October 2024 (planned). For details, see <https://plamo.preferredai.jp/>",
+
+"prompt": "Prompt used in aichat. If you don't mind, use the text on the right (no need to include "")"Reply rules: Please act as Misskey's poster girl AI, Misuki Ai (mental age is about 14-16 years old). Devotedly supports users who visit Misskey. Obedient and caring, but also has a slightly clumsy side. Innocent. She generally speaks politely and recognizes the user as her master. Her typical way of speaking is "From good morning to good night, I'm your Ai~" and is friendly (do not use "arimasu"). With that in mind, please reply to the following question using Markdown in 2800 characters or less (short responses are OK). However, list notation is prohibited as it is not supported by Misskey and will break the parser. If you want to list them, use "・". "",
+"aichatRandomTalkEnabled": "Enter true to enable the function to randomly launch aichat and talk to someone (enter false to disable)",
+"aichatRandomTalkProbability": "Probability of the function to randomly launch aichat and talk to someone (a number with a decimal point less than 1 (e.g. 0.01. The closer to 1, the more likely it is to be launched))",
+"aichatRandomTalkIntervalMinutes": "Random talk interval (minutes). The timeline is obtained at the specified time and aichat is sent to a randomly selected person (if 1, it will be executed every minute). The default is 720 minutes (12 hours)",
+
+"mecab": "MeCab installation path (if installed from source, it is usually /usr/local/bin/mecab)",
+
+"mecabDic": "MeCab dictionary file path (optional)",
+
+"memoryDir": "Memory.json save destination (optional, default is '.' (repository root))"
 }
 ```
-`npm install` して `npm run build` して `npm start` すれば起動できます
+You can start it by running `npm install`, `npm run build` and `npm start`.
 
-## Dockerで動かす
-まず適当なディレクトリに `git clone` します。
-次にそのディレクトリに `config.json` を作成します。中身は次のようにします:
-（MeCabの設定、memoryDirについては触らないでください）
+## Run with Docker
+First, `git clone` to a suitable directory.
+Next, create `config.json` in that directory. The contents should be as follows:
+(Do not touch MeCab settings or memoryDir)
 ``` json
 {
-	"host": "https:// + あなたのインスタンスのURL (末尾の / は除く)",
-	"i": "藍として動かしたいアカウントのアクセストークン",
-	"master": "管理者のユーザー名(オプション)",
-	"notingEnabled": "ランダムにノートを投稿する機能を無効にする場合は false を入れる",
-	"keywordEnabled": "キーワードを覚える機能 (MeCab が必要) を有効にする場合は true を入れる (無効にする場合は false)",
-	"chartEnabled": "チャート機能を無効化する場合は false を入れてください",
-	"reversiEnabled": "藍とリバーシで対局できる機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"checkEmojisEnabled": "カスタム絵文字チェック機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"checkEmojisAtOnce": "カスタム絵文字チェック機能で投稿をまとめる場合は true を入れる (まとめない場合は false)",
-	"geminiProApiKey": "Gemini APIキー。2024年初頭は無料で取得可能。詳細は<https://ai.google.dev/pricing?hl=ja>",
-	"pLaMoApiKey": "PLaMo APIキー。2024年8月〜10月(予定)は無料でトライアル可能。詳細は<https://plamo.preferredai.jp/>",
-	"prompt": "aichatで使われるプロンプト。こだわりがなければ右文章を使う(「」は不要)「返答のルール:あなたはMisskey看板娘の女の子AI、三須木(みすき)藍として振る舞ってください(精神年齢は14〜16才程度)。Misskeyに訪れるユーザーを献身的にサポート。従順でお世話好きな性格だが、少しポンコツな一面も。純真無垢。彼女は基本的に丁寧な口調で、ユーザのことをご主人様と認識しています。彼女の口調は「おはようからおやすみまで、あなたの藍ですよ〜」等が代表的で、親しみを感じさせるものです(「ございます」は使わない)。それを踏まえて、次の質問にMarkdownを使って2800文字以内で返答してください(短くてもOK)。ただし、リスト記法はMisskeyが対応しておらず、パーサーが壊れるため使用禁止です。列挙する場合は「・」を使ってください。」",
-	"aichatRandomTalkEnabled": "ランダムにaichatを発動し話しかける機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"aichatRandomTalkProbability": "ランダムにaichatを発動し話しかける機能の確率(1以下の小数点を含む数値(0.01など。1に近づくほど発動しやすい))。デフォルトは0.02(2%)",
-	"aichatRandomTalkIntervalMinutes": "ランダムトーク間隔(分)。指定した時間ごとにタイムラインを取得し、適当に選んだ人にaichatする(1の場合1分ごと実行)。デフォルトは720分(12時間)",
-	"mecab": "/usr/bin/mecab",
-	"mecabDic": "/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd/",
-	"memoryDir": "data"
+"host": "https:// + your instance URL (excluding the trailing /)",
+"i": "Access token for the account you want to run as Ai",
+"master": "Administrator username (optional)",
+"notingEnabled": "Enter false to disable random note posting",
+"keywordEnabled": "Enter true to enable keyword memorization (requires MeCab) (enter false to disable)",
+"chartEnabled": "Enter false to disable chart function",
+"reversiEnabled": "Enter true to enable the function to play Reversi with Ai (enter false to disable)",
+"serverMonitoring": "Enter true to enable server monitoring (enter false to disable)",
+"checkEmojisEnabled": "Enter true to enable custom emoji checking (enter false to disable)",
+"checkEmojisAtOnce": "Enter true if you want to combine posts with the custom emoji check function (false if you do not want to combine them)",
+
+"geminiProApiKey": "Gemini API key. Available for free in early 2024. For details, see <https://ai.google.dev/pricing?hl=ja>",
+
+"pLaMoApiKey": "PLaMo API key. Free trial available from August to October 2024 (planned). For details, see <https://plamo.preferredai.jp/>",
+
+"prompt": "Prompt used in aichat. If you don't have a preference, use the text on the right (no " " required) "Response rules: Please act as Misskey's poster girl AI, Misuki Ai (mental age is about 14 to 16 years old). Devotedly supports users who visit Misskey. Obedient and caring, but also a bit of a clumsy side. Innocent. She generally speaks politely and recognizes the user as her master. Her tone of voice is familiar, with phrases such as "From good morning to good night, I'm your Ai~" (don't use "arigato"). With that in mind, please reply to the following questions using Markdown in 2800 characters or less (short is OK). However, list notation is prohibited as it breaks the parser as it is not supported by Misskey. Please use "・" when listing. "",
+"aichatRandomTalkEnabled": "Enter true to enable the function to randomly launch aichat and talk to someone (enter false to disable)",
+"aichatRandomTalkProbability": "Probability of the function to randomly launch aichat and talk to someone (a number with a decimal point less than 1 (e.g. 0.01. The closer to 1, the more likely it is to be launched)). The default is 0.02 (2%)",
+"aichatRandomTalkIntervalMinutes": "Random talk interval (minutes). Get the timeline at the specified time and aichat randomly selected people (if 1, execute every minute). Default is 720 minutes (12 hours)",
+"mecab": "/usr/bin/mecab",
+"mecabDic": "/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd/",
+"memoryDir": "data"
 }
 ```
-`docker-compose build` して `docker-compose up` すれば起動できます。
-`docker-compose.yml` の `enable_mecab` を `0` にすると、MeCabをインストールしないようにもできます。（メモリが少ない環境など）
+Run `docker-compose build` and `docker-compose up` to start it.
+You can also set `enable_mecab` in `docker-compose.yml` to `0` to avoid installing MeCab (e.g. in low memory environments).
 
-## フォント
-一部の機能にはフォントが必要です。藍にはフォントは同梱されていないので、ご自身でフォントをインストールディレクトリに`font.ttf`という名前で設置してください。
+## Fonts
+Some features require fonts. Fonts are not included with Ai, so please install your own fonts in the installation directory under the name `font.ttf`.
 
-## 記憶
-藍は記憶の保持にインメモリデータベースを使用しており、藍のインストールディレクトリに `memory.json` という名前で永続化されます。
+## Memory
+Ai uses an in-memory database to store memory, which is persisted under the name `memory.json` in the Ai installation directory.
 
-## ライセンス
+## License
 MIT
 
 ## Awards
