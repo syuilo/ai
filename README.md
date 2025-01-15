@@ -1,4 +1,4 @@
-<h1><p align="center"><img src="./ai.svg" alt="藍" height="200"></p></h1>
+<h1><p align="center"><img src="https://i.ibb.co/xFg9KM1/aiBot.png" alt="藍" height="200"></p></h1>
 <p align="center">An Ai for Misskey. <a href="./torisetu.md">About Ai</a></p>
 
 ## What is this?
