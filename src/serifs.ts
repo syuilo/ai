@@ -319,87 +319,97 @@ export default {
 	},
 
 	/**
-	 * タイマー
+	 * timer
 	 */
 	timer: {
-		set: 'わかりました！',
+		set: 'Okay!',
 
-		invalid: 'うーん...？',
+		invalid: 'Hmm...?',
 
-		tooLong: '長すぎます…',
+		tooLong: 'Too long...',
 
-		notify: (time, name) => name ? `${name}、${time}経ちましたよ！` : `${time}経ちましたよ！`
+		notify: (time, name) => name ? `${name}, ${time} has passed!` : `${time} has passed!`
 	},
 
 	/**
-	 * リマインダー
+	 * Reminders
 	 */
 	reminder: {
-		invalid: 'うーん...？',
+		invalid: 'Hmm...?',
 
-		doneFromInvalidUser: 'イタズラはめっですよ！',
+		doneFromInvalidUser: "Don't play pranks!",
 
-		reminds: 'やること一覧です！',
+		reminds: "Here's your to-do list!",
 
-		notify: (name) => name ? `${name}、これやりましたか？` : `これやりましたか？`,
+		notify: (name) => name ? `Did ${name} do this? ` : `Did you do this? `,
 
-		notifyWithThing: (thing, name) => name ? `${name}、「${thing}」やりましたか？` : `「${thing}」やりましたか？`,
-
+		notifyWithThing: (thing, name) => name ? `Did ${name} do "${thing}"? ` : `Did you do "${thing}"? `,
 		done: (name) => name ? [
-			`よく出来ました、${name}♪`,
-			`${name}、さすがですっ！`,
-			`${name}、えらすぎます...！`,
+			`Well done, ${name}♪`,
+			`${name}、As expected!`,
+			`${name}、That's amazing...!`,
 		] : [
-			`よく出来ました♪`,
-			`さすがですっ！`,
-			`えらすぎます...！`,
+			`Well done!`,
+			`As expected!`,
+			`That's amazing...!`,
 		],
 
-		cancel: `わかりました。`,
+		cancel: `got it.`,
 	},
 
 	/**
-	 * バレンタイン
+	 * Valentine
 	 */
 	valentine: {
-		chocolateForYou: name => name ? `${name}、その... チョコレート作ったのでよかったらどうぞ！🍫` : 'チョコレート作ったのでよかったらどうぞ！🍫',
+		chocolateForYou: name => name ? `${name}、Well... I made some chocolate, so please feel free to try it! 🍫` : 'I made some chocolate, so please feel free to try it! 🍫',
 	},
 
 	server: {
-		cpu: 'サーバーの負荷が高そうです。大丈夫でしょうか...？'
+		cpu: 'The server seems to be under heavy load. Is it okay...?'
 	},
 
 	maze: {
-		post: '今日の迷路です！ #AiMaze',
-		foryou: '描きました！'
+		post: 'Today's maze! #AiMaze',
+		foryou: 'I drew it!'
 	},
 
 	chart: {
-		post: 'インスタンスの投稿数です！',
-		foryou: '描きました！'
+		post: 'The number of instances posted!',
+		foryou: 'I drew it!'
 	},
 
 	checkCustomEmojis: {
-		post: (server_name, num) => `${server_name}に${num}件の絵文字が追加されました！`,
+		post: (server_name, num) => `${num} emojis added to ${server_name}!`,
 		emojiPost: emoji => `:${emoji}:\n(\`${emoji}\`) #AddCustomEmojis`,
-		postOnce: (server_name, num, text) => `${server_name}に${num}件の絵文字が追加されました！\n${text} #AddCustomEmojis`,
+		postOnce: (server_name, num, text) => `${num} emojis added to ${server_name}!\n${text} #AddCustomEmojis`,
 		emojiOnce: emoji => `:${emoji}:(\`${emoji}\`)`,
-		nothing: '絵文字を確認しましたが、なにも追加されていないみたいです',
+		nothing: 'I checked the emojis but it seems like none have been added.',
 	},
 
 	aichat: {
-		nothing: type => `あぅ... ${type}のAPIキーが登録されてないみたいです`,
-		error: type => `うぇ...${type}でエラーが発生しちゃったみたいです。gemini-flashだと動くかも？`,
+		nothing: type => `Ah... It seems that the API key for ${type} is not registered.`,
+		error: type => `Ugh... It looks like an error occurred with ${type}. Maybe it will work with gemini-flash?`,
 		post: (text, type) => `${text} (${type}) #aichat`,
 	},
 
 	sleepReport: {
-		report: hours => `んぅ、${hours}時間くらい寝ちゃってたみたいです`,
-		reportUtatane: 'ん... うたた寝しちゃってました',
+		report: hours => `Hmm, I guess I slept for about ${hours} hours.`,
+		reportUtatane: 'Hmm... I was dozing off.',
 	},
 
 	noting: {
 		notes: [
+			'Surprised to be dead',
+			"Too bad Hiei's not here. We could use his Jagan eye to find himself.",
+			"Oh my, a perfect ending for a perfect day!",
+			"I'm a foreign exchange student. My English very choppy.",
+			"Now I understand what kind of person you are; it's in my guidebook! Rather than be scared or surprised, you yell a lot and tell me I don't know what I'm talking about.",
+			"Here's my impression of Yusuke: 'Look at me, I'm burning!",
+			"They can't hear words unless they're asleep, but you can communicate feelings to living people when they're on the same emotional wavelength.",
+			"It's called a Psychic Spy Glass. Look through it and you can see through walls, clothes, well, anything really.",
+			"I think bone cracking is a good sign to rest.",
+			"YOU just made that up! You disgusting PERVERT!",
+			"Sneezy, sneezy, achoo - somebody special's thinking about you.",
 			'ゴロゴロ…',
 			'ちょっと眠いです',
 			'いいですよ？',
@@ -476,9 +486,9 @@ export default {
 			'じー',
 			'はにゃ？',
 		],
-		want: item => `${item}、欲しいなぁ...`,
-		see: item => `お散歩していたら、道に${item}が落ちているのを見たんです！`,
-		expire: item => `気づいたら、${item}の賞味期限が切れてました…`,
+		want: item => `${item}、I want one...`,
+		see: item => `While I was out walking, I saw ${item} lying on the road!`,
+		expire: item => `I just realized that the expiration date of ${item} has passed...`,
 	},
 };
 
