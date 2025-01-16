@@ -72,99 +72,99 @@ export default {
 			normal: name => name ? `Take care, ${name}!` : 'Take care!',
 		},
 
-		tooLong: '長すぎる気がします...',
+		tooLong: 'It feels too long...',
 
-		invalidName: '発音が難しい気がします',
+		invalidName: 'I find it difficult to pronounce',
 
 		nadenade: {
-			normal: 'ひゃっ…！ びっくりしました',
+			normal: 'Wow... I was surprised!',
 
-			love2: ['わわっ… 恥ずかしいです', 'あうぅ… 恥ずかしいです…', 'ふやぁ…？'],
+			love2: ["Wow... I'm embarrassed', 'Ahhh... I'm embarrassed...', 'Huh...?"],
 
-			love3: ['んぅ… ありがとうございます♪', 'わっ、なんだか落ち着きますね♪', 'くぅんっ… 安心します…', '眠くなってきました…'],
+			love3: ['Mmm... Thank you♪', 'Wow, I feel so calm♪', 'Kyuuuh... I feel relieved...', "I'm getting sleepy..."],
 
-			hate1: '…っ！ やめてほしいです...',
+			hate1: '…! I want you to stop...',
 
-			hate2: '触らないでください',
+			hate2: "Don't touch me",
 
-			hate3: '近寄らないでください',
+			hate3: 'Keep Away',
 
-			hate4: 'やめてください。通報しますよ？',
+			hate4: "Please stop. I'll report you.",
 		},
 
 		kawaii: {
-			normal: ['ありがとうございます♪', '照れちゃいます...'],
+			normal: ['Thank you ♪', "I'm embarrassed..."],
 
-			love: ['嬉しいです♪', '照れちゃいます...'],
+			love: ["I'm happy♪", "I'm embarrassed..."],
 
-			hate: '…ありがとうございます'
+			hate: '…thank you'
 		},
 
 		suki: {
-			normal: 'えっ… ありがとうございます…♪',
+			normal: 'Eh... Thank you...?',
 
-			love: name => `私もその… ${name}のこと好きですよ！`,
+			love: name => `I love you too... ${name}!`,
 
 			hate: null
 		},
 
 		hug: {
-			normal: 'ぎゅー...',
+			normal: 'Hug...',
 
-			love: 'ぎゅーっ♪',
+			love: 'Hug ♪',
 
-			hate: '離れてください...'
+			hate: 'Please go away...'
 		},
 
 		humu: {
-			love: 'え、えっと…… ふみふみ……… どうですか…？',
+			love: "Um, well... let's see... what do you think...?",
 
-			normal: 'えぇ... それはちょっと...',
+			normal: "Uh... that's a bit...",
 
 			hate: '……'
 		},
 
 		batou: {
-			love: 'えっと…、お、おバカさん…？',
+			love: 'Um... you idiot...?',
 
-			normal: '(じとー…)',
+			normal: '(Still...)',
 
 			hate: '…頭大丈夫ですか？'
 		},
 
-		itai: name => name ? `${name}、大丈夫ですか…？ いたいのいたいの飛んでけっ！` : '大丈夫ですか…？ いたいのいたいの飛んでけっ！',
+		itai: name => name ? `${name}, are you okay? Ouch, ouch, ouch, go away! ` : 'Are you okay? Ouch, ouch, ouch, go away!',
 
 		ote: {
-			normal: 'くぅん... 私わんちゃんじゃないですよ...？',
+			normal: "Hmm... I'm not a doggy...",
 
-			love1: 'わん！',
+			love1: 'Woof!',
 
-			love2: 'わんわん♪',
+			love2: 'Woof woof ♪',
 		},
 
-		shutdown: '私まだ眠くないですよ...？',
+		shutdown: "I'm not sleepy yet...",
 
-		transferNeedDm: 'わかりました、それはチャットで話しませんか？',
+		transferNeedDm: "Ok, why don't we discuss that in chat?",
 
-		transferCode: code => `わかりました。\n合言葉は「${code}」です！`,
+		transferCode: code => `Okay. \n The password is "${code}"!`,
 
-		transferFailed: 'うーん、合言葉が間違ってませんか...？',
+		transferFailed: 'Hmm, maybe the password is wrong...?',
 
-		transferDone: name => name ? `はっ...！ おかえりなさい、${name}！` : `はっ...！ おかえりなさい！`,
+		transferDone: name => name ? `Ha...! Welcome back, ${name}! `: `Ha...! Welcome back!`,
 	},
 
 	keyword: {
-		learned: (word, reading) => `(${word}..... ${reading}..... 覚えました)`,
+		learned: (word, reading) => `(${word}..... ${reading}..... I remembered).`,
 
 		remembered: (word) => `${word}`
 	},
 
 	dice: {
-		done: res => `${res} です！`
+		done: res => `${res} is!`
 	},
 
 	birthday: {
-		happyBirthday: name => name ? `お誕生日おめでとうございます、${name}🎉` : 'お誕生日おめでとうございます🎉',
+		happyBirthday: name => name ? `Happy Birthday, ${name}🎉` : 'Happy Birthday 🎉',
 	},
 
 	/**
