@@ -129,7 +129,7 @@ export default {
 
 			normal: '(Still...)',
 
-			hate: '…頭大丈夫ですか？'
+			hate: '...Are you okay in the head?'
 		},
 
 		itai: name => name ? `${name}, are you okay? Ouch, ouch, ouch, go away! ` : 'Are you okay? Ouch, ouch, ouch, go away!',
@@ -168,156 +168,154 @@ export default {
 	},
 
 	/**
-	 * リバーシ
-	 */
-	reversi: {
+	* Reversi
+	*/
+		reversi: {
 		/**
-		 * リバーシへの誘いを承諾するとき
-		 */
-		ok: '良いですよ～',
+		* When accepting an invitation to play Reversi
+		*/
+		ok: 'Sure, sure',
+		/**
+		* When declining an invitation to play Reversi
+		*/
+		decline: "Sorry, I'm not allowed to play Reversi right now...",
+		/**
+		* Start of game
+		*/
+		started: (name, strength) => `Started a game with ${name}! (strength ${strength})`,
 
 		/**
-		 * リバーシへの誘いを断るとき
-		 */
-		decline: 'ごめんなさい、今リバーシはするなと言われてます...',
+		* Start of entertainment
+		*/
+		startedSettai: name => `(Started entertainment for ${name})`,
 
 		/**
-		 * 対局開始
-		 */
-		started: (name, strength) => `対局を${name}と始めました！ (強さ${strength})`,
+		* When you win
+		*/
+		iWon: name => `I won against ${name}♪`,
 
 		/**
-		 * 接待開始
-		 */
-		startedSettai: name => `(${name}の接待を始めました)`,
+		* When you intended to entertain but ended up winning
+		*/
+		iWonButSettai: name => `(I won against ${name} in entertainment...)`,
 
 		/**
-		 * 勝ったとき
-		 */
-		iWon: name => `${name}に勝ちました♪`,
+		* When you lose
+		*/
+		iLose: name => `I lost against ${name}...`,
 
 		/**
-		 * 接待のつもりが勝ってしまったとき
-		 */
-		iWonButSettai: name => `(${name}に接待で勝っちゃいました...)`,
+		* When you lose in entertainment
+		*/
+		iLoseButSettai: name => `(I lost in entertainment for ${name}...♪)`,
 
 		/**
-		 * 負けたとき
-		 */
-		iLose: name => `${name}に負けました...`,
+		* When you draw
+		*/
+		drawn: name => `I drew with ${name}~`,
 
 		/**
-		 * 接待で負けてあげたとき
-		 */
-		iLoseButSettai: name => `(${name}に接待で負けてあげました...♪)`,
+		* When you draw in entertainment
+		*/
+		drawnSettai: name => `(Drawn with ${name}...)`,
 
 		/**
-		 * 引き分けたとき
+		 * When your opponent resigns
 		 */
-		drawn: name => `${name}と引き分けました～`,
-
-		/**
-		 * 接待で引き分けたとき
-		 */
-		drawnSettai: name => `(${name}に接待で引き分けました...)`,
-
-		/**
-		 * 相手が投了したとき
-		 */
-		youSurrendered: name => `${name}が投了しちゃいました`,
+		youSurrendered: name => `${name} But I gave up.`,
 
 		/**
 		 * 接待してたら相手が投了したとき
 		 */
-		settaiButYouSurrendered: name => `(${name}を接待していたら投了されちゃいました... ごめんなさい)`,
+		settaiButYouSurrendered: name => `(I was entertaining ${name} when he resigned... sorry)`,
 	},
 
 	/**
-	 * 数当てゲーム
-	 */
-	guessingGame: {
+	* Guessing Game
+	*/
+		guessingGame: {
 		/**
-		 * やろうと言われたけど既にやっているとき
-		 */
-		alreadyStarted: 'え、ゲームは既に始まってますよ！',
+		* When you are asked to play but are already playing
+		*/
+		alreadyStarted: 'Oh, the game has already started!',
 
 		/**
-		 * タイムライン上で誘われたとき
-		 */
-		plzDm: 'メッセージでやりましょう！',
+		* When you are invited on the timeline
+		*/
+		plzDm: "Let's play by message!",
 
 		/**
-		 * ゲーム開始
-		 */
-		started: '0~100の秘密の数を当ててみてください♪',
+		* Start of the game
+		*/
+		started: 'Try to guess the secret number between 0 and 100♪',
 
 		/**
-		 * 数字じゃない返信があったとき
-		 */
-		nan: '数字でお願いします！「やめる」と言ってゲームをやめることもできますよ！',
+		* When you get a reply that is not a number
+		*/
+		nan: 'Please use a number! You can also quit the game by saying "quit"!',
 
 		/**
-		 * 中止を要求されたとき
-		 */
-		cancel: 'わかりました～。ありがとうございました♪',
+		* When you are asked to stop
+		*/
+		cancel: 'Okay. Thank you♪',
 
 		/**
-		 * 小さい数を言われたとき
-		 */
-		grater: num => `${num}より大きいですね`,
+		* When you are told a small number
+		*/
+		grater: num => "It's bigger than ${num}",
 
 		/**
-		 * 小さい数を言われたとき(2度目)
-		 */
-		graterAgain: num => `もう一度言いますが${num}より大きいですよ！`,
+		* When you are told a small number (2nd time)
+		*/
+		graterAgain: num => "I'll say it again, it's bigger than ${num}!",
 
 		/**
-		 * 大きい数を言われたとき
-		 */
-		less: num => `${num}より小さいですね`,
+		* When you are told a large number
+		*/
+		less: num => "It's smaller than ${num}",
 
 		/**
-		 * 大きい数を言われたとき(2度目)
-		 */
-		lessAgain: num => `もう一度言いますが${num}より小さいですよ！`,
+		* When a large number is said (second time)
+		*/
+		lessAgain: num => "I'll say it again, it's less than ${num}!",
 
 		/**
-		 * 正解したとき
-		 */
-		congrats: tries => `正解です🎉 (${tries}回目で当てました)`,
+		* When you get the answer right
+		*/
+		congrats: tries => `You got it right🎉 (You got it right on the ${tries}th try)`,
 	},
 
 	/**
-	 * 数取りゲーム
+	 * Counting Game
 	 */
 	kazutori: {
-		alreadyStarted: '今ちょうどやってますよ～',
+		alreadyStarted: "I'm just doing it now",
 
-		matakondo: 'また今度やりましょう！',
+		matakondo: "Let's do it again next time!",
 
-		intro: minutes => `みなさん、数取りゲームしましょう！\n0~100の中で最も大きい数字を取った人が勝ちです。他の人と被ったらだめですよ～\n制限時間は${minutes}分です。数字はこの投稿にリプライで送ってくださいね！`,
+		intro: minutes => `Everyone, let's play a counting game! \nThe person who gets the highest number between 0 and 100 wins. You can't overlap with someone else's number~ \nThe time limit is ${minutes} minutes. Please send your number as a reply to this post!`,
 
-		finish: 'ゲームの結果発表です！',
+		finish: 'The results of the game are announced!',
 
-		finishWithWinner: (user, name) => name ? `今回は${user}さん(${name})の勝ちです！またやりましょう♪` : `今回は${user}さんの勝ちです！またやりましょう♪`,
+		finishWithWinner: (user, name) => name ? `This time, ${user}(${name}) won! Let's do it again♪` : `This time, ${user}(${name}) won! Let's do it again♪`,
 
-		finishWithNoWinner: '今回は勝者はいませんでした... またやりましょう♪',
+		finishWithNoWinner: "There was no winner this time... let's do it again ♪",
 
-		onagare: '参加者が集まらなかったのでお流れになりました...'
+		onagare: 'It was cancelled due to lack of participants...'
 	},
 
 	/**
-	 * 絵文字生成
+	 * Emoji Generation
 	 */
 	emoji: {
-		suggest: emoji => `こんなのはどうですか？→${emoji}`,
+		suggest: emoji => `How about this?→ ${emoji}`,
 	},
 
 	/**
-	 * 占い
+	 * Fortune telling
 	 */
 	fortune: {
-		cw: name => name ? `私が今日の${name}の運勢を占いました...` : '私が今日のあなたの運勢を占いました...',
+		cw: name => name ? "I've done ${name}'s fortune for today..." : "I've done your fortune for today...",
 	},
 
 	/**
