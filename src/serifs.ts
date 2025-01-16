@@ -1,75 +1,75 @@
-// せりふ
+// Dialogue
 
 export default {
 	core: {
-		setNameOk: name => `わかりました。これからは${name}とお呼びしますね！`,
+		setNameOk: name => `Okay, I'll call you ${name} from now on!`,
 
-		san: 'さん付けした方がいいですか？',
+	san: 'Should I use san?',
 
-		yesOrNo: '「はい」か「いいえ」しかわからないんです...',
+	yesOrNo: 'I can only say yes or no...',
 
-		hello: name => name ? `こんにちは、${name}♪` : `こんにちは♪`,
+	hello: name => name ? `Hello, ${name}♪` : `Hello♪`,
 
-		helloNight: name => name ? `こんばんは、${name}♪` : `こんばんは♪`,
+	helloNight: name => name ? `Good evening, ${name}♪` : `Good evening♪`,
 
-		goodMorning: (tension, name) => name ? `おはようございます、${name}！${tension}` : `おはようございます！${tension}`,
+	goodMorning: (tension, name) => name ? `Good morning, ${name}! ${tension}` : `Good morning! ${tension}`,
 
 		/*
 		goodMorning: {
-			normal: (tension, name) => name ? `おはようございます、${name}！${tension}` : `おはようございます！${tension}`,
+			normal: (tension, name) => name ? `Good morning, ${name}! ${tension}` : `Good morning! ${tension}`,
 
-			hiru: (tension, name) => name ? `おはようございます、${name}！${tension}もうお昼ですよ？${tension}` : `おはようございます！${tension}もうお昼ですよ？${tension}`,
+			hiru: (tension, name) => name ? `Good morning, ${name}! ${tension}It's already lunchtime, isn't it? ${tension}` : `Good morning! ${tension}It's already lunchtime, isn't it? ${tension}`,
 		},
 */
 
-		goodNight: name => name ? `おやすみなさい、${name}！` : 'おやすみなさい！',
+	goodNight: name => name ? `Good night, ${name}!` : 'Good night!',
 
-		omedeto: name => name ? `ありがとうございます、${name}♪` : 'ありがとうございます♪',
+	omedeto: name => name ? `Thank you, ${name}♪` : 'Thank you♪',
 
 		erait: {
 			general: name => name ? [
-				`${name}、今日もえらいです！`,
-				`${name}、今日もえらいですよ～♪`
+				`${name}、Great job today too!`,
+				`${name}、You did a great job today too!`
 			] : [
-				`今日もえらいです！`,
-				`今日もえらいですよ～♪`
+				`Great job today too!`,
+				`You did a great job today too!`
 			],
 
 			specify: (thing, name) => name ? [
-				`${name}、${thing}てえらいです！`,
-				`${name}、${thing}てえらいですよ～♪`
+				`${name}, ${thing} is great! `,
+				`${name}, ${thing} is great~♪`
 			] : [
-				`${thing}てえらいです！`,
-				`${thing}てえらいですよ～♪`
+				`${thing} is great! `,
+				`${thing} is great~♪`
 			],
 
 			specify2: (thing, name) => name ? [
-				`${name}、${thing}でえらいです！`,
-				`${name}、${thing}でえらいですよ～♪`
+				`${name}、${thing}That's great!`,
+				`${name}、${thing}That's great!♪`
 			] : [
-				`${thing}でえらいです！`,
-				`${thing}でえらいですよ～♪`
+				`${thing}That's great!`,
+				`${thing}That's great!♪`
 			],
 		},
 
 		okaeri: {
 			love: name => name ? [
-				`おかえりなさい、${name}♪`,
-				`おかえりなさいませっ、${name}っ。`
+				`welcome home, ${name}♪`,
+				`Welcome back, ${name}.`
 			] : [
-				'おかえりなさい♪',
-				'おかえりなさいませっ、ご主人様っ。'
+				'Welcome back♪',
+				'Welcome back, master.'
 			],
 
-			love2: name => name ? `おかえりなさいませ♡♡♡${name}っっ♡♡♡♡♡` : 'おかえりなさいませ♡♡♡ご主人様っっ♡♡♡♡♡',
+			love2: name => name ? `Welcome back ♡♡♡ ${name} ♡♡♡` : 'Welcome back ♡♡♡Master♡♡♡',
 
-			normal: name => name ? `おかえりなさい、${name}！` : 'おかえりなさい！',
+			normal: name => name ? `welcome home, ${name}！` : 'welcome home!',
 		},
 
 		itterassyai: {
-			love: name => name ? `いってらっしゃい、${name}♪` : 'いってらっしゃい♪',
+			love: name => name ? `Take care, ${name}♪` : 'Take care♪',
 
-			normal: name => name ? `いってらっしゃい、${name}！` : 'いってらっしゃい！',
+			normal: name => name ? `Take care, ${name}!` : 'Take care!',
 		},
 
 		tooLong: '長すぎる気がします...',
