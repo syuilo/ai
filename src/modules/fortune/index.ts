@@ -6,35 +6,34 @@ import seedrandom from 'seedrandom';
 import { genItem } from '@/vocabulary.js';
 
 export const blessing = [
-	'藍吉',
-	'ヨタ吉',
-	'ゼタ吉',
-	'エクサ吉',
-	'ペタ吉',
-	'テラ吉',
-	'ギガ吉',
-	'メガ吉',
-	'キロ吉',
-	'ヘクト吉',
-	'デカ吉',
-	'デシ吉',
-	'センチ吉',
-	'ミリ吉',
-	'マイクロ吉',
-	'ナノ吉',
-	'ピコ吉',
-	'フェムト吉',
-	'アト吉',
-	'ゼプト吉',
-	'ヨクト吉',
-	'超吉',
-	'大大吉',
-	'大吉',
-	'吉',
-	'中吉',
-	'小吉',
-	'凶',
-	'大凶',
+	'mysterious child',
+	'alright',
+	'good',
+	'okay',
+	'pretty lucky',
+	'best in the world,
+	'approx. Sept. 8',
+	'succubus',
+	'slight luck',
+	'financial luck',
+	'big luck',
+	'Desi Fortuna',
+	'centipedent',
+	'Not yet',
+	'Nanokichi',
+	'PicoKichi',
+	'Good Luck',
+	'Auspicious',
+	'Lucky #7',
+	'night of the 14th day of the eight month of the lunar calendar',
+	'very good luck',
+	'mucho lucko',
+	'excellent luck',
+	'good luck',
+	'15th day of the second month of the lunar calendar (around mid-spring)',
+	'slightly good luck ',
+	'unlucky',
+	'Very bad luck',
 ];
 
 export default class extends Module {
@@ -55,7 +54,7 @@ export default class extends Module {
 			const rng = seedrandom(seed);
 			const omikuji = blessing[Math.floor(rng() * blessing.length)];
 			const item = genItem(rng);
-			msg.reply(`**${omikuji}🎉**\nラッキーアイテム: ${item}`, {
+			msg.reply('$[fg.red ' + `**${omikuji}🎉**\nラッキーアイテム: ${item} + ']' `, {
 				cw: serifs.fortune.cw(msg.friend.name)
 			});
 			return true;
