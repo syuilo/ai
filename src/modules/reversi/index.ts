@@ -54,7 +54,7 @@ export default class extends Module {
 			if (config.reversiEnabled) {
 				msg.reply(serifs.reversi.ok);
 
-				if (msg.includes(['接待'])) {
+				if (msg.includes(['play a game'])) {
 					msg.friend.updateReversiStrength(0);
 				}
 
@@ -76,14 +76,14 @@ export default class extends Module {
 		this.log(`Someone invited me: @${inviter.username}`);
 
 		if (config.reversiEnabled) {
-			// 承認
+			// Approval
 			const game = await this.ai.api('reversi/match', {
 				userId: inviter.id
 			});
 
 			this.onReversiGameStart(game);
 		} else {
-			// todo (リバーシできない旨をメッセージで伝えるなど)
+			// todo (Send a message saying that you can't reverse the game.)
 		}
 	}
 
@@ -98,12 +98,12 @@ export default class extends Module {
 
 		this.log(`enter reversi game room: ${game.id}`);
 
-		// ゲームストリームに接続
+		// Connect to a game stream
 		const gw = this.ai.connection.connectToChannel('reversiGame', {
 			gameId: game.id
 		});
 
-		// フォーム
+		// Forms
 		const form = [{
 			id: 'publish',
 			type: 'switch',
@@ -132,10 +132,10 @@ export default class extends Module {
 			}]
 		}];
 
-		//#region バックエンドプロセス開始
+		//#region Backend process started
 		const ai = childProcess.fork(_dirname + '/back.js');
 
-		// バックエンドプロセスに情報を渡す
+		// Passing information to a backend process
 		ai.send({
 			type: '_init_',
 			body: {
@@ -158,7 +158,7 @@ export default class extends Module {
 			}
 		});
 
-		// ゲームストリームから情報が流れてきたらそのままバックエンドプロセスに伝える
+		// When information comes in from the game stream, it is passed directly to the backend process.
 		gw.addListener('*', message => {
 			ai.send(message);
 
@@ -174,7 +174,7 @@ export default class extends Module {
 		});
 		//#endregion
 
-		// どんな設定内容の対局でも受け入れる
+		// Accepts any game setting
 		setTimeout(() => {
 			gw.send('ready', true);
 		}, 1000);
@@ -184,7 +184,7 @@ export default class extends Module {
 	private onGameEnded(game: any) {
 		const user = game.user1Id == this.ai.account.id ? game.user2 : game.user1;
 
-		//#region 1日に1回だけ親愛度を上げる
+		//#region Increases intimacy once a day
 		const today = getDate();
 
 		const friend = new Friend(this.ai, { user: user });
