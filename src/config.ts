@@ -8,6 +8,7 @@ type Config = {
 	keywordEnabled: boolean;
 	reversiEnabled: boolean;
 	notingEnabled: boolean;
+	colorNotesEnabled: boolean;
 	chartEnabled: boolean;
 	serverMonitoring: boolean;
 	checkEmojisEnabled?: boolean;
