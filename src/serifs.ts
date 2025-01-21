@@ -410,6 +410,8 @@ export default {
 			"I think bone cracking is a good sign to rest.",
 			"YOU just made that up! You disgusting PERVERT!",
 			"Sneezy, sneezy, achoo - somebody special's thinking about you.",
+			"See you soon ;)",
+			"I meet so many people!  And they always seem surprised.",
 			'ゴロゴロ…',
 			'ちょっと眠いです',
 			'いいですよ？',
