@@ -39,11 +39,20 @@ export default class extends Module {
 		];
 
 		const note = notes[Math.floor(Math.random() * notes.length)];
+		let noteText = typeof note === 'function' ? note() : note;
+
+		// Add red text functionality based on config.json
+		if (config.colorNotes) {
+			noteText = '$[fg.red ' + noteText + ']';
+		}
 
 		// TODO: 季節に応じたセリフ
-
 		this.ai.post({
-			text: typeof note === 'function' ? note() : note
+			text: noteText
+		
+		//this.ai.post({
+		//	text: typeof note === 'function' ? note() : note
+			
 		});
 	}
 }
