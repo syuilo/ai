@@ -1,9 +1,9 @@
 /**
  * -AI-
- * Botのバックエンド(思考を担当)
+ * Bot backend (in charge of thinking)
  *
- * 対話と思考を同じプロセスで行うと、思考時間が長引いたときにストリームから
- * 切断されてしまうので、別々のプロセスで行うようにします
+ * If you do the interaction and thinking in the same process, they will be * disconnected from the stream when the thinking time is too long, so they should be done in separate processes.
+ * * Keep them in separate processes to avoid disconnection from the stream when the thinking time is too long
  */
 
 import got from 'got';
@@ -33,27 +33,27 @@ class Session {
 	private appliedOps: string[] = [];
 
 	/**
-	 * 隅周辺のインデックスリスト(静的評価に利用)
+	 * Index list around corners (used for static evaluation)
 	 */
 	private sumiNearIndexes: number[] = [];
 
 	/**
-	 * 隅のインデックスリスト(静的評価に利用)
+	 * Corner index list (used for static evaluation)
 	 */
 	private sumiIndexes: number[] = [];
 
 	/**
-	 * 最大のターン数
+	 * Maximum number of turns
 	 */
 	private maxTurn;
 
 	/**
-	 * 現在のターン数
+	 * Number of current turns
 	 */
 	private currentTurn = 0;
 
 	/**
-	 * 対局が開始したことを知らせた投稿
+	 * A post announcing the start of a game
 	 */
 	private startedNote: any = null;
 
@@ -96,7 +96,7 @@ class Session {
 		}
 	}
 
-	// 親プロセスからデータをもらう
+	// Get data from the parent process
 	private onInit = (msg: any) => {
 		this.game = msg.game;
 		this.form = msg.form;
@@ -104,23 +104,23 @@ class Session {
 	}
 
 	/**
-	 * 対局が始まったとき
+	 * When the match started
 	 */
 	private onStarted = (msg: any) =>  {
 		this.game = msg.game;
-		if (this.game.canPutEverywhere) { // 対応してない
+		if (this.game.canPutEverywhere) { // Not supported
 			process.send!({
 				type: 'ended'
 			});
 			process.exit();
 		}
 
-		// TLに投稿する
+		// TPost to TL
 		this.postGameStarted().then(note => {
 			this.startedNote = note;
 		});
 
-		// リバーシエンジン初期化
+		// Reversi Engine Initialization
 		this.engine = new Reversi.Game(this.game.map, {
 			isLlotheo: this.game.isLlotheo,
 			canPutEverywhere: this.game.canPutEverywhere,
@@ -129,9 +129,9 @@ class Session {
 
 		this.maxTurn = this.engine.map.filter(p => p === 'empty').length - this.engine.board.filter(x => x != null).length;
 
-		//#region 隅の位置計算など
+		//#region Calculating corner positions, etc.
 
-		//#region 隅
+		//#region corner
 		this.engine.map.forEach((pix, i) => {
 			if (pix == 'null') return;
 
@@ -169,7 +169,7 @@ class Session {
 		});
 		//#endregion
 
-		//#region 隅の隣
+		//#region Next to the corner
 		this.engine.map.forEach((pix, i) => {
 			if (pix == 'null') return;
 			if (this.sumiIndexes.includes(i)) return;
@@ -182,14 +182,14 @@ class Session {
 			};
 
 			const isSumiNear = (
-				check(x - 1, y - 1) || // 左上
-				check(x    , y - 1) || // 上
-				check(x + 1, y - 1) || // 右上
-				check(x + 1, y    ) || // 右
-				check(x + 1, y + 1) || // 右下
-				check(x    , y + 1) || // 下
-				check(x - 1, y + 1) || // 左下
-				check(x - 1, y    )    // 左
+				check(x - 1, y - 1) || // Top left
+				check(x    , y - 1) || // top
+				check(x + 1, y - 1) || // Top right
+				check(x + 1, y    ) || // right
+				check(x + 1, y + 1) || // Bottom right
+				check(x    , y + 1) || // bottom
+				check(x - 1, y + 1) || // lower left
+				check(x - 1, y    )    // left
 			)
 
 			if (isSumiNear) this.sumiNearIndexes.push(i);
@@ -206,10 +206,10 @@ class Session {
 	}
 
 	/**
-	 * 対局が終わったとき
+	 * When the game is over
 	 */
 	private onEnded = async (msg: any) =>  {
-		// ストリームから切断
+		// Disconnect from a stream
 		process.send!({
 			type: 'ended'
 		});
@@ -250,7 +250,7 @@ class Session {
 	}
 
 	/**
-	 * 打たれたとき
+	 * When you get hit
 	 */
 	private onLog = (log: any) => {
 		if (log.id == null || !this.appliedOps.includes(log.id)) {
@@ -272,9 +272,9 @@ class Session {
 	}
 
 	/**
-	 * Botにとってある局面がどれだけ有利か静的に評価する
-	 * static(静的)というのは、先読みはせずに盤面の状態のみで評価するということ。
-	 * TODO: 接待時はまるっと処理の中身を変え、とにかく相手が隅を取っていること優先な評価にする
+	 * Statically evaluate how advantageous a certain situation is for the bot
+	 * "Static" means that it evaluates only based on the state of the board without looking ahead.
+ 	 * TODO: When entertaining, completely change the content of the process and prioritize the evaluation of whether the opponent has taken the corner.
 	 */
 	private staticEval = () => {
 		let score = this.engine.getPuttablePlaces(this.botColor).length;
@@ -283,28 +283,28 @@ class Session {
 			const stone = this.engine.board[index];
 
 			if (stone === this.botColor) {
-				score += 1000; // 自分が隅を取っていたらスコアプラス
+				score += 1000; // If you take a corner, you get a plus point.
 			} else if (stone !== null) {
-				score -= 1000; // 相手が隅を取っていたらスコアマイナス
+				score -= 1000; // If the opponent takes the corner, the score is subtracted.
 			}
 		}
 
-		// TODO: ここに (隅以外の確定石の数 * 100) をスコアに加算する処理を入れる
+		// TODO: Here we put a process to add (number of confirmed stones other than corners * 100) to the score.
 
 		for (const index of this.sumiNearIndexes) {
 			const stone = this.engine.board[index];
 
 			if (stone === this.botColor) {
-				score -= 10; // 自分が隅の周辺を取っていたらスコアマイナス(危険なので)
+				score -= 10; // If you take the corner area, you will get a minus point (because it is dangerous).
 			} else if (stone !== null) {
-				score += 10; // 相手が隅の周辺を取っていたらスコアプラス
+				score += 10; // If the opponent takes the corner area, you get a plus point.
 			}
 		}
 
-		// ロセオならスコアを反転
+		// If you use Roseo, you can reverse the score.
 		if (this.game.isLlotheo) score = -score;
 
-		// 接待ならスコアを反転
+		// Reverse the score for entertainment
 		if (this.isSettai) score = -score;
 
 		return score;
@@ -314,55 +314,55 @@ class Session {
 		console.log(`(${this.currentTurn}/${this.maxTurn}) Thinking...`);
 		console.time('think');
 
-		// 接待モードのときは、全力(5手先読みくらい)で負けるようにする
-		// TODO: 接待のときは、どちらかというと「自分が不利になる手を選ぶ」というよりは、「相手に角を取らせられる手を選ぶ」ように思考する
-		//       自分が不利になる手を選ぶというのは、換言すれば自分が打てる箇所を減らすことになるので、
-		//       自分が打てる箇所が少ないと結果的に思考の選択肢が狭まり、対局をコントロールするのが難しくなるジレンマのようなものがある。
-		//       つまり「相手を勝たせる」という意味での正しい接待は、「ゲーム序盤・中盤までは(通常通り)自分の有利になる手を打ち、終盤になってから相手が勝つように打つ」こと。
-		//       とはいえ藍に求められているのは、そういった「本物の」接待ではなく、単に「角を取らせてくれる」接待だと思われるので、
-		//       静的評価で「角に相手の石があるかどうか(と、ゲームが終わったときは相手が勝っているかどうか)」を考慮するようにすれば良いかもしれない。
+		// When in entertainment mode, try to lose with all your might (about 5 moves ahead)
+// TODO: When entertaining, think more like "select a move that will allow the opponent to take the bishop" rather than "select a move that will put you at a disadvantage"
+// Choosing a move that will put you at a disadvantage means, in other words, reducing the number of places you can play, so
+// There is a dilemma in that if you have fewer places you can play, your options for thinking are narrowed and it becomes difficult to control the game.
+// In other words, the correct entertainment in the sense of "making the opponent win" is to "play a move that is advantageous to you (as usual) until the early and middle stages of the game, and then play in a way that will allow the opponent to win in the late stages."
+// However, what is required of Ai is not that kind of "real" entertainment, but simply entertainment that "lets you take the bishop," so
+// It may be a good idea to consider "whether the opponent has a stone in the bishop (and whether the opponent wins when the game ends)" in the static evaluation.
 		const maxDepth = this.isSettai ? 5 : this.strength;
 
 		/**
-		 * αβ法での探索
+		 * Search using the αβ method
 		 */
 		const dive = (pos: number, alpha = -Infinity, beta = Infinity, depth = 0): number => {
-			// 試し打ち
+			// Test shot
 			this.engine.putStone(pos);
 
 			const isBotTurn = this.engine.turn === this.botColor;
 
-			// 勝った
+			// Won
 			if (this.engine.turn === null) {
 				const winner = this.engine.winner;
 
-				// 勝つことによる基本スコア
+				// Base score by winning
 				const base = 10000;
 
 				let score;
 
 				if (this.game.isLlotheo) {
-					// 勝ちは勝ちでも、より自分の石を少なくした方が美しい勝ちだと判定する
+					// A win is a win, but the more stones your opponent has, the more beautiful the win will be.
 					score = this.engine.winner ? base - (this.engine.blackCount * 100) : base - (this.engine.whiteCount * 100);
 				} else {
-					// 勝ちは勝ちでも、より相手の石を少なくした方が美しい勝ちだと判定する
+					// A win is a win, but the more stones your opponent has, the more beautiful the win will be.
 					score = this.engine.winner ? base + (this.engine.blackCount * 100) : base + (this.engine.whiteCount * 100);
 				}
 
-				// 巻き戻し
+				// Rewind
 				this.engine.undo();
 
-				// 接待なら自分が負けた方が高スコア
+				// If you're entertaining someone, you get a higher score if you lose.
 				return this.isSettai
 					? winner !== this.botColor ? score : -score
 					: winner === this.botColor ? score : -score;
 			}
 
 			if (depth === maxDepth) {
-				// 静的に評価
+				// Statically Evaluated
 				const score = this.staticEval();
 
-				// 巻き戻し
+				// Rewind
 				this.engine.undo();
 
 				return score;
@@ -373,11 +373,11 @@ class Session {
 				let a = alpha;
 				let b = beta;
 
-				// TODO: 残りターン数というよりも「空いているマスが12以下」の場合に完全読みさせる
+				// TODO: Rather than the number of turns remaining, it is a perfect reading when there are 12 or less vacant spaces.
 				const nextDepth = (this.strength >= 4) && ((this.maxTurn - this.currentTurn) <= 12) ? Infinity : depth + 1;
 
-				// 次のターンのプレイヤーにとって最も良い手を取得
-				// TODO: cansをまず浅く読んで(または価値マップを利用して)から有益そうな手から順に並べ替え、効率よく枝刈りできるようにする
+				// Get the best hand for the next player
+				// TODO: First, read through the list shallowly (or use a value map), then sort the list by the most profitable moves, allowing for efficient pruning.
 				for (const p of cans) {
 					if (isBotTurn) {
 						const score = dive(p, a, beta, nextDepth);
@@ -392,7 +392,7 @@ class Session {
 					}
 				}
 
-				// 巻き戻し
+				// Rewind
 				this.engine.undo();
 
 				return value;
@@ -425,19 +425,19 @@ class Session {
 	}
 
 	/**
-	 * 対局が始まったことをMisskeyに投稿します
+	 * Post to Misskey that the game has started
 	 */
 	private postGameStarted = async () => {
 		const text = this.isSettai
 			? serifs.reversi.startedSettai(this.userName)
 			: serifs.reversi.started(this.userName, this.strength.toString());
 
-		return await this.post(`${text}\n→[観戦する](${this.url})`);
+		return await this.post(`${text}\n→[Spectate](${this.url})`);
 	}
 
 	/**
-	 * Misskeyに投稿します
-	 * @param text 投稿内容
+	 * Post to Misskey
+	 * @param text Post Content
 	 */
 	private post = async (text: string, renote?: any) => {
 		if (this.allowPost) {
