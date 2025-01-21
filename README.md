@@ -16,6 +16,7 @@ Next, create `config.json` in that directory. The contents should be as follows:
 "i": "Access token for the account you want to run as Ai",
 "master": "Administrator username (optional)",
 "notingEnabled": "Enter false to disable random note posting",
+"colorNotes": "Enter true to enable colored text for Notes, or any other MFM style.",
 "keywordEnabled": "Enter true to enable keyword memorization (requires MeCab) (enter false to disable)",
 "chartEnabled": "Enter false to disable chart function",
 "reversiEnabled": "Enter true to enable the function to play Reversi with Ai (enter false to disable)",
