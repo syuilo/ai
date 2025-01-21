@@ -66,6 +66,11 @@ export default class extends Module {
 
 		if (includes(note.text, ['pizza'])) return react('🍕');
 		if (includes(note.text, ['Pudding'])) return react('🍮');
+		if (includes(note.text, ['Penis','bulging','dick','wang','peepee'])) return react('🍆');
+		if (includes(note.text, ['booty','ass','butt','twerk'])) return react('🍑');
+		if (includes(note.text, ['vagene','taco'])) return react('🌮');
+		if (includes(note.text, ['bobs','booba','boobs','cherry','tatas'])) return react('🍒');
+		if (includes(note.text, ['nuts','balls','sack'])) return react('🥜🥜');
 		if (includes(note.text, ['sushi', 'sushi']) || note.text === 'Sushi') return react('🍣');
 
 		if (includes(note.text, ['Indigo'])) return react('🙌');
