@@ -5,7 +5,7 @@
 This is an English version of a Japanese bot for Misskey that was create by Syuilo, the Engineer behind the Misskey project.
 
 ## Installation
-> Node.js, npm, and MeCab (optional) must be installed.
+> Node.js (20.18.1 recommended), npm, and MeCab (optional) must be installed.
 
 First, `git clone` to a suitable directory.
 
