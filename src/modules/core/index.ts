@@ -4,7 +4,7 @@ import Message from '@/message.js';
 import serifs from '@/serifs.js';
 import { safeForInterpolate } from '@/utils/safe-for-interpolate.js';
 
-const titles = ['さん', 'くん', '君', 'ちゃん', '様', '先生'];
+const titles = ['Miss.', 'Kun', 'Master', 'Chan', 'Mr.', 'teacher','Sensei','boy'];
 
 export default class extends Module {
 	public readonly name = 'core';
@@ -33,7 +33,7 @@ export default class extends Module {
 	@bindThis
 	private transferBegin(msg: Message): boolean  {
 		if (!msg.text) return false;
-		if (!msg.includes(['引継', '引き継ぎ', '引越', '引っ越し'])) return false;
+		if (!msg.includes(['Takeover', 'inheret', 'moving', 'transfer'])) return false;
 
 		const code = msg.friend.generateTransferCode();
 
@@ -63,10 +63,10 @@ export default class extends Module {
 	@bindThis
 	private setName(msg: Message): boolean  {
 		if (!msg.text) return false;
-		if (!msg.text.includes('って呼んで')) return false;
-		if (msg.text.startsWith('って呼んで')) return false;
+		if (!msg.text.includes('Call me')) return false;
+		if (msg.text.startsWith('Call me')) return false;
 
-		const name = msg.text.match(/^(.+?)って呼んで/g)![1];
+		const name = msg.text.match(/^(.+?)Call me/g)![1];
 
 		if (name.length > 10) {
 			msg.reply(serifs.core.tooLong);
@@ -117,7 +117,7 @@ export default class extends Module {
 	@bindThis
 	private version(msg: Message): boolean  {
 		if (!msg.text) return false;
-		if (!msg.or(['v', 'version', 'バージョン'])) return false;
+		if (!msg.or(['v', 'version', 'Version'])) return false;
 
 		msg.reply(`\`\`\`\nv${this.ai.version}\n\`\`\``, {
 			immediate: true
@@ -135,10 +135,10 @@ export default class extends Module {
 			this.unsubscribeReply(key);
 		};
 
-		if (msg.text.includes('はい')) {
-			msg.friend.updateName(data.name + 'さん');
+		if (msg.text.includes('yes')) {
+			msg.friend.updateName(data.name + 'Mr. Miss.');
 			done();
-		} else if (msg.text.includes('いいえ')) {
+		} else if (msg.text.includes('no')) {
 			msg.friend.updateName(data.name);
 			done();
 		} else {
