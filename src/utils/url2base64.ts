@@ -4,8 +4,8 @@ import got from 'got';
 export default async function(url: string): Promise<string> {
 	try {
 			const buffer = await got(url).buffer();
-			const base64Image = buffer.toString('base64');
-			return base64Image;
+			const base64File = buffer.toString('base64');
+			return base64File;
 	} catch (err: unknown) {
 		log('Error in url2base64');
 		if (err instanceof Error) {
