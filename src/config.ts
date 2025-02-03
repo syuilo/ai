@@ -15,9 +15,10 @@ type Config = {
 	geminiProApiKey?: string;
 	pLaMoApiKey?: string;
 	prompt?: string;
-	aichatRandomTalkEnabled?: string;
+	aichatRandomTalkEnabled?: boolean;
 	aichatRandomTalkProbability?: string;
 	aichatRandomTalkIntervalMinutes?: string;
+	aichatGroundingWithGoogleSearchAlwaysEnabled?: boolean;
 	mecab?: string;
 	mecabDic?: string;
 	memoryDir?: string;

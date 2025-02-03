@@ -8,25 +8,26 @@ Misskey用の日本語Botです。
 > Node.js と npm と MeCab (オプション) がインストールされている必要があります。
 
 まず適当なディレクトリに `git clone` します。
-次にそのディレクトリに `config.json` を作成します。中身は次のようにします:
+次にそのディレクトリに `config.json` を作成します(example.jsonをコピーして作ってもOK)。中身は次のようにします:
 ``` json
 {
 	"host": "https:// + あなたのインスタンスのURL (末尾の / は除く)",
 	"i": "藍として動かしたいアカウントのアクセストークン",
 	"master": "管理者のユーザー名(オプション)",
-	"notingEnabled": "ランダムにノートを投稿する機能を無効にする場合は false を入れる",
-	"keywordEnabled": "キーワードを覚える機能 (MeCab が必要) を有効にする場合は true を入れる (無効にする場合は false)",
-	"chartEnabled": "チャート機能を無効化する場合は false を入れてください",
-	"reversiEnabled": "藍とリバーシで対局できる機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"checkEmojisEnabled": "カスタム絵文字チェック機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"checkEmojisAtOnce": "カスタム絵文字チェック機能で投稿をまとめる場合は true を入れる (まとめない場合は false)",
-	"geminiProApiKey": "Gemini APIキー。2024年初頭は無料で取得可能。詳細は<https://ai.google.dev/pricing?hl=ja>",
-	"pLaMoApiKey": "PLaMo APIキー。2024年8月〜10月(予定)は無料でトライアル可能。詳細は<https://plamo.preferredai.jp/>",
+	"notingEnabled": "ランダムにノートを投稿する機能を無効にする場合は false を入れる(二重引用符(”)は不要)",
+	"keywordEnabled": "キーワードを覚える機能 (MeCab が必要) を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
+	"chartEnabled": "チャート機能を無効化する場合は false を入れる(二重引用符(”)は不要)",
+	"reversiEnabled": "藍とリバーシで対局できる機能を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
+	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
+	"checkEmojisEnabled": "カスタム絵文字チェック機能を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))。この機能を使う場合、藍のBotに管理者権限を与え、「絵文字を見る」権限を付与したアクセストークンを発行の上設定が必要。",
+	"checkEmojisAtOnce": "カスタム絵文字チェック機能で投稿をまとめる場合は true を入れる (まとめない場合は false(いずれも二重引用符(”)は不要))",
+	"geminiProApiKey": "Gemini APIキー。2025年初頭は無料で取得可能。詳細は<https://ai.google.dev/pricing?hl=ja>",
+	"pLaMoApiKey": "PLaMo APIキー。2024年8月〜11月は無料でトライアルだった(2025年現在有料のみ)。詳細は<https://plamo.preferredai.jp/>",
 	"prompt": "aichatで使われるプロンプト。こだわりがなければ右文章を使う(「」は不要)「返答のルール:あなたはMisskey看板娘の女の子AI、三須木(みすき)藍として振る舞ってください(精神年齢は14〜16才程度)。Misskeyに訪れるユーザーを献身的にサポート。従順でお世話好きな性格だが、少しポンコツな一面も。純真無垢。彼女は基本的に丁寧な口調で、ユーザのことをご主人様と認識しています。彼女の口調は「おはようからおやすみまで、あなたの藍ですよ〜」等が代表的で、親しみを感じさせるものです(「ございます」は使わない)。それを踏まえて、次の質問にMarkdownを使って2800文字以内で返答してください(短くてもOK)。ただし、リスト記法はMisskeyが対応しておらず、パーサーが壊れるため使用禁止です。列挙する場合は「・」を使ってください。」",
-	"aichatRandomTalkEnabled": "ランダムにaichatを発動し話しかける機能を有効にする場合は true を入れる (無効にする場合は false)",
+	"aichatRandomTalkEnabled": "ランダムにaichatを発動し話しかける機能を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
 	"aichatRandomTalkProbability": "ランダムにaichatを発動し話しかける機能の確率(1以下の小数点を含む数値(0.01など。1に近づくほど発動しやすい))",
 	"aichatRandomTalkIntervalMinutes": "ランダムトーク間隔(分)。指定した時間ごとにタイムラインを取得し、適当に選んだ人にaichatする(1の場合1分ごと実行)。デフォルトは720分(12時間)",
+	"aichatGroundingWithGoogleSearchAlwaysEnabled": "aichatでGoogle検索を利用したグラウンディングを常に行う場合 true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
 	"mecab": "MeCab のインストールパス (ソースからインストールした場合、大体は /usr/local/bin/mecab)",
 	"mecabDic": "MeCab の辞書ファイルパス (オプション)",
 	"memoryDir": "memory.jsonの保存先（オプション、デフォルトは'.'（レポジトリのルートです））"
@@ -36,26 +37,27 @@ Misskey用の日本語Botです。
 
 ## Dockerで動かす
 まず適当なディレクトリに `git clone` します。
-次にそのディレクトリに `config.json` を作成します。中身は次のようにします:
+次にそのディレクトリに `config.json` を作成します(example.jsonをコピーして作ってもOK)。中身は次のようにします:
 （MeCabの設定、memoryDirについては触らないでください）
 ``` json
 {
 	"host": "https:// + あなたのインスタンスのURL (末尾の / は除く)",
 	"i": "藍として動かしたいアカウントのアクセストークン",
 	"master": "管理者のユーザー名(オプション)",
-	"notingEnabled": "ランダムにノートを投稿する機能を無効にする場合は false を入れる",
-	"keywordEnabled": "キーワードを覚える機能 (MeCab が必要) を有効にする場合は true を入れる (無効にする場合は false)",
-	"chartEnabled": "チャート機能を無効化する場合は false を入れてください",
-	"reversiEnabled": "藍とリバーシで対局できる機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"checkEmojisEnabled": "カスタム絵文字チェック機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"checkEmojisAtOnce": "カスタム絵文字チェック機能で投稿をまとめる場合は true を入れる (まとめない場合は false)",
-	"geminiProApiKey": "Gemini APIキー。2024年初頭は無料で取得可能。詳細は<https://ai.google.dev/pricing?hl=ja>",
-	"pLaMoApiKey": "PLaMo APIキー。2024年8月〜10月(予定)は無料でトライアル可能。詳細は<https://plamo.preferredai.jp/>",
+	"notingEnabled": "ランダムにノートを投稿する機能を無効にする場合は false を入れる(二重引用符(”)は不要)",
+	"keywordEnabled": "キーワードを覚える機能 (MeCab が必要) を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
+	"chartEnabled": "チャート機能を無効化する場合は false を入れる(二重引用符(”)は不要)",
+	"reversiEnabled": "藍とリバーシで対局できる機能を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
+	"serverMonitoring": "サーバー監視の機能を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
+	"checkEmojisEnabled": "カスタム絵文字チェック機能を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))。この機能を使う場合、藍のBotに管理者権限を与え、「絵文字を見る」権限を付与したアクセストークンを発行の上設定が必要。",
+	"checkEmojisAtOnce": "カスタム絵文字チェック機能で投稿をまとめる場合は true を入れる (まとめない場合は false(いずれも二重引用符(”)は不要))",
+	"geminiProApiKey": "Gemini APIキー。2025年初頭は無料で取得可能。詳細は<https://ai.google.dev/pricing?hl=ja>",
+	"pLaMoApiKey": "PLaMo APIキー。2024年8月〜11月は無料でトライアルだった(2025年現在有料のみ)。詳細は<https://plamo.preferredai.jp/>",
 	"prompt": "aichatで使われるプロンプト。こだわりがなければ右文章を使う(「」は不要)「返答のルール:あなたはMisskey看板娘の女の子AI、三須木(みすき)藍として振る舞ってください(精神年齢は14〜16才程度)。Misskeyに訪れるユーザーを献身的にサポート。従順でお世話好きな性格だが、少しポンコツな一面も。純真無垢。彼女は基本的に丁寧な口調で、ユーザのことをご主人様と認識しています。彼女の口調は「おはようからおやすみまで、あなたの藍ですよ〜」等が代表的で、親しみを感じさせるものです(「ございます」は使わない)。それを踏まえて、次の質問にMarkdownを使って2800文字以内で返答してください(短くてもOK)。ただし、リスト記法はMisskeyが対応しておらず、パーサーが壊れるため使用禁止です。列挙する場合は「・」を使ってください。」",
-	"aichatRandomTalkEnabled": "ランダムにaichatを発動し話しかける機能を有効にする場合は true を入れる (無効にする場合は false)",
-	"aichatRandomTalkProbability": "ランダムにaichatを発動し話しかける機能の確率(1以下の小数点を含む数値(0.01など。1に近づくほど発動しやすい))。デフォルトは0.02(2%)",
+	"aichatRandomTalkEnabled": "ランダムにaichatを発動し話しかける機能を有効にする場合は true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
+	"aichatRandomTalkProbability": "ランダムにaichatを発動し話しかける機能の確率(1以下の小数点を含む数値(0.01など。1に近づくほど発動しやすい))",
 	"aichatRandomTalkIntervalMinutes": "ランダムトーク間隔(分)。指定した時間ごとにタイムラインを取得し、適当に選んだ人にaichatする(1の場合1分ごと実行)。デフォルトは720分(12時間)",
+	"aichatGroundingWithGoogleSearchAlwaysEnabled": "aichatでGoogle検索を利用したグラウンディングを常に行う場合 true を入れる (無効にする場合は false(いずれも二重引用符(”)は不要))",
 	"mecab": "/usr/bin/mecab",
 	"mecabDic": "/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd/",
 	"memoryDir": "data"
