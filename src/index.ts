@@ -74,6 +74,7 @@ promiseRetry(retry => {
 	// 藍起動
 	new 藍(account, [
 		new CoreModule(),
+		new AiChatModule(),
 		new EmojiModule(),
 		new EmojiReactModule(),
 		new FortuneModule(),
@@ -97,7 +98,6 @@ promiseRetry(retry => {
 		new PollModule(),
 		new ReminderModule(),
 		new CheckCustomEmojisModule(),
-		new AiChatModule(),
 	]);
 }).catch(e => {
 	log(chalk.red('Failed to fetch the account'));
