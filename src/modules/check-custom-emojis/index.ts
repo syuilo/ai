@@ -163,7 +163,7 @@ export default class extends Module {
 
 	@bindThis
 	private async mentionHook(msg: Message) {
-		if (!msg.includes(['カスタムえもじチェック','カスタムえもじを調べて','カスタムえもじを確認'])) {
+		if (!msg.includes(['カスタム絵文字チェック','カスタムえもじチェック','カスタムえもじを調べて','カスタムえもじを確認'])) {
 			return false;
 		} else {
 			this.log('Check CustomEmojis requested');
