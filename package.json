@@ -11,7 +11,7 @@
 	"dependencies": {
 		"@types/chalk": "2.2.0",
 		"@types/lokijs": "1.5.14",
-		"@types/node": "20.11.5",
+		"@types/node": "22.13.13",
 		"@types/promise-retry": "1.1.6",
 		"@types/random-seed": "0.3.5",
 		"@types/seedrandom": "3.0.8",
@@ -30,12 +30,12 @@
 		"random-seed": "0.3.0",
 		"reconnecting-websocket": "4.4.0",
 		"seedrandom": "3.0.5",
-		"ts-patch": "3.1.2",
+		"ts-patch": "3.3.0",
 		"twemoji-parser": "14.0.0",
-		"typescript": "5.3.3",
-		"typescript-transform-paths": "3.4.6",
+		"typescript": "5.8.2",
+		"typescript-transform-paths": "3.5.5",
 		"uuid": "9.0.1",
-		"ws": "8.16.0"
+		"ws": "8.18.1"
 	},
 	"devDependencies": {
 	},
