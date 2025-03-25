@@ -49,7 +49,7 @@ export default class extends Module {
 		});
 
 		msg.reply(serifs.guessingGame.started).then(reply => {
-			this.subscribeReply(msg.userId, reply.id);
+			this.subscribeReply(msg.userId, msg.isChat, msg.isChat ? msg.userId : reply.id);
 		});
 
 		return true;
@@ -83,7 +83,7 @@ export default class extends Module {
 
 		if (guess == null) {
 			msg.reply(serifs.guessingGame.nan).then(reply => {
-				this.subscribeReply(msg.userId, reply.id);
+				this.subscribeReply(msg.userId, msg.isChat, reply.id);
 			});
 			return;
 		}
@@ -121,7 +121,7 @@ export default class extends Module {
 
 		msg.reply(text).then(reply => {
 			if (!end) {
-				this.subscribeReply(msg.userId, reply.id);
+				this.subscribeReply(msg.userId, msg.isChat, reply.id);
 			}
 		});
 	}

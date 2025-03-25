@@ -11,30 +11,36 @@ import { sleep } from '@/utils/sleep.js';
 
 export default class Message {
 	private ai: 藍;
-	private note: any;
+	private chatMessage: { id: string; fromUser: any; fromUserId: string; text: string; } | null;
+	private note: { id: string; user: any; userId: string; text: string; renoteId: string; replyId: string; } | null;
+	public isChat: boolean;
 
 	public get id(): string {
-		return this.note.id;
+		return this.chatMessage ? this.chatMessage.id : this.note.id;
 	}
 
 	public get user(): User {
-		return this.note.user;
+		return this.chatMessage ? this.chatMessage.fromUser : this.note.user;
 	}
 
 	public get userId(): string {
-		return this.note.userId;
+		return this.chatMessage ? this.chatMessage.fromUserId : this.note.userId;
 	}
 
 	public get text(): string {
-		return this.note.text;
+		return this.chatMessage ? this.chatMessage.text : this.note.text;
 	}
 
 	public get quoteId(): string | null {
-		return this.note.renoteId;
+		return this.chatMessage ? null : this.note.renoteId;
 	}
 
-	public get visibility(): string {
-		return this.note.visibility;
+	public get replyId(): string | null {
+		return this.chatMessage ? null : this.note.replyId;
+	}
+
+	public get visibility(): string | null {
+		return this.chatMessage ? null : this.note.visibility;
 	}
 
 	/**
@@ -48,15 +54,13 @@ export default class Message {
 			.trim();
 	}
 
-	public get replyId(): string {
-		return this.note.replyId;
-	}
-
 	public friend: Friend;
 
-	constructor(ai: 藍, note: any) {
+	constructor(ai: 藍, chatMessageOrNote: any, isChat: boolean) {
 		this.ai = ai;
-		this.note = note;
+		this.chatMessage = isChat ? chatMessageOrNote : null;
+		this.note = isChat ? null : chatMessageOrNote;
+		this.isChat = isChat;
 
 		this.friend = new Friend(ai, { user: this.user });
 
@@ -83,19 +87,19 @@ export default class Message {
 			await sleep(2000);
 		}
 
-		const postData = {
-			replyId: this.note.id,
-			text: text,
-			fileIds: opts?.file ? [opts?.file.id] : undefined,
-			cw: opts?.cw,
-			renoteId: opts?.renote
-		};
-
-		// DM以外は普通に返信し、DMの場合はDMで返信する
-		if (this.note.visibility != 'specified') {
-			return await this.ai.post(postData);
+		if (this.chatMessage) {
+			return await this.ai.sendMessage(this.chatMessage.fromUserId, {
+				text: text,
+				fileId: opts?.file?.id
+			});
 		} else {
-			return await this.ai.sendMessage(this.userId, postData);
+			return await this.ai.post({
+				replyId: this.note.id,
+				text: text,
+				fileIds: opts?.file ? [opts?.file.id] : undefined,
+				cw: opts?.cw,
+				renoteId: opts?.renote
+			});
 		}
 	}
 

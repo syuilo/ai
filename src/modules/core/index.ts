@@ -85,7 +85,7 @@ export default class extends Module {
 			msg.reply(serifs.core.setNameOk(name));
 		} else {
 			msg.reply(serifs.core.san).then(reply => {
-				this.subscribeReply(msg.userId, reply.id, {
+				this.subscribeReply(msg.userId, msg.isChat, msg.isChat ? msg.userId : reply.id, {
 					name: name
 				});
 			});
@@ -143,7 +143,7 @@ export default class extends Module {
 			done();
 		} else {
 			msg.reply(serifs.core.yesOrNo).then(reply => {
-				this.subscribeReply(msg.userId, reply.id, data);
+				this.subscribeReply(msg.userId, msg.isChat, reply.id, data);
 			});
 		}
 	}

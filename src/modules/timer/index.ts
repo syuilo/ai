@@ -47,6 +47,7 @@ export default class extends Module {
 
 		// タイマーセット
 		this.setTimeoutWithPersistence(time, {
+			isChat: msg.isChat,
 			msgId: msg.id,
 			userId: msg.friend.userId,
 			time: str
@@ -60,9 +61,15 @@ export default class extends Module {
 		const friend = this.ai.lookupFriend(data.userId);
 		if (friend == null) return; // 処理の流れ上、実際にnullになることは無さそうだけど一応
 		const text = serifs.timer.notify(data.time, friend.name);
-		this.ai.post({
-			replyId: data.msgId,
-			text: text
-		});
+		if (data.isChat) {
+			this.ai.sendMessage(friend.userId, {
+				text: text
+			});
+		} else {
+			this.ai.post({
+				replyId: data.msgId,
+				text: text
+			});
+		}
 	}
 }

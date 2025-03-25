@@ -75,7 +75,7 @@ export default class extends Module {
 			postId: post.id
 		});
 
-		this.subscribeReply(null, post.id);
+		this.subscribeReply(null, false, post.id);
 
 		this.log('New kazutori game started');
 
